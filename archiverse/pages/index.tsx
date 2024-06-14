@@ -9,9 +9,10 @@ export default function Home() {
     <>
     <SEO/>
     <main
-      className={`flex min-h-screen flex-col items-center justify-between checkerboard`}
+      className={`wrapper`}
     >
-      
+        <div className="bg-red-400 break-words">helopooioif;ldfjks;alkfjds;lfkjsad;flkj;flksjf;lksjf;lskajf;lsakjf;lsakfj</div>
+
     </main>
     </>
   );

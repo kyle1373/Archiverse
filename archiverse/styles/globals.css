@@ -29,9 +29,19 @@ body {
   background-attachment: fixed;
 }
 
+.wrapper {
+  position: relative;
+  width: 800px;
+  min-width: 320px;
+  margin: 30px auto 0;
+  text-align: left;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
 }
-
