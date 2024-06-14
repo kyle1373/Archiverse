@@ -44,25 +44,23 @@ export const getPostReplies = async ({
   return data;
 };
 
-export const getCommunityPosts = async ({
-  gameID,
-  titleID,
+export const getPosts = async ({
   sortMode,
   beforeDateTime,
+  gameID,
+  titleID,
   limit = 10,
   page = 1,
 }: {
-  gameID: string;
-  titleID: string;
   sortMode: "recent" | "popular";
+  gameID?: string;
+  titleID?: string;
   beforeDateTime?: Date;
   limit?: number;
   page?: number;
 }) => {
   const start = (page - 1) * limit;
   const end = start + limit - 1;
-
-  const dateTimeMillis = beforeDateTime.getTime();
 
   const query = supabaseAdmin
     .from("Posts")
@@ -71,10 +69,15 @@ export const getCommunityPosts = async ({
     );
 
   if (beforeDateTime) {
+    const dateTimeMillis = beforeDateTime.getTime();
     query.lt("PostedDate", dateTimeMillis);
   }
 
-  query.eq("gameID", gameID).eq("titleID", titleID).range(start, end);
+  if (gameID && titleID) {
+    query.eq("gameID", gameID).eq("titleID", titleID);
+  }
+
+  query.range(start, end);
 
   if (sortMode === "recent") {
     query.order("PostedDate", { ascending: false });
@@ -194,3 +197,22 @@ export const getUserReplies = async ({
 
   return data;
 };
+
+
+// TODO: Convert the functions above to use these types, where these types will display the images properly (like screenshots, etc)
+
+export type Post = {};
+
+const convertPosts = (data) => {};
+
+export type SearchedUser = {};
+
+const convertSearchedUsers = (data) => {};
+
+export type Reply = {};
+
+const convertReplies = (data) => {};
+
+export type Community = {};
+
+const convertCommunity = (data) => {};
