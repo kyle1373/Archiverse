@@ -125,7 +125,11 @@ export const searchUsers = async ({
 };
 
 // TODO
-export const searchCommunities = async ({ query }: { query: string }): Promise<Community[]> => {
+export const searchCommunities = async ({
+  query,
+}: {
+  query: string;
+}): Promise<Community[]> => {
   const { data, error } = await supabaseAdmin.rpc("search_communities", {
     search_query: query,
   });
@@ -309,6 +313,9 @@ export type Post = {
   CommunityIconUrl: string;
   GameID: string;
   TitleID: string;
+  IsSpoiler: boolean;
+  IsPlayed: boolean;
+  Date: Date;
 };
 
 const convertPost = (data): Post => {
@@ -332,6 +339,9 @@ const convertPost = (data): Post => {
       : null,
     GameID: data.GameID,
     TitleID: data.IconID,
+    IsSpoiler: data.IsSpoiler,
+    IsPlayed: data.IsPlayed,
+    Date: new Date(data.PostedDate),
   };
 
   return post;
@@ -377,6 +387,9 @@ export type Reply = {
   DrawingUrl: string;
   ScreenshotUrl: string;
   ReplyingToID: string;
+  IsSpoiler: boolean;
+  IsPlayed: boolean;
+  Date: Date;
 };
 
 const convertReply = (data): Reply => {
@@ -392,6 +405,9 @@ const convertReply = (data): Reply => {
       ? getArchiveFromUri(data.ScreenShotUri)
       : null,
     ReplyingToID: data.InReplyToId,
+    IsSpoiler: data.IsSpoiler,
+    IsPlayed: data.IsPlayed,
+    Date: new Date(data.PostedDate),
   };
 
   return reply;
