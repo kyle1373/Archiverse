@@ -50,7 +50,7 @@ export const getPosts = async ({
   beforeDateTime,
   gameID,
   titleID,
-  limit = 10,
+  limit = 20,
   page = 1,
 }: {
   sortMode: "recent" | "popular";
@@ -103,13 +103,58 @@ export const searchUsers = async ({ query }: { query: string }) => {
   if (error) {
     throw new Error(error.message);
   }
+
   return data;
 };
 
 // TODO
-export const searchCommunities = async ({query}: {query: string}) => {
+export const searchCommunities = async ({ query }: { query: string }) => {
+  const { data, error } = await supabaseAdmin.rpc("search_communities", {
+    search_query: query,
+  });
 
-}
+  if (error) {
+    console.log(JSON.stringify(error));
+    throw new Error(error.message);
+  }
+
+  const communities: Community[] = [];
+  data?.map((value) => communities.push(convertCommunity(value)));
+
+  return communities;
+};
+
+export const getCommunities = async ({
+  limit = 20,
+  page = 1,
+}: {
+  limit?: number;
+  page?: number;
+}) => {
+  const start = (page - 1) * limit;
+  const end = start + limit - 1;
+
+  const { data, error } = await supabaseAdmin
+    .from("Games")
+    .select(
+      "GameId, TitleId, Title, CommunityBadge, CommunityListIcon, IconUri, Type, TotalPosts, ViewRegion"
+    )
+    .order("TotalPosts", { ascending: false })
+    .range(start, end);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+};
+
+export const getCommunity = async ({
+  gameID,
+  titleID,
+}: {
+  gameID: string;
+  titleID: string;
+}) => {};
 
 export const getUserInfo = async ({ NNID }: { NNID: string }) => {
   const { data, error } = await supabaseAdmin
@@ -294,15 +339,74 @@ const convertReply = (data) => {
 
 //TODO
 export type Community = {
-  GameID: string,
-  TitleID: string,
-  Title: string,
-  Badge: "Main Community" | "Announcement Community" | null
+  GameID: string;
+  TitleID: string;
+  CommunityTitle: string;
+  CommunityListIconUrl: string | null;
+  CommunityIconUrl: string;
+  Badge: "Main Community" | "Announcement Community" | null;
+  GameTitle: string;
+  NumPosts: number;
+  Region: "America" | "Japan" | "Europe" | "Worldwide";
 };
 
-const convertCommunity = (data) => {};
+const convertCommunity = (data): Community => {
+  let convertedRegion: "America" | "Japan" | "Europe" | "Worldwide";
+  switch (data.ViewRegion) {
+    case 1:
+      convertedRegion = "Japan";
+      break;
+    case 2:
+      convertedRegion = "America";
+      break;
+    case 4:
+      convertedRegion = "Europe";
+      break;
+    default:
+      convertedRegion = "Worldwide";
+      break;
+  }
+
+  // TODO: Make search be a lot better
+
+  // Example: Make it so when you type "Art Academy", the "Art Academy" community gets displayed on the top results, then more results get displayed out later. The matching letters should be a higher percentage than the overall characters (?) Maybe
+  let convertedBadge: "Main Community" | "Announcement Community" | null;
+
+  switch (data.Badge) {
+    case "Main Community":
+      convertedBadge = "Main Community";
+      break;
+    case "Announcement Community":
+      convertedBadge = "Announcement Community";
+      break;
+    default:
+      convertedBadge = null;
+      break;
+  }
+
+  const community: Community = {
+    GameID: data.GameId,
+    TitleID: data.TitleId,
+    CommunityTitle: data.Title,
+    CommunityListIconUrl: data.CommunityListIcon
+      ? getArchiveFromUri(data.CommunityListIcon)
+      : null,
+    CommunityIconUrl: data.CommunityIconUrl
+      ? getArchiveFromUri(data.IconUri)
+      : null,
+    Badge: convertedBadge,
+    GameTitle: data.Title,
+    NumPosts: data.TotalPosts,
+    Region: convertedRegion,
+  };
+
+  return community;
+};
 
 const getArchiveFromUri = (uri: string) => {
+  if (!uri) {
+    return null;
+  }
   const archiveImageBaseUrl = "https://web.archive.org/web/20171014154111im_/";
   return archiveImageBaseUrl + uri;
 };

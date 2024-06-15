@@ -1,16 +1,25 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { getPost, getPostReplies, getPosts, getUserInfo, getUserPosts, searchUsers } from "@server/database";
+import {
+  getCommunities,
+  getPost,
+  getPostReplies,
+  getPosts,
+  getUserInfo,
+  getUserPosts,
+  searchCommunities,
+  searchUsers,
+} from "@server/database";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
-  if(process.env.NODE_ENV !== "development"){
-    return res.status(403)
+  if (process.env.NODE_ENV !== "development") {
+    return res.status(403);
   }
 
   // const data = await getPost({postID: "AYIHAAAEAAAOU4XCvEQWvA"})
-  const data = await getUserPosts({NNID: "SupaFX", sortMode: "newest"})
+  const data = await searchCommunities({query: "Art Academy"});
   return res.status(200).json(data);
 }
