@@ -463,9 +463,7 @@ const convertCommunity = (data): Community => {
     CommunityListIconUrl: data.CommunityListIcon
       ? getArchiveFromUri(data.CommunityListIcon)
       : null,
-    CommunityIconUrl: data.IconUri
-      ? getArchiveFromUri(data.IconUri)
-      : null,
+    CommunityIconUrl: data.IconUri ? getArchiveFromUri(data.IconUri) : null,
     Badge: convertedBadge,
     GameTitle: data.Type,
     NumPosts: data.TotalPosts,
