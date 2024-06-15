@@ -20,6 +20,6 @@ export default async function handler(
   }
 
   // const data = await getPost({postID: "AYIHAAAEAAAOU4XCvEQWvA"})
-  const data = await searchCommunities({query: "Art Academy"});
+  const data = await searchUsers({query: "1373"});
   return res.status(200).json(data);
 }

@@ -1,6 +1,6 @@
 import supabaseAdmin from "./supabaseAdmin";
 
-export const getPost = async ({ postID }) => {
+export const getPost = async ({ postID }): Promise<Post> => {
   const { data, error } = await supabaseAdmin
     .from("Posts")
     .select(
@@ -12,7 +12,8 @@ export const getPost = async ({ postID }) => {
   if (error) {
     throw new Error(error.message);
   }
-  return data;
+
+  return convertPost(data);
 };
 
 export const getPostReplies = async ({
@@ -25,7 +26,7 @@ export const getPostReplies = async ({
   sortMode: "newest" | "oldest";
   limit?: number;
   page?: number;
-}) => {
+}): Promise<Reply[]> => {
   const start = (page - 1) * limit;
   const end = start + limit - 1;
 
@@ -42,10 +43,14 @@ export const getPostReplies = async ({
     throw new Error(error.message);
   }
 
-  return data;
+  const replies: Reply[] = [];
+
+  data?.map((value) => replies.push(convertReply(value)));
+
+  return replies;
 };
 
-export const getPosts = async ({
+export const getCommunityPosts = async ({
   sortMode,
   beforeDateTime,
   gameID,
@@ -59,7 +64,7 @@ export const getPosts = async ({
   beforeDateTime?: Date;
   limit?: number;
   page?: number;
-}) => {
+}): Promise<Post[]> => {
   const start = (page - 1) * limit;
   const end = start + limit - 1;
 
@@ -92,10 +97,18 @@ export const getPosts = async ({
     throw new Error(error.message);
   }
 
-  return data;
+  const posts: Post[] = [];
+
+  data?.map((value) => posts.push(convertPost(value)));
+
+  return posts;
 };
 
-export const searchUsers = async ({ query }: { query: string }) => {
+export const searchUsers = async ({
+  query,
+}: {
+  query: string;
+}): Promise<User[]> => {
   const { data, error } = await supabaseAdmin.rpc("search_users_by_nnid", {
     search_query: query,
   });
@@ -104,11 +117,15 @@ export const searchUsers = async ({ query }: { query: string }) => {
     throw new Error(error.message);
   }
 
+  const users: User[] = [];
+
+  data?.map((value) => users.push(convertUser(value)));
+
   return data;
 };
 
 // TODO
-export const searchCommunities = async ({ query }: { query: string }) => {
+export const searchCommunities = async ({ query }: { query: string }): Promise<Community[]> => {
   const { data, error } = await supabaseAdmin.rpc("search_communities", {
     search_query: query,
   });
@@ -119,6 +136,7 @@ export const searchCommunities = async ({ query }: { query: string }) => {
   }
 
   const communities: Community[] = [];
+
   data?.map((value) => communities.push(convertCommunity(value)));
 
   return communities;
@@ -130,7 +148,7 @@ export const getCommunities = async ({
 }: {
   limit?: number;
   page?: number;
-}) => {
+}): Promise<Community[]> => {
   const start = (page - 1) * limit;
   const end = start + limit - 1;
 
@@ -145,7 +163,12 @@ export const getCommunities = async ({
   if (error) {
     throw new Error(error.message);
   }
-  return data;
+
+  const communities: Community[] = [];
+
+  data?.map((value) => communities.push(convertCommunity(value)));
+
+  return communities;
 };
 
 export const getCommunity = async ({
@@ -154,13 +177,28 @@ export const getCommunity = async ({
 }: {
   gameID: string;
   titleID: string;
-}) => {};
+}): Promise<Community> => {
+  const { data, error } = await supabaseAdmin
+    .from("Games")
+    .select(
+      "GameId, TitleId, Title, CommunityBadge, CommunityListIcon, IconUri, Type, TotalPosts, ViewRegion"
+    )
+    .eq("GameId", gameID)
+    .eq("TitleId", titleID)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return convertCommunity(data);
+};
 
 export const getUserInfo = async ({ NNID }: { NNID: string }) => {
   const { data, error } = await supabaseAdmin
     .from("Users")
     .select(
-      "NNID, Bio, Birthday, Country, FollowerCount, FollowingCount, FriendsCount, GameSkill, IconUri, IsBirthdayHidden, IsError, IsHidden, ScreenName, SidebarCoverUrl, TotalPosts, TotalDeletedPosts, TotalReplies"
+      "NNID, Bio, Birthday, Country, FollowerCount, FollowingCount, FriendsCount, GameSkill, IconUri, IsBirthdayHidden, IsError, IsHidden, ScreenName, SidebarCoverUrl, TotalPosts"
     )
     .eq("NNID", NNID)
     .single();
@@ -168,7 +206,7 @@ export const getUserInfo = async ({ NNID }: { NNID: string }) => {
   if (error) {
     throw new Error(error.message);
   }
-  return data;
+  return convertUser(data);
 };
 
 export const getUserPosts = async ({
@@ -223,7 +261,7 @@ export const getUserReplies = async ({
   sortMode: "newest" | "oldest" | "popular";
   limit?: number;
   page?: number;
-}) => {
+}): Promise<Reply[]> => {
   const start = (page - 1) * limit;
   const end = start + limit - 1;
 
@@ -249,7 +287,10 @@ export const getUserReplies = async ({
     throw new Error(error.message);
   }
 
-  return data;
+  const replies: Reply[] = [];
+  data?.map((value) => replies.push(convertReply(value)));
+
+  return replies;
 };
 
 export type Post = {
@@ -296,15 +337,35 @@ const convertPost = (data): Post => {
   return post;
 };
 
-//TODO
-export type SearchedUser = {};
+export type User = {
+  NNID: string;
+  MiiName: string;
+  MiiUrl: string;
+  Bio: string;
+  Country: string | null;
+  NumFollowers: number | null;
+  NumFollowing: number | null;
+  NumFriends: number | null;
+  NumPosts: number;
+  Birthday: string;
+};
 
-const convertSearchedUser = (data) => {};
+const convertUser = (data): User => {
+  const user: User = {
+    NNID: data.NNID,
+    MiiName: data.ScreenName,
+    MiiUrl: getArchiveFromUri(getMiiImageUrl(data.IconUri, null)),
+    Bio: data.Bio,
+    Country: data.Country,
+    NumFollowers: data.FollowerCount === 0 ? null : data.FollowerCount,
+    NumFollowing: data.FollowingCount === 0 ? null : data.FollowingCount,
+    NumFriends: data.FriendsCount === 0 ? null : data.FriendsCount,
+    NumPosts: data.TotalPosts,
+    Birthday: data.Birthday,
+  };
 
-//TODO
-export type User = {};
-
-const convertUser = (data) => {};
+  return user;
+};
 
 export type Reply = {
   ID: string;
@@ -318,8 +379,7 @@ export type Reply = {
   ReplyingToID: string;
 };
 
-//TODO: Implement this in get replies
-const convertReply = (data) => {
+const convertReply = (data): Reply => {
   const reply: Reply = {
     ID: data.Id,
     MiiName: data.ScreenName,
@@ -337,7 +397,6 @@ const convertReply = (data) => {
   return reply;
 };
 
-//TODO
 export type Community = {
   GameID: string;
   TitleID: string;
@@ -367,9 +426,6 @@ const convertCommunity = (data): Community => {
       break;
   }
 
-  // TODO: Make search be a lot better
-
-  // Example: Make it so when you type "Art Academy", the "Art Academy" community gets displayed on the top results, then more results get displayed out later. The matching letters should be a higher percentage than the overall characters (?) Maybe
   let convertedBadge: "Main Community" | "Announcement Community" | null;
 
   switch (data.Badge) {
@@ -413,6 +469,10 @@ const getArchiveFromUri = (uri: string) => {
 
 const getMiiImageUrl = (url: string, feeling: number) => {
   // url is assumed to just have _normal_face.png because the database only contains those values
+
+  if (!feeling || feeling < 0 || feeling > 5) {
+    return url;
+  }
   const faceMappings: { [key: number]: string } = {
     0: "_normal_face.png",
     1: "_happy_face.png",
@@ -421,10 +481,6 @@ const getMiiImageUrl = (url: string, feeling: number) => {
     4: "_frustrated_face.png",
     5: "_puzzled_face.png",
   };
-
-  if (feeling < 0 || feeling > 5) {
-    return url;
-  }
 
   const newFace = faceMappings[feeling];
 
