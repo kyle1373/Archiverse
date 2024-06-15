@@ -334,7 +334,7 @@ const convertPost = (data): Post => {
       : null,
     VideoUrl: data.VideoUrl,
     CommunityTitle: data.GameCommunityTitle,
-    CommunityIconUrl: data.GameCommunityIconUri
+    CommunityIconUrl: data.IconUri
       ? getArchiveFromUri(data.GameCommunityIconUri)
       : null,
     GameID: data.GameID,
@@ -444,7 +444,7 @@ const convertCommunity = (data): Community => {
 
   let convertedBadge: "Main Community" | "Announcement Community" | null;
 
-  switch (data.Badge) {
+  switch (data.CommunityBadge) {
     case "Main Community":
       convertedBadge = "Main Community";
       break;
@@ -463,11 +463,11 @@ const convertCommunity = (data): Community => {
     CommunityListIconUrl: data.CommunityListIcon
       ? getArchiveFromUri(data.CommunityListIcon)
       : null,
-    CommunityIconUrl: data.CommunityIconUrl
+    CommunityIconUrl: data.IconUri
       ? getArchiveFromUri(data.IconUri)
       : null,
     Badge: convertedBadge,
-    GameTitle: data.Title,
+    GameTitle: data.Type,
     NumPosts: data.TotalPosts,
     Region: convertedRegion,
   };

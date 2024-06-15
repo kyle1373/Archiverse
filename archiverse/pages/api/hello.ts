@@ -1,9 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import {
   getCommunities,
+  getCommunity,
   getPost,
   getPostReplies,
-  getPosts,
   getUserInfo,
   getUserPosts,
   searchCommunities,
@@ -20,6 +20,6 @@ export default async function handler(
   }
 
   // const data = await getPost({postID: "AYIHAAAEAAAOU4XCvEQWvA"})
-  const data = await searchUsers({query: "1373"});
+  const data = await getCommunity({gameID: "14866558073513315450", titleID: "14866558073513315430"});
   return res.status(200).json(data);
 }
