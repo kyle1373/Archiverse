@@ -11,15 +11,33 @@ import Loading from "@components/Loading";
 import { VscDebugRestart } from "react-icons/vsc";
 import LoadOrRetry from "@components/LoadOrRetry";
 import Wrapper from "@components/Wrapper";
+import { useRef } from "react";
 
 export default function Home() {
-
+  const searchQuery = useRef("");
   const {
     data: communities,
     error: communitiesError,
     fetching: communitiesFetching,
     refetch: refetchCommunities,
   } = useApi<Community[]>("communities");
+
+  const handleSearchChangeText = (event) => {
+    searchQuery.current = event.target.value?.trim().toLowerCase();
+    if (!searchQuery.current) {
+      refetchCommunities();
+    }
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.current.trim()) {
+      const encodedSearch = encodeURIComponent(searchQuery.current);
+      refetchCommunities(`communities?search=${encodedSearch}`);
+    } else {
+      refetchCommunities();
+    }
+  };
 
   return (
     <>
@@ -46,14 +64,23 @@ export default function Home() {
           <h1 className="text-green font-bold sm:text-lg text-sm">
             Communities
           </h1>
-        </div>
-        <div className="flex justify-center items-center">
-          <LoadOrRetry
-            fetching={communitiesFetching}
-            error={communitiesError}
-            refetch={refetchCommunities}
-            className="mt-4"
-          />
+          <form
+            onSubmit={handleSearch}
+            className="flex items-center relative"
+          >
+            <input
+              type="text"
+              onChange={handleSearchChangeText}
+              placeholder="Search Communities"
+              className="rounded-md pl-2 sm:pr-10 pr-4 bg-neutral-200 sm:text-sm py-1 placeholder-neutral-500 text-xs"
+            />
+            <button
+              type="submit"
+              className="absolute right-2 bg-neutral-200 top-1/2 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
+            >
+              <FaSearch className="text-neutral-500 hover:text-neutral-700 sm:text-sm text-xs" />
+            </button>
+          </form>
         </div>
 
         {communities?.map((community) => {
@@ -88,6 +115,20 @@ export default function Home() {
             </Link>
           );
         })}
+        <div className="flex justify-center items-center">
+          <LoadOrRetry
+            fetching={communitiesFetching}
+            error={communitiesError}
+            refetch={refetchCommunities}
+            className="mt-4"
+          />
+
+          {!communitiesFetching && communities?.length === 0 && (
+            <h3 className="text-neutral-400 mt-[15px] mb-[6px] font-light text-base">
+              No communities found.
+            </h3>
+          )}
+        </div>
       </Wrapper>
     </>
   );
