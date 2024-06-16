@@ -68,10 +68,6 @@ export default function Home() {
       setSearchError(error);
       return;
     }
-    if (data?.length === 0) {
-      setCanPullMore(false);
-      return;
-    }
     setSearchedCommunities(data);
   };
 
