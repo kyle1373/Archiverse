@@ -13,13 +13,11 @@ export default function Home() {
   const title_id = params?.title_id;
   const game_id = params?.game_id;
 
-
-
   return (
     <>
       <SEO />
       <Wrapper>
-
+        <div />
       </Wrapper>
     </>
   );
