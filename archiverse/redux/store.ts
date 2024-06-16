@@ -12,14 +12,11 @@ const apiSlice = createSlice({
       const { key, data, append, prepend } = action.payload;
       if (key.startsWith("communities")) {
         mergeCommunityData(state, data);
-        state.data[key] = data;
       } else if (key.startsWith("posts")) {
         mergePostData(state, data);
-        state.data[key] = data;
-      } else {
-        state.data[key] = data;
       }
-      state.errors[key] = null; // Clear error on successful fetch
+      state.data[key] = data;
+      state.errors[key] = null;
     },
     setError: (state, action) => {
       const { key, error } = action.payload;

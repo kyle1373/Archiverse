@@ -175,16 +175,19 @@ export default function Home() {
           }
         )}
 
-        {canPullMore && !fetchingCommunities && !displaySearchResults && (
-          <div className="flex justify-center items-center">
-            <button
-              onClick={fetchNewCommunities}
-              className="md:ml-2 hover:brightness-95 inline-flex justify-center items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-medium py-2 px-8 mt-4 md:mt-0 md:text-base text-small"
-            >
-              <h1 className="">Show More</h1>
-            </button>
-          </div>
-        )}
+        {canPullMore &&
+          !fetchingCommunities &&
+          !displaySearchResults &&
+          !communitiesError && (
+            <div className="flex justify-center items-center">
+              <button
+                onClick={fetchNewCommunities}
+                className="md:ml-2 hover:brightness-95 inline-flex justify-center items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-medium py-2 px-8 mt-4 md:mt-0 md:text-base text-small"
+              >
+                <h1 className="">Show More</h1>
+              </button>
+            </div>
+          )}
         <div className="flex justify-center items-center">
           <LoadOrRetry
             fetching={fetchingCommunities}
@@ -195,8 +198,8 @@ export default function Home() {
 
           {!fetchingCommunities &&
             (displaySearchResults
-              ? searchedCommunities?.length === 0
-              : communityList?.length === 0) && (
+              ? searchedCommunities?.length === 0 && !searchError
+              : communityList?.length === 0 && !communitiesError) && (
               <h3 className="text-neutral-400 mt-[15px] mb-[6px] font-light text-base">
                 No communities found.
               </h3>
