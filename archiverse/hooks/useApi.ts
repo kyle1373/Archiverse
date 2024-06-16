@@ -31,7 +31,7 @@ const useApi = <T>(key: string, customUrl?: string) => {
         setFetching(true)
         await sleep(100)
         setFetching(false)
-        dispatch(setData({ key: realKey, data: allData[realKey] }));
+        dispatch(setData({ key: realKey, data: allData[realKey], append, prepend }));
         return;
       }
 
@@ -51,6 +51,7 @@ const useApi = <T>(key: string, customUrl?: string) => {
       } finally {
         setFetching(false);
       }
+      return {data, error}
     },
     [dispatch, key, fetching, allData]
   );

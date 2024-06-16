@@ -11,21 +11,38 @@ import Loading from "@components/Loading";
 import { VscDebugRestart } from "react-icons/vsc";
 import LoadOrRetry from "@components/LoadOrRetry";
 import Wrapper from "@components/Wrapper";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export default function Home() {
   const searchQuery = useRef("");
+  const currentPage = useRef(1);
+  const [canPullMore, setCanPullMore] = useState(true);
   const {
     data: communities,
     error: communitiesError,
     fetching: communitiesFetching,
     refetch: refetchCommunities,
-  } = useApi<Community[]>("communities");
+  } = useApi<Community[]>(`communities?page=${currentPage.current}`);
+
+  const pullNextPage = async () => {
+    currentPage.current = currentPage.current + 1;
+    const { data, error } = await refetchCommunities(
+      `communities?page=${currentPage.current}`,
+      true
+    );
+    if (data?.length === 0) {
+      setCanPullMore(false);
+    } else if (error) {
+      currentPage.current = currentPage.current - 1;
+    }
+  };
 
   const handleSearchChangeText = (event) => {
     searchQuery.current = event.target.value?.trim().toLowerCase();
     if (!searchQuery.current) {
       refetchCommunities();
+      currentPage.current = 1;
+      setCanPullMore(true);
     }
   };
 
@@ -36,6 +53,8 @@ export default function Home() {
       refetchCommunities(`communities?search=${encodedSearch}`);
     } else {
       refetchCommunities();
+      currentPage.current = 1;
+      setCanPullMore(true);
     }
   };
 
@@ -64,10 +83,7 @@ export default function Home() {
           <h1 className="text-green font-bold sm:text-lg text-sm">
             Communities
           </h1>
-          <form
-            onSubmit={handleSearch}
-            className="flex items-center relative"
-          >
+          <form onSubmit={handleSearch} className="flex items-center relative">
             <input
               type="text"
               onChange={handleSearchChangeText}
@@ -83,11 +99,13 @@ export default function Home() {
           </form>
         </div>
 
-        {communities?.map((community) => {
+        {communities?.map((community, index) => {
           return (
             <Link
               key={"community " + community.GameID + community.TitleID}
-              className="flex py-2 border-b-[1px] border-gray hover:brightness-95 bg-white cursor-pointer"
+              className={`flex py-2 ${
+                index === communities.length - 1 ? "mb-2" : "border-b-[1px]"
+              } border-gray hover:brightness-95 bg-white cursor-pointer`}
               href={"/title/" + community.TitleID + "/" + community.GameID}
             >
               <img
@@ -115,6 +133,17 @@ export default function Home() {
             </Link>
           );
         })}
+
+        {canPullMore && !communitiesFetching && (
+          <div className="flex justify-center items-center">
+            <button
+              onClick={pullNextPage}
+              className="md:ml-2 hover:brightness-95 inline-flex justify-center items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-medium py-2 px-8 mt-4 md:mt-0 md:text-base text-small"
+            >
+              <h1 className="">Show More</h1>
+            </button>
+          </div>
+        )}
         <div className="flex justify-center items-center">
           <LoadOrRetry
             fetching={communitiesFetching}
