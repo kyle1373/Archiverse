@@ -33,7 +33,7 @@ const useApi = <T>(key: string) => {
     if (!data && !fetching) {
       fetchData();
     }
-  }, [key]);
+  }, [key, fetching, dispatch]);
 
   return { data, error, fetching, refetch: fetchData };
 };

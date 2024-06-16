@@ -6,10 +6,13 @@ import { useParams } from "next/navigation";
 import LoadOrRetry from "@components/LoadOrRetry";
 
 export default function Home() {
-  const { title_id, game_id } = useParams<{
+  const params = useParams<{
     title_id: string;
     game_id: string;
   }>();
+
+  const title_id = params?.title_id
+  const game_id = params?.game_id
 
   const {
     data: community,
