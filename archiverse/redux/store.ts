@@ -1,4 +1,6 @@
+// store.js
 import { configureStore, createSlice } from '@reduxjs/toolkit';
+import { mergeCommunityData, mergePostData } from './merge';
 
 const apiSlice = createSlice({
   name: 'api',
@@ -9,6 +11,12 @@ const apiSlice = createSlice({
   reducers: {
     setData: (state, action) => {
       const { key, data } = action.payload;
+      if (key.startsWith('communities')) {
+        mergeCommunityData(state, data);
+      }
+      else if (key.startsWith('posts')) {
+        mergePostData(state, data);
+      }
       state.data[key] = data;
       state.error = null;
     },

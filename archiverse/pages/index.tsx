@@ -3,8 +3,10 @@ import SEO from "@/components/SEO";
 import styles from "./index.module.css";
 import { FaSearch } from "react-icons/fa";
 import Link from "next/link";
+import useApi from "@hooks/useApi";
 
 export default function Home() {
+  const { data: communities, error: communitiesError } = useApi("communities");
   return (
     <>
       <SEO />
@@ -53,6 +55,7 @@ export default function Home() {
               <h1 className="text-green font-semibold sm:text-lg text-sm">
                 Communities
               </h1>
+              {JSON.stringify(communities)}
             </div>
           </div>
         </div>
