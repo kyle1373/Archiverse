@@ -7,10 +7,18 @@ import useApi from "@hooks/useApi";
 import { Community } from "@server/database";
 import { BsFillPeopleFill, BsGlobe } from "react-icons/bs";
 import { numberWithCommas } from "@utils/utils";
+import Loading from "@components/Loading";
+import { VscDebugRestart } from "react-icons/vsc";
+import LoadOrRetry from "@components/LoadOrRetry";
 
 export default function Home() {
-  const { data: communities, error: communitiesError } =
-    useApi<Community[]>("communities");
+  const {
+    data: communities,
+    error: communitiesError,
+    fetching: communitiesFetching,
+    refetch: refetchCommunities,
+  } = useApi<Community[]>("communities");
+
   return (
     <>
       <SEO />
@@ -60,6 +68,15 @@ export default function Home() {
                 Communities
               </h1>
             </div>
+            <div className="flex justify-center items-center">
+              <LoadOrRetry
+                fetching={communitiesFetching}
+                error={communitiesError}
+                refetch={refetchCommunities}
+                className="mt-4"
+              />
+            </div>
+
             {communities?.map((community) => {
               return (
                 <div

@@ -23,6 +23,8 @@ const validateQueryParams = (query: QueryParams) => {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+
+
   const { search, page } = req.query;
 
   const queryParams: QueryParams = {
