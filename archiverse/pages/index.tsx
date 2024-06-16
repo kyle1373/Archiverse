@@ -3,7 +3,6 @@ import SEO from "@/components/SEO";
 import styles from "./index.module.css";
 import { FaSearch } from "react-icons/fa";
 import Link from "next/link";
-import useApi from "@hooks/useApi";
 import { Community } from "@server/database";
 import { BsFillPeopleFill, BsGlobe } from "react-icons/bs";
 import { numberWithCommas } from "@utils/utils";
@@ -11,50 +10,89 @@ import Loading from "@components/Loading";
 import { VscDebugRestart } from "react-icons/vsc";
 import LoadOrRetry from "@components/LoadOrRetry";
 import Wrapper from "@components/Wrapper";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { queryAPI } from "@utils/queryAPI";
 
 export default function Home() {
   const searchQuery = useRef("");
   const currentPage = useRef(1);
-  const [canPullMore, setCanPullMore] = useState(true);
-  const {
-    data: communities,
-    error: communitiesError,
-    fetching: communitiesFetching,
-    refetch: refetchCommunities,
-  } = useApi<Community[]>(`communities?page=${currentPage.current}`);
 
-  const pullNextPage = async () => {
-    currentPage.current = currentPage.current + 1;
-    const { data, error } = await refetchCommunities(
-      `communities?page=${currentPage.current}`,
-      true
+  const [communityList, setCommunityList] = useState<Community[]>([]);
+  const [searchedCommunities, setSearchedCommunities] = useState<Community[]>(
+    []
+  );
+  const [displaySearchResults, setDisplaySearchResults] =
+    useState<boolean>(false);
+  const [canPullMore, setCanPullMore] = useState(true);
+  const [searchError, setSearchError] = useState<string>(null);
+  const [communitiesError, setCommunitiesError] = useState(null);
+  const [fetchingCommunities, setFetchingCommunities] = useState(false);
+
+  const fetchNewCommunities = async () => {
+    if (fetchingCommunities) {
+      return;
+    }
+    setFetchingCommunities(true);
+    setCommunitiesError(null);
+    const { data, error } = await queryAPI<Community[]>(
+      `communities?page=${currentPage.current}`
     );
+    setFetchingCommunities(false);
+    if (error) {
+      console.log(error);
+      setCommunitiesError(error);
+      return;
+    }
     if (data?.length === 0) {
       setCanPullMore(false);
-    } else if (error) {
-      currentPage.current = currentPage.current - 1;
+      return;
     }
+    setCommunityList((value) => [...value, ...data]);
+    currentPage.current = currentPage.current + 1;
   };
+
+  const fetchSearchCommunities = async () => {
+    if (fetchingCommunities) {
+      return;
+    }
+    setSearchedCommunities([]);
+    setFetchingCommunities(true);
+    setSearchError(null);
+    const encodedSearch = encodeURIComponent(searchQuery.current);
+    const { data, error } = await queryAPI<Community[]>(
+      `communities?search=${encodedSearch}`
+    );
+    setFetchingCommunities(false);
+    if (error) {
+      console.log(error);
+      setSearchError(error);
+      return;
+    }
+    if (data?.length === 0) {
+      setCanPullMore(false);
+      return;
+    }
+    setSearchedCommunities(data);
+  };
+
+  useEffect(() => {
+    fetchNewCommunities();
+  }, []);
 
   const handleSearchChangeText = (event) => {
     searchQuery.current = event.target.value?.trim().toLowerCase();
     if (!searchQuery.current) {
-      refetchCommunities();
-      currentPage.current = 1;
-      setCanPullMore(true);
+      setDisplaySearchResults(false);
     }
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.current.trim()) {
-      const encodedSearch = encodeURIComponent(searchQuery.current);
-      refetchCommunities(`communities?search=${encodedSearch}`);
+      setDisplaySearchResults(true);
+      fetchSearchCommunities();
     } else {
-      refetchCommunities();
-      currentPage.current = 1;
-      setCanPullMore(true);
+      setDisplaySearchResults(false);
     }
   };
 
@@ -99,45 +137,52 @@ export default function Home() {
           </form>
         </div>
 
-        {communities?.map((community, index) => {
-          return (
-            <Link
-              key={"community " + community.GameID + community.TitleID}
-              className={`flex py-2 ${
-                index === communities.length - 1 ? "mb-2" : "border-b-[1px]"
-              } border-gray hover:brightness-95 bg-white cursor-pointer`}
-              href={"/title/" + community.TitleID + "/" + community.GameID}
-            >
-              <img
-                src={
-                  community.CommunityIconUrl ?? community.CommunityListIconUrl
-                }
-                alt={community.GameTitle + " Icon"}
-                className="w-[54px] h-[54px] rounded-md border-gray border-[1px] mr-4"
-              />
-              <div>
-                <h2 className="font-bold sm:text-base text-sm mt-1">
-                  {community.CommunityTitle}
-                </h2>
-                <div className="flex mt-1">
-                  <h3 className="flex items-center justify-center font-light text-xs sm:text-sm text-neutral-500 mr-4">
-                    <BsFillPeopleFill className="mr-1 mb-[.5px]" />
-                    {numberWithCommas(community.NumPosts)}
-                  </h3>
-                  <h3 className="flex items-center justify-center font-light text-xs sm:text-sm text-neutral-500">
-                    <BsGlobe className="mr-1" />
-                    {community.Region}
-                  </h3>
+        {(displaySearchResults ? searchedCommunities : communityList)?.map(
+          (community, index) => {
+            return (
+              <Link
+                key={"community " + community.GameID + community.TitleID}
+                className={`flex py-2 ${
+                  index ===
+                  (displaySearchResults ? searchedCommunities : communityList)
+                    .length -
+                    1
+                    ? "mb-2"
+                    : "border-b-[1px]"
+                } border-gray hover:brightness-95 bg-white cursor-pointer`}
+                href={"/title/" + community.TitleID + "/" + community.GameID}
+              >
+                <img
+                  src={
+                    community.CommunityIconUrl ?? community.CommunityListIconUrl
+                  }
+                  alt={community.GameTitle + " Icon"}
+                  className="w-[54px] h-[54px] rounded-md border-gray border-[1px] mr-4"
+                />
+                <div>
+                  <h2 className="font-bold sm:text-base text-sm mt-1">
+                    {community.CommunityTitle}
+                  </h2>
+                  <div className="flex mt-1">
+                    <h3 className="flex items-center justify-center font-light text-xs sm:text-sm text-neutral-500 mr-4">
+                      <BsFillPeopleFill className="mr-1 mb-[.5px]" />
+                      {numberWithCommas(community.NumPosts)}
+                    </h3>
+                    <h3 className="flex items-center justify-center font-light text-xs sm:text-sm text-neutral-500">
+                      <BsGlobe className="mr-1" />
+                      {community.Region}
+                    </h3>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          );
-        })}
+              </Link>
+            );
+          }
+        )}
 
-        {canPullMore && !communitiesFetching && (
+        {canPullMore && !fetchingCommunities && !displaySearchResults && (
           <div className="flex justify-center items-center">
             <button
-              onClick={pullNextPage}
+              onClick={fetchNewCommunities}
               className="md:ml-2 hover:brightness-95 inline-flex justify-center items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-medium py-2 px-8 mt-4 md:mt-0 md:text-base text-small"
             >
               <h1 className="">Show More</h1>
@@ -146,17 +191,20 @@ export default function Home() {
         )}
         <div className="flex justify-center items-center">
           <LoadOrRetry
-            fetching={communitiesFetching}
-            error={communitiesError}
-            refetch={refetchCommunities}
+            fetching={fetchingCommunities}
+            error={displaySearchResults ? searchError : communitiesError}
+            refetch={fetchNewCommunities}
             className="mt-4"
           />
 
-          {!communitiesFetching && communities?.length === 0 && (
-            <h3 className="text-neutral-400 mt-[15px] mb-[6px] font-light text-base">
-              No communities found.
-            </h3>
-          )}
+          {!fetchingCommunities &&
+            (displaySearchResults
+              ? searchedCommunities?.length === 0
+              : communityList?.length === 0) && (
+              <h3 className="text-neutral-400 mt-[15px] mb-[6px] font-light text-base">
+                No communities found.
+              </h3>
+            )}
         </div>
       </Wrapper>
     </>

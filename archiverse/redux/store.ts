@@ -12,22 +12,10 @@ const apiSlice = createSlice({
       const { key, data, append, prepend } = action.payload;
       if (key.startsWith("communities")) {
         mergeCommunityData(state, data);
-        if (append) {
-          state.data[key] = [...(state.data[key] || []), ...data];
-        } else if (prepend) {
-          state.data[key] = [...data, ...(state.data[key] || [])];
-        } else {
-          state.data[key] = data;
-        }
+        state.data[key] = data;
       } else if (key.startsWith("posts")) {
         mergePostData(state, data);
-        if (append) {
-          state.data[key] = [...(state.data[key] || []), ...data];
-        } else if (prepend) {
-          state.data[key] = [...data, ...(state.data[key] || [])];
-        } else {
-          state.data[key] = data;
-        }
+        state.data[key] = data;
       } else {
         state.data[key] = data;
       }
