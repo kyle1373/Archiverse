@@ -1,4 +1,3 @@
-// hooks/useApi.js
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setData, setError } from "../redux/store";
@@ -6,11 +5,11 @@ import { setData, setError } from "../redux/store";
 const useApi = (key) => {
   const dispatch = useDispatch();
   const data = useSelector((state) => (state as any).api.data[key]);
-  const error = useSelector((state) => (state as any).error);
+  const error = useSelector((state) => (state as any).api.error);
 
   useEffect(() => {
-    const fetchDataWithCache = async () => {
-      if (!data) {
+    if (!data) {
+      const fetchDataWithCache = async () => {
         console.log("Fetching " + key);
         try {
           const response = await fetch(`/api/${key}`);
@@ -22,12 +21,13 @@ const useApi = (key) => {
         } catch (err) {
           dispatch(setError(err.message));
         }
-      } else {
-        console.log("Cache hit for " + key + "!");
-      }
-    };
-    fetchDataWithCache();
-  }, [data, dispatch, key]);
+      };
+
+      fetchDataWithCache();
+    } else {
+      console.log("Cache hit for " + key + "!");
+    }
+  }, [dispatch, key, data]);
 
   return { data, error };
 };
