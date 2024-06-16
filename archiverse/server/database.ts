@@ -55,7 +55,7 @@ export const getCommunityPosts = async ({
   beforeDateTime,
   gameID,
   titleID,
-  limit = 20,
+  limit = 25,
   page = 1,
 }: {
   sortMode: "recent" | "popular";
@@ -147,7 +147,7 @@ export const searchCommunities = async ({
 };
 
 export const getCommunities = async ({
-  limit = 20,
+  limit = 25,
   page = 1,
 }: {
   limit?: number;

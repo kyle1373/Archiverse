@@ -6,6 +6,7 @@ import Link from "next/link";
 import useApi from "@hooks/useApi";
 import { Community } from "@server/database";
 import { BsFillPeopleFill, BsGlobe } from "react-icons/bs";
+import { numberWithCommas } from "@utils/utils";
 
 export default function Home() {
   const { data: communities, error: communitiesError } =
@@ -36,7 +37,7 @@ export default function Home() {
           </div>
           {/* Right Column */}
           <div className="md:w-2/3 bg-white p-4 border-[1px] rounded-md border-gray items-center md:mt-12">
-            <h2 className="text-xl font-semibold mb-4 text-center text-green mt-6">
+            <h2 className="text-xl font-bold mb-4 text-center text-green mt-6">
               Welcome to Archiverse!
             </h2>
             <div className="flex justify-center mt-8">
@@ -55,7 +56,7 @@ export default function Home() {
               17TB of data.
             </p>
             <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green">
-              <h1 className="text-green font-semibold sm:text-lg text-sm">
+              <h1 className="text-green font-bold sm:text-lg text-sm">
                 Communities
               </h1>
             </div>
@@ -74,15 +75,15 @@ export default function Home() {
                     className="w-[54px] h-[54px] rounded-md border-gray border-[1px] mr-4"
                   />
                   <div>
-                    <h2 className="font-bold text-base mt-1">
+                    <h2 className="font-bold sm:text-base text-sm mt-1">
                       {community.CommunityTitle}
                     </h2>
                     <div className="flex mt-1">
-                      <h3 className="flex items-center justify-center font-light text-sm text-neutral-500 mr-4">
+                      <h3 className="flex items-center justify-center font-light text-xs sm:text-sm text-neutral-500 mr-4">
                         <BsFillPeopleFill className="mr-1 mb-[.5px]" />
-                        {community.NumPosts}
+                        {numberWithCommas(community.NumPosts)}
                       </h3>
-                      <h3 className="flex items-center justify-center font-light text-sm text-neutral-500">
+                      <h3 className="flex items-center justify-center font-light text-xs sm:text-sm text-neutral-500">
                         <BsGlobe className="mr-1" />
                         {community.Region}
                       </h3>
