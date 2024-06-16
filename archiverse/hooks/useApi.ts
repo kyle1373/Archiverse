@@ -2,10 +2,12 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setData, setError } from "../redux/store";
 
-const useApi = (key) => {
+const useApi = <T>(key: string) => {
   const dispatch = useDispatch();
-  const data = useSelector((state) => (state as any).api.data[key]);
-  const error = useSelector((state) => (state as any).api.error);
+  const data = useSelector(
+    (state) => (state as any).api.data[key] as T | undefined
+  );
+  const error = useSelector((state) => (state as any).api.error) as string | undefined;
 
   useEffect(() => {
     if (!data) {

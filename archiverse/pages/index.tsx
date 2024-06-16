@@ -4,9 +4,12 @@ import styles from "./index.module.css";
 import { FaSearch } from "react-icons/fa";
 import Link from "next/link";
 import useApi from "@hooks/useApi";
+import { Community } from "@server/database";
+import { BsFillPeopleFill, BsGlobe } from "react-icons/bs";
 
 export default function Home() {
-  const { data: communities, error: communitiesError } = useApi("communities");
+  const { data: communities, error: communitiesError } =
+    useApi<Community[]>("communities");
   return (
     <>
       <SEO />
@@ -55,8 +58,39 @@ export default function Home() {
               <h1 className="text-green font-semibold sm:text-lg text-sm">
                 Communities
               </h1>
-              {JSON.stringify(communities)}
             </div>
+            {communities?.map((community) => {
+              return (
+                <div
+                  key={"community " + community.GameID + community.TitleID}
+                  className="flex py-2 border-b-[1px] border-gray hover:brightness-95 bg-white"
+                >
+                  <img
+                    src={
+                      community.CommunityIconUrl ??
+                      community.CommunityListIconUrl
+                    }
+                    alt={community.GameTitle + " Icon"}
+                    className="w-[54px] h-[54px] rounded-md border-gray border-[1px] mr-4"
+                  />
+                  <div>
+                    <h2 className="font-bold text-base mt-1">
+                      {community.CommunityTitle}
+                    </h2>
+                    <div className="flex mt-1">
+                      <h3 className="flex items-center justify-center font-light text-sm text-neutral-500 mr-4">
+                        <BsFillPeopleFill className="mr-1 mb-[.5px]" />
+                        {community.NumPosts}
+                      </h3>
+                      <h3 className="flex items-center justify-center font-light text-sm text-neutral-500">
+                        <BsGlobe className="mr-1" />
+                        {community.Region}
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </main>
