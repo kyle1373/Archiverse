@@ -11,8 +11,8 @@ export default function Home() {
     game_id: string;
   }>();
 
-  const title_id = params?.title_id
-  const game_id = params?.game_id
+  const title_id = params?.title_id;
+  const game_id = params?.game_id;
 
   const {
     data: community,

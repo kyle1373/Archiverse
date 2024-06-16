@@ -13,6 +13,7 @@ import LoadOrRetry from "@components/LoadOrRetry";
 import Wrapper from "@components/Wrapper";
 
 export default function Home() {
+
   const {
     data: communities,
     error: communitiesError,
