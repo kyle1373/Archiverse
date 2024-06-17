@@ -444,7 +444,7 @@ export type Community = {
   GameID: string;
   TitleID: string;
   CommunityTitle: string;
-  CommunityListIconUrl: string | null;
+  CommunityBanner: string | null;
   CommunityIconUrl: string;
   Badge: "Main Community" | "Announcement Community" | null;
   GameTitle: string;
@@ -487,7 +487,7 @@ const convertCommunity = (data): Community => {
     GameID: data.GameId,
     TitleID: data.TitleId,
     CommunityTitle: data.Title,
-    CommunityListIconUrl: data.CommunityListIcon
+    CommunityBanner: data.CommunityListIcon
       ? getArchiveFromUri(data.CommunityListIcon)
       : null,
     CommunityIconUrl: data.IconUri ? getArchiveFromUri(data.IconUri) : null,

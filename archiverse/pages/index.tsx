@@ -150,7 +150,7 @@ export default function Home() {
               >
                 <img
                   src={
-                    community.CommunityIconUrl ?? community.CommunityListIconUrl
+                    community.CommunityIconUrl ?? community.CommunityBanner
                   }
                   alt={community.GameTitle + " Icon"}
                   className="w-[54px] h-[54px] rounded-md border-gray border-[1px] mr-4"
