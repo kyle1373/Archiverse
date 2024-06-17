@@ -75,12 +75,16 @@ export const getCommunityPosts = async ({
     );
 
   if (beforeDateTime) {
-    const dateTimeMillis = beforeDateTime.getTime();
-    query.lt("PostedDate", dateTimeMillis);
+    const dateTimeSeconds = Math.ceil(beforeDateTime.getTime() / 1000);
+    query.lt("PostedDate", dateTimeSeconds);
+    if (sortMode === "popular") {
+      const fourDaysBeforeSeconds = dateTimeSeconds - 4 * 24 * 60 * 60;
+      query.gte("PostedDate", fourDaysBeforeSeconds);
+    }
   }
 
   if (gameID && titleID) {
-    query.eq("gameID", gameID).eq("titleID", titleID);
+    query.eq("GameId", gameID).eq("TitleId", titleID);
   }
 
   query.range(start, end);
@@ -341,7 +345,7 @@ const convertPost = (data): Post => {
     TitleID: data.IconID,
     IsSpoiler: data.IsSpoiler,
     IsPlayed: data.IsPlayed,
-    Date: new Date(data.PostedDate),
+    Date: new Date(data.PostedDate * 1000),
   };
 
   return post;
@@ -407,7 +411,7 @@ const convertReply = (data): Reply => {
     ReplyingToID: data.InReplyToId,
     IsSpoiler: data.IsSpoiler,
     IsPlayed: data.IsPlayed,
-    Date: new Date(data.PostedDate),
+    Date: new Date(data.PostedDate * 1000),
   };
 
   return reply;

@@ -1,8 +1,7 @@
-import store from '../redux/store';
-import { setData, setError } from '../redux/store';
+import store from "../redux/store";
+import { setData, setError } from "../redux/store";
 
-
-type FetchResult<T> = {data: T | null, error: string | null};
+type FetchResult<T> = { data: T | null; error: string | null };
 
 // Function to fetch data from an API endpoint and cache it
 export const queryAPI = async <T>(url: string): Promise<FetchResult<T>> => {
@@ -12,7 +11,7 @@ export const queryAPI = async <T>(url: string): Promise<FetchResult<T>> => {
   if (cachedData) {
     // Return cached data if available
     console.log(`Cache hit for ${url}`);
-    return {data: cachedData, error: null};
+    return { data: cachedData, error: null };
   }
 
   console.log(`Fetching ${url}`);
@@ -22,14 +21,23 @@ export const queryAPI = async <T>(url: string): Promise<FetchResult<T>> => {
   try {
     const response = await fetch(`/api/${url}`);
     if (!response.ok) {
-      throw new Error(`Failed to fetch ${url}`);
+      var message = response.statusText;
+      try {
+        const errorResult = await response.json();
+        if (errorResult.error) {
+          message = errorResult.error;
+        }
+      } catch (e) {
+      } finally {
+        throw new Error(`Failed to fetch ${url}: ${message}`);
+      }
     }
     const result = (await response.json()) as T;
     store.dispatch(setData({ key: url, data: result }));
-    return {data: result, error: null};
+    return { data: result, error: null };
   } catch (err) {
     store.dispatch(setError({ key: url, error: err.message }));
-    console.log(err)
-    return {data: null, error: err.message};
+    console.log(err.message);
+    return { data: null, error: err.message };
   }
 };
