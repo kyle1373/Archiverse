@@ -50,17 +50,19 @@ export const getPostReplies = async ({
   return replies;
 };
 
-export const getCommunityPosts = async ({
+export const getPosts = async ({
   sortMode,
   beforeDateTime,
   gameID,
   titleID,
+  onlyDrawings = false,
   limit = 25,
   page = 1,
 }: {
   sortMode: "recent" | "popular";
   gameID?: string;
   titleID?: string;
+  onlyDrawings?: boolean;
   beforeDateTime?: Date;
   limit?: number;
   page?: number;
@@ -81,6 +83,10 @@ export const getCommunityPosts = async ({
       const fourDaysBeforeSeconds = dateTimeSeconds - 4 * 24 * 60 * 60;
       query.gte("PostedDate", fourDaysBeforeSeconds);
     }
+  }
+
+  if (onlyDrawings) {
+    query.neq("ImageUri", "");
   }
 
   if (gameID && titleID) {
@@ -359,13 +365,13 @@ const convertPost = (data): Post => {
     ScreenshotUrl: data.ScreenShotUri
       ? getArchiveFromUri(data.ScreenShotUri)
       : null,
-    VideoUrl: data.VideoUrl,
+    VideoUrl: data.VideoUrl === "" ? null: data.VideoUrl,
     CommunityTitle: data.GameCommunityTitle,
     CommunityIconUrl: data.IconUri
       ? getArchiveFromUri(data.GameCommunityIconUri)
       : null,
-    GameID: data.GameID,
-    TitleID: data.IconID,
+    GameID: data.GameId,
+    TitleID: data.TitleId,
     IsSpoiler: data.IsSpoiler,
     IsPlayed: data.IsPlayed,
     Date: new Date(data.PostedDate * 1000),
