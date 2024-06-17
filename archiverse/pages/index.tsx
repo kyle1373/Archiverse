@@ -104,7 +104,7 @@ export default function Home() {
             src={"/welcome-image.png"}
             alt={"welcome image"}
             width={430}
-            height={204}
+            height={137}
           />
         </div>
         <p className="text-sm mt-6 text-neutral-700">
