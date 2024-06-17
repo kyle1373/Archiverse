@@ -1,14 +1,25 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { Community, getCommunities, searchCommunities } from "@server/database";
+import {
+  Community,
+  getCommunities,
+  getRelatedCommunities,
+  searchCommunities,
+} from "@server/database";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type QueryParams = {
-    search?: string;
+  search?: string;
+  title_id?: string;
   page?: string | number;
 };
 
 const validateQueryParams = (query: QueryParams) => {
   if (query.search && typeof query.search !== "string") {
+    return false;
+  }
+
+  const parsedTitleId = parseInt(query.title_id);
+  if (query.title_id && isNaN(parsedTitleId)) {
     return false;
   }
 
@@ -23,13 +34,12 @@ const validateQueryParams = (query: QueryParams) => {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-
-    
-  const { search, page } = req.query;
+  const { search, page, title_id } = req.query;
 
   const queryParams: QueryParams = {
     search: search as string,
     page: page as string | number,
+    title_id: title_id as string,
   };
 
   if (!validateQueryParams(queryParams)) {
@@ -41,6 +51,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   var communities: Community[];
   if (search) {
     communities = await searchCommunities({ query: search as string });
+  } else if (title_id) {
+    communities = await getRelatedCommunities({ titleID: title_id as string });
   } else {
     communities = await getCommunities({ page: pageNumber });
   }

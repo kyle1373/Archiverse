@@ -128,7 +128,6 @@ export const searchUsers = async ({
   return data;
 };
 
-// TODO
 export const searchCommunities = async ({
   query,
 }: {
@@ -167,6 +166,30 @@ export const getCommunities = async ({
     )
     .order("TotalPosts", { ascending: false })
     .range(start, end);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const communities: Community[] = [];
+
+  data?.map((value) => communities.push(convertCommunity(value)));
+
+  return communities;
+};
+
+export const getRelatedCommunities = async ({
+  titleID,
+}: {
+  titleID?: string;
+}): Promise<Community[]> => {
+  const { data, error } = await supabaseAdmin
+    .from("Games")
+    .select(
+      "GameId, TitleId, Title, CommunityBadge, CommunityListIcon, IconUri, Type, TotalPosts, ViewRegion"
+    )
+    .eq("TitleId", titleID)
+    .order("TotalPosts", { ascending: false });
 
   if (error) {
     throw new Error(error.message);

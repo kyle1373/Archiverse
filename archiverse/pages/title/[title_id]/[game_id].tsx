@@ -11,7 +11,7 @@ export default function Home({ title_id, game_id }) {
     useDate: boolean;
   }>({ date: new Date(Date.UTC(2017, 10, 9)), useDate: false });
 
-  const [popularSelected, setPopularSelected] = useState(true);
+  const [popularSelected, setPopularSelected] = useState(false);
 
   const [community, setCommunity] = useState<{
     data: Community;
@@ -78,7 +78,7 @@ export default function Home({ title_id, game_id }) {
       page = page - 1;
     }
 
-    
+
     if (error) {
       setPosts((prevState) => ({
         ...prevState,
