@@ -29,7 +29,7 @@ const validateQueryParams = (query: QueryParams): string[] => {
     errors.push("If only_drawings is true, then sort_mode must be 'popular'.");
   }
 
-  if (before_datetime !== undefined && isNaN(Date.parse(before_datetime))) {
+  if (before_datetime && isNaN(Date.parse(before_datetime))) {
     errors.push("Invalid before_datetime. Must be a valid date string.");
   }
 
@@ -39,6 +39,10 @@ const validateQueryParams = (query: QueryParams): string[] => {
 
   if (title_id && (typeof title_id !== "string" || title_id.length === 0)) {
     errors.push("Invalid title_id. Must be a non-empty string.");
+  }
+
+  if (before_datetime && (!game_id || !title_id)){
+    errors.push("If a before_datetime is set, a title_id and game_id must also be set.");
   }
 
   if (page && isNaN(Number(page))) {
