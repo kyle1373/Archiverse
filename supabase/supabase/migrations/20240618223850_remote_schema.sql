@@ -16,6 +16,10 @@ ALTER SCHEMA "public" OWNER TO "postgres";
 
 COMMENT ON SCHEMA "public" IS 'standard public schema';
 
+CREATE EXTENSION IF NOT EXISTS "hypopg" WITH SCHEMA "extensions";
+
+CREATE EXTENSION IF NOT EXISTS "index_advisor" WITH SCHEMA "extensions";
+
 CREATE EXTENSION IF NOT EXISTS "pg_graphql" WITH SCHEMA "graphql";
 
 CREATE EXTENSION IF NOT EXISTS "pg_stat_statements" WITH SCHEMA "extensions";
@@ -76,8 +80,7 @@ ALTER FUNCTION "public"."game_posts_per_month"("gameid" "text", "ref" "refcursor
 
 CREATE OR REPLACE FUNCTION "public"."search_communities"("search_query" "text") RETURNS TABLE("GameId" "text", "TitleId" "text", "Title" "text", "CommunityBadge" "text", "CommunityListIcon" "text", "IconUri" "text", "Type" "text", "TotalPosts" integer, "ViewRegion" integer)
     LANGUAGE "plpgsql"
-    AS $$
-BEGIN
+    AS $$BEGIN
     RETURN QUERY
     SELECT 
         g."GameId", 
@@ -93,17 +96,16 @@ BEGIN
     WHERE g."Title" ILIKE '%' || search_query || '%'
     OR g."Type" ILIKE '%' || search_query || '%'
     ORDER BY similarity(g."Type", search_query) DESC
-    LIMIT 20;
-END;
-$$;
+    LIMIT 35;
+END;$$;
 
 ALTER FUNCTION "public"."search_communities"("search_query" "text") OWNER TO "postgres";
 
-CREATE OR REPLACE FUNCTION "public"."search_users_by_nnid"("search_query" "text") RETURNS TABLE("NNID" "text", "Bio" "text", "IconUri" "text", "ScreenName" "text")
+CREATE OR REPLACE FUNCTION "public"."search_users_by_nnid"("search_query" "text") RETURNS TABLE("NNID" "text", "Bio" "text", "Birthday" "text", "Country" "text", "FollowerCount" integer, "FollowingCount" integer, "FriendsCount" integer, "GameSkill" integer, "IconUri" "text", "IsBirthdayHidden" boolean, "IsError" boolean, "IsHidden" boolean, "ScreenName" "text", "SidebarCoverUrl" "text", "TotalPosts" integer, "HideRequested" boolean)
     LANGUAGE "plpgsql"
     AS $$BEGIN
     RETURN QUERY
-    SELECT u."NNID", u."Bio", u."IconUri", u."ScreenName"
+    SELECT u."NNID", u."Bio", u."Birthday", u."Country", u."FollowerCount", u."FollowingCount", u."FriendsCount", u."GameSkill", u."IconUri", u."IsBirthdayHidden", u."IsError", u."IsHidden", u."ScreenName", u."SidebarCoverUrl", u."TotalPosts", u."HideRequested"
     FROM "Users" u
     WHERE u."NNID" ILIKE '%' || search_query || '%'
     ORDER BY similarity(u."NNID", search_query) DESC
@@ -184,7 +186,8 @@ CREATE TABLE IF NOT EXISTS "public"."Posts" (
     "Title" "text",
     "TitleId" "text",
     "VideoUrl" "text",
-    "WarcLocation" "text"
+    "WarcLocation" "text",
+    "HideRequested" boolean DEFAULT false NOT NULL
 );
 
 ALTER TABLE "public"."Posts" OWNER TO "postgres";
@@ -212,7 +215,8 @@ CREATE TABLE IF NOT EXISTS "public"."Replies" (
     "Title" "text",
     "TitleId" "text",
     "VideoUrl" "text",
-    "WarcLocation" "text"
+    "WarcLocation" "text",
+    "HideRequested" boolean DEFAULT false NOT NULL
 );
 
 ALTER TABLE "public"."Replies" OWNER TO "postgres";
@@ -239,7 +243,8 @@ CREATE TABLE IF NOT EXISTS "public"."Users" (
     "TotalPosts" integer NOT NULL,
     "WarcLocation" "text",
     "TotalDeletedPosts" integer DEFAULT 0 NOT NULL,
-    "TotalReplies" integer DEFAULT 0 NOT NULL
+    "TotalReplies" integer DEFAULT 0 NOT NULL,
+    "HideRequested" boolean DEFAULT false NOT NULL
 );
 
 ALTER TABLE "public"."Users" OWNER TO "postgres";
@@ -274,6 +279,8 @@ ALTER TABLE ONLY "public"."Replies"
 ALTER TABLE ONLY "public"."Users"
     ADD CONSTRAINT "Users_pkey" PRIMARY KEY ("NNID");
 
+CREATE INDEX "Games_TitleId_idx" ON "public"."Games" USING "btree" ("TitleId");
+
 CREATE INDEX "Games_TotalPosts_desc_idx" ON "public"."Games" USING "btree" ("TotalPosts" DESC);
 
 CREATE INDEX "Games_TotalPosts_idx" ON "public"."Games" USING "btree" ("TotalPosts");
@@ -283,6 +290,8 @@ CREATE INDEX "Posts_EmpathyCount_idx_desc" ON "public"."Posts" USING "btree" ("E
 CREATE INDEX "Posts_GameIdTitleId_idx" ON "public"."Posts" USING "btree" ("GameId", "TitleId");
 
 CREATE INDEX "Posts_NNID_idx" ON "public"."Posts" USING "btree" ("NNID");
+
+CREATE INDEX "Posts_PostedDate_EmpathyCount_idx" ON "public"."Posts" USING "btree" ("PostedDate" DESC, "EmpathyCount" DESC);
 
 CREATE INDEX "Posts_PostedDate_idx" ON "public"."Posts" USING "btree" ("PostedDate");
 
@@ -300,7 +309,19 @@ CREATE INDEX "games_title_idx" ON "public"."Games" USING "gin" ("Title" "public"
 
 CREATE INDEX "games_type_idx" ON "public"."Games" USING "gin" ("Type" "public"."gin_trgm_ops");
 
+CREATE INDEX "idx_posts_drawing_filter_sort" ON "public"."Posts" USING "btree" ("ImageUri", "EmpathyCount" DESC, "GameId", "TitleId");
+
+CREATE INDEX "idx_posts_drawing_filter_sort_datetime_desc" ON "public"."Posts" USING "btree" ("ImageUri", "EmpathyCount" DESC, "PostedDate" DESC, "GameId", "TitleId");
+
+CREATE INDEX "idx_posts_drawing_filter_sort_datetime_desc_without_community" ON "public"."Posts" USING "btree" ("ImageUri", "EmpathyCount" DESC, "PostedDate" DESC);
+
+CREATE INDEX "idx_posts_empathy_filter_sort_datetime_desc_any_post" ON "public"."Posts" USING "btree" ("PostedDate" DESC, "EmpathyCount" DESC);
+
+CREATE INDEX "idx_posts_gameid_titleid_empathycount" ON "public"."Posts" USING "btree" ("GameId", "TitleId", "EmpathyCount" DESC);
+
 CREATE INDEX "nnid_users_idx" ON "public"."Users" USING "gin" ("NNID" "public"."gin_trgm_ops");
+
+CREATE INDEX "posts_common_idx" ON "public"."Posts" USING "btree" ("GameId", "TitleId", "PostedDate" DESC, "EmpathyCount" DESC);
 
 ALTER TABLE ONLY "public"."Replies"
     ADD CONSTRAINT "Replies_InReplyToId_fkey" FOREIGN KEY ("InReplyToId") REFERENCES "public"."Posts"("Id") ON UPDATE CASCADE ON DELETE CASCADE;

@@ -4,7 +4,7 @@ export const getPost = async ({ postID }): Promise<Post> => {
   const { data, error } = await supabaseAdmin
     .from("Posts")
     .select(
-      "Id, EmpathyCount, Feeling, GameCommunityIconUri, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ReplyCount, ScreenName, ScreenShotUri, Text, Title, TitleId, VideoUrl, NNID"
+      "Id, EmpathyCount, Feeling, GameCommunityIconUri, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ReplyCount, ScreenName, ScreenShotUri, Text, Title, TitleId, VideoUrl, NNID, HideRequested"
     )
     .eq("Id", postID)
     .single();
@@ -33,7 +33,7 @@ export const getPostReplies = async ({
   const { data, error } = await supabaseAdmin
     .from("Replies")
     .select(
-      "Id, EmpathyCount, Feeling, GameCommunityIconUri, InReplyToId, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ScreenName, ScreenShotUri, Text, TitleId, NNID"
+      "Id, EmpathyCount, Feeling, GameCommunityIconUri, InReplyToId, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ScreenName, ScreenShotUri, Text, TitleId, NNID, HideRequested"
     )
     .eq("InReplyToId", postID)
     .range(start, end)
@@ -73,7 +73,7 @@ export const getPosts = async ({
   const query = supabaseAdmin
     .from("Posts")
     .select(
-      "Id, EmpathyCount, Feeling, GameCommunityIconUri, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ReplyCount, ScreenName, ScreenShotUri, Text, Title, TitleId, VideoUrl, NNID"
+      "Id, EmpathyCount, Feeling, GameCommunityIconUri, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ReplyCount, ScreenName, ScreenShotUri, Text, Title, TitleId, VideoUrl, NNID, HideRequested"
     );
 
   if (beforeDateTime) {
@@ -235,7 +235,7 @@ export const getUserInfo = async ({ NNID }: { NNID: string }) => {
   const { data, error } = await supabaseAdmin
     .from("Users")
     .select(
-      "NNID, Bio, Birthday, Country, FollowerCount, FollowingCount, FriendsCount, GameSkill, IconUri, IsBirthdayHidden, IsError, IsHidden, ScreenName, SidebarCoverUrl, TotalPosts"
+      "NNID, Bio, Birthday, Country, FollowerCount, FollowingCount, FriendsCount, GameSkill, IconUri, IsBirthdayHidden, IsError, IsHidden, ScreenName, SidebarCoverUrl, TotalPosts, HideRequested"
     )
     .eq("NNID", NNID)
     .single();
@@ -263,7 +263,7 @@ export const getUserPosts = async ({
   const query = supabaseAdmin
     .from("Posts")
     .select(
-      "Id, EmpathyCount, Feeling, GameCommunityIconUri, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ReplyCount, ScreenName, ScreenShotUri, Text, Title, TitleId, VideoUrl, NNID"
+      "Id, EmpathyCount, Feeling, GameCommunityIconUri, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ReplyCount, ScreenName, ScreenShotUri, Text, Title, TitleId, VideoUrl, NNID, HideRequested"
     )
     .eq("NNID", NNID)
     .range(start, end);
@@ -305,7 +305,7 @@ export const getUserReplies = async ({
   const query = supabaseAdmin
     .from("Replies")
     .select(
-      "Id, EmpathyCount, Feeling, GameCommunityIconUri, InReplyToId, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ScreenName, ScreenShotUri, Text, TitleId, NNID"
+      "Id, EmpathyCount, Feeling, GameCommunityIconUri, InReplyToId, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ScreenName, ScreenShotUri, Text, TitleId, NNID, HideRequested"
     )
     .eq("NNID", NNID)
     .range(start, end);
@@ -349,9 +349,34 @@ export type Post = {
   IsSpoiler: boolean;
   IsPlayed: boolean;
   Date: Date;
+  DoNotShow: boolean;
 };
 
 const convertPost = (data): Post => {
+  if (data.HideRequested) {
+    return {
+      ID: null,
+      MiiName: "Hidden",
+      NNID: null,
+      MiiUrl: null,
+      NumYeahs: 0,
+      NumReplies: 0,
+      Title: null,
+      Text: "This user has requested their data to be deleted",
+      DrawingUrl: null,
+      ScreenshotUrl: null,
+      VideoUrl: null,
+      CommunityTitle: null,
+      CommunityIconUrl: null,
+      GameID: null,
+      TitleID: null,
+      IsSpoiler: false,
+      IsPlayed: false,
+      Date: null,
+      DoNotShow: true,
+    };
+  }
+
   const post: Post = {
     ID: data.Id,
     MiiName: data.ScreenName,
@@ -365,7 +390,7 @@ const convertPost = (data): Post => {
     ScreenshotUrl: data.ScreenShotUri
       ? getArchiveFromUri(data.ScreenShotUri)
       : null,
-    VideoUrl: data.VideoUrl === "" ? null: data.VideoUrl,
+    VideoUrl: data.VideoUrl === "" ? null : data.VideoUrl,
     CommunityTitle: data.GameCommunityTitle,
     CommunityIconUrl: data.IconUri
       ? getArchiveFromUri(data.GameCommunityIconUri)
@@ -375,6 +400,7 @@ const convertPost = (data): Post => {
     IsSpoiler: data.IsSpoiler,
     IsPlayed: data.IsPlayed,
     Date: new Date(data.PostedDate * 1000),
+    DoNotShow: data.HideRequested,
   };
 
   return post;
@@ -391,9 +417,26 @@ export type User = {
   NumFriends: number | null;
   NumPosts: number;
   Birthday: string;
+  DoNotShow: boolean;
 };
 
 const convertUser = (data): User => {
+  if (data.HideRequested) {
+    return {
+      NNID: null,
+      MiiName: "Hidden",
+      MiiUrl: null,
+      Bio: "This user has requested their data to be deleted",
+      Country: "Hidden",
+      NumFollowers: null,
+      NumFollowing: null,
+      NumFriends: null,
+      NumPosts: 0,
+      Birthday: "Hidden",
+      DoNotShow: true,
+    };
+  }
+
   const user: User = {
     NNID: data.NNID,
     MiiName: data.ScreenName,
@@ -405,6 +448,7 @@ const convertUser = (data): User => {
     NumFriends: data.FriendsCount === 0 ? null : data.FriendsCount,
     NumPosts: data.TotalPosts,
     Birthday: data.Birthday,
+    DoNotShow: false,
   };
 
   return user;
@@ -423,9 +467,28 @@ export type Reply = {
   IsSpoiler: boolean;
   IsPlayed: boolean;
   Date: Date;
+  DoNotShow: boolean;
 };
 
 const convertReply = (data): Reply => {
+  if (data.HideRequested) {
+    return {
+      ID: null,
+      MiiName: "Hidden",
+      NNID: null,
+      MiiUrl: null,
+      NumYeahs: 0,
+      Text: "This user has requested their data to be deleted",
+      DrawingUrl: null,
+      ScreenshotUrl: null,
+      ReplyingToID: null,
+      IsSpoiler: false,
+      IsPlayed: false,
+      Date: null,
+      DoNotShow: true,
+    };
+  }
+
   const reply: Reply = {
     ID: data.Id,
     MiiName: data.ScreenName,
@@ -441,6 +504,7 @@ const convertReply = (data): Reply => {
     IsSpoiler: data.IsSpoiler,
     IsPlayed: data.IsPlayed,
     Date: new Date(data.PostedDate * 1000),
+    DoNotShow: false,
   };
 
   return reply;
