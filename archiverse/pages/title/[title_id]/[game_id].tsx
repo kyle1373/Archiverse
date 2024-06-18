@@ -15,6 +15,21 @@ export default function Home({ title_id, game_id }) {
     useDate: boolean;
   }>({ date: new Date(Date.UTC(2017, 10, 9)), useDate: false });
 
+  const getButtonStyles = (isSelected: boolean) => {
+    const commonStyles =
+      "w-1/2 text-left p-2 md:text-sm text-xs font-semibold border-gray hover:brightness-95";
+    if (isSelected) {
+      return (
+        commonStyles +
+        " bg-gradient-to-b from-[#81e52e] to-[#5ac800] text-white"
+      );
+    }
+    return (
+      commonStyles +
+      " bg-gradient-to-b from-white text-neutral-600 to-neutral-200"
+    );
+  };
+
   const [popularSelected, setPopularSelected] = useState(true);
 
   const [hasRelatedCommunities, setHasRelatedCommunities] = useState(false);
@@ -29,7 +44,7 @@ export default function Home({ title_id, game_id }) {
     error: null,
   });
 
-  const [posts, setPosts] = useState<{
+  const [recentPosts, setRecentPosts] = useState<{
     data: Post[];
     fetching: boolean;
     error: string;
@@ -42,6 +57,24 @@ export default function Home({ title_id, game_id }) {
     currPage: 1,
     canLoadMore: true,
   });
+
+  const [popularPosts, setPopularPosts] = useState<{
+    data: Post[];
+    fetching: boolean;
+    error: string;
+    currPage: number;
+    canLoadMore: boolean;
+  }>({
+    data: [],
+    fetching: false,
+    error: null,
+    currPage: 1,
+    canLoadMore: true,
+  });
+
+  const [posts, setPosts] = popularSelected
+    ? [popularPosts, setPopularPosts]
+    : [recentPosts, setRecentPosts];
 
   const fetchCommunity = async () => {
     if (community.fetching) {
@@ -68,6 +101,7 @@ export default function Home({ title_id, game_id }) {
   };
 
   const fetchPosts = async (restart?: boolean) => {
+
     if (posts.fetching) {
       return;
     }
@@ -145,7 +179,7 @@ export default function Home({ title_id, game_id }) {
     <>
       <SEO />
       <Wrapper>
-        <div className="flex bg-[#f6f6f6] text-[#969696] font-semibold mt-[-16px] mx-[-16px] md:rounded-t-md px-2 py-1">
+        <div className="flex bg-[#f6f6f6] text-[#969696] font-semibold mt-[-16px] mx-[-16px] md:rounded-t-md px-2 py-1 md:text-sm text-xs">
           {community.data?.GameTitle}
         </div>
         <div className="mx-[-16px]">
@@ -193,11 +227,32 @@ export default function Home({ title_id, game_id }) {
           error={community.error}
           refetch={() => fetchCommunity()}
         />
+
+        <div className="flex mt-6">
+          <button
+            className={`rounded-l-md border-[1px] border-r-[.5px] ${getButtonStyles(
+              !popularSelected
+            )}`}
+            onClick={() => setPopularSelected(false)}
+          >
+            Recent Posts
+          </button>
+          <button
+            className={`rounded-r-md border-[1px] border-l-[.5px] ${getButtonStyles(
+              popularSelected
+            )}`}
+            onClick={() => setPopularSelected(true)}
+          >
+            Popular Posts
+          </button>
+        </div>
         <div className="my-6">{"Posts (will be formatted later)"}</div>
         <div>{JSON.stringify(posts?.data)}</div>
-        {posts.canLoadMore && !posts.fetching && !posts.error && (
-          <button onClick={() => fetchPosts()}>Load More</button>
-        )}
+        {posts.canLoadMore &&
+          !posts.fetching &&
+          !posts.error && (
+            <button onClick={() => fetchPosts()}>Load More</button>
+          )}
         <LoadOrRetry
           fetching={posts.fetching}
           error={posts.error}
