@@ -247,7 +247,6 @@ export default function Home({ title_id, game_id }) {
           </button>
         </div>
         <div className="my-6">{"Posts (will be formatted later)"}</div>
-        <div>{JSON.stringify(posts?.data)}</div>
         {posts.canLoadMore &&
           !posts.fetching &&
           !posts.error && (
