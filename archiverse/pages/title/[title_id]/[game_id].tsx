@@ -224,7 +224,7 @@ export default function Home({
             </div>
             <div className="mx-[-16px]">
               {isBannerLoading ? (
-                <div className="flex justify-center items-center h-[218px]">
+                <div className="flex justify-center items-center sm:h-[218px] h-[135px]">
                   <Loading />
                 </div>
               ) : (
