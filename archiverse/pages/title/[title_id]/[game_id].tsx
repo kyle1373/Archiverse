@@ -249,6 +249,7 @@ export default function Home({ title_id, game_id }) {
         {posts.data?.map((post, index) => {
           return (
             <PostCard
+              key={post.ID + index + "PostcardCommunity"}
               post={post}
               className={`${
                 index !== posts.data.length - 1 && "border-b-[1px] border-gray"
