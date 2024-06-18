@@ -1,10 +1,11 @@
 import { SEO_METADATA } from "@/constants/constants";
 import { Post } from "@server/database";
 import Head from "next/head";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { GoPersonFill } from "react-icons/go";
 import { IoIosChatboxes } from "react-icons/io";
 import { IoCheckbox } from "react-icons/io5";
+import Loading from "@/components/Loading"; // Make sure to adjust the import path as needed
 
 interface PostCardProps {
   post: Post;
@@ -12,15 +13,17 @@ interface PostCardProps {
 }
 
 const PostCard = ({ post, className = "" }: PostCardProps) => {
+  const [isDrawingLoading, setIsDrawingLoading] = useState(true);
+
   function getDate() {
     if (!post?.Date) {
       return "";
     }
 
-    const d = new Date(post.Date); // Ensure post.Date is a Date object
+    const d = new Date(post.Date);
 
     if (isNaN(d.getTime())) {
-      return ""; // Invalid date
+      return "";
     }
     const months = [
       "01",
@@ -48,10 +51,21 @@ const PostCard = ({ post, className = "" }: PostCardProps) => {
     hours = hours % 12;
     hours = hours ? hours : 12; // the hour '0' should be '12'
     const strTime =
-      hours.toString().padStart(2, "0") + ":" + minutes + "" + ampm;
+      hours.toString().padStart(2, "0") + ":" + minutes + " " + ampm;
 
     return `${month}/${day}/${year} ${strTime}`;
   }
+
+  useEffect(() => {
+    if (post.DrawingUrl) {
+      const img = new Image();
+      img.src = post.DrawingUrl;
+      img.onload = () => setIsDrawingLoading(false);
+      img.onerror = () => setIsDrawingLoading(false);
+    } else {
+      setIsDrawingLoading(false);
+    }
+  }, [post.DrawingUrl]);
 
   return (
     <div className={`w-full md:px-2 ${className} mt-3`}>
@@ -79,21 +93,24 @@ const PostCard = ({ post, className = "" }: PostCardProps) => {
         </div>
       </div>
       {post.DrawingUrl ? (
-        <div className="flex justify-center items-center">
-          <img src={post.DrawingUrl} />
-        </div>
+        isDrawingLoading ? (
+          <div className="flex justify-center items-center h-[120px]">
+            <Loading />
+          </div>
+        ) : (
+          <div className="flex justify-center items-center">
+            <img src={post.DrawingUrl}/>
+          </div>
+        )
       ) : (
         <h1 className="md:ml-14 text-left">{post.Text}</h1>
       )}
-
       {post.ScreenshotUrl && (
         <div className="flex justify-center items-center mt-4 ">
           <img className="rounded-md" src={post.ScreenshotUrl} />
         </div>
       )}
       <div className="flex justify-end items-center text-[#969696] text-sm mt-3 mb-2">
-        {/* Contains yeah count, num replies, if the user has played, and more
-         */}
         <GoPersonFill className="mr-1" />
         {post.NumYeahs}
         <IoIosChatboxes className=" ml-2 mr-1" />

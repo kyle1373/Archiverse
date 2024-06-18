@@ -28,7 +28,7 @@ const Wrapper = ({ children }) => {
           </div>
         </div>
         {/* Right Column */}
-        <div className="md:w-2/3 bg-white p-4 border-[1px] md:rounded-md border-gray items-center md:mt-12">
+        <div className="md:w-2/3 bg-white p-4 md:border-[1px] border-y-[1px] md:rounded-md border-gray items-center md:mt-12">
           {children}
         </div>
       </div>
