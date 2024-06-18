@@ -113,7 +113,7 @@ const PostCard = ({ post, className = "" }: PostCardProps) => {
           </div>
         )
       ) : (
-        <h1 className={`${!post.ScreenshotUrl ? "md:ml-14" : ""} text-left`}>
+        <h1 className={`text-left`}>
           {post.Text}
         </h1>
       )}
