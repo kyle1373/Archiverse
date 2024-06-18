@@ -8,6 +8,7 @@ import { numberWithCommas } from "@utils/utils";
 import { BsFillPeopleFill, BsGlobe } from "react-icons/bs";
 import Link from "next/link";
 import { IoIosArrowForward } from "react-icons/io";
+import PostCard from "@components/PostCard";
 
 export default function Home({ title_id, game_id }) {
   const [beforeDate, setBeforeDate] = useState<{
@@ -101,7 +102,6 @@ export default function Home({ title_id, game_id }) {
   };
 
   const fetchPosts = async (restart?: boolean) => {
-
     if (posts.fetching) {
       return;
     }
@@ -246,12 +246,13 @@ export default function Home({ title_id, game_id }) {
             Popular Posts
           </button>
         </div>
+        {posts.data?.map((post) => {
+          return <PostCard post={post} />;
+        })}
         <div className="my-6">{"Posts (will be formatted later)"}</div>
-        {posts.canLoadMore &&
-          !posts.fetching &&
-          !posts.error && (
-            <button onClick={() => fetchPosts()}>Load More</button>
-          )}
+        {posts.canLoadMore && !posts.fetching && !posts.error && (
+          <button onClick={() => fetchPosts()}>Load More</button>
+        )}
         <LoadOrRetry
           fetching={posts.fetching}
           error={posts.error}
