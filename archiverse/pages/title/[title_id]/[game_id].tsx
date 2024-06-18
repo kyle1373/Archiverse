@@ -246,18 +246,33 @@ export default function Home({ title_id, game_id }) {
             Popular Posts
           </button>
         </div>
-        {posts.data?.map((post) => {
-          return <PostCard post={post} />;
+        {posts.data?.map((post, index) => {
+          return (
+            <PostCard
+              post={post}
+              className={`${
+                index !== posts.data.length - 1 && "border-b-[1px] border-gray"
+              }`}
+            />
+          );
         })}
-        <div className="my-6">{"Posts (will be formatted later)"}</div>
         {posts.canLoadMore && !posts.fetching && !posts.error && (
-          <button onClick={() => fetchPosts()}>Load More</button>
+          <div className="flex justify-center items-center">
+            <button
+              onClick={() => fetchPosts()}
+              className="md:ml-2 hover:brightness-95 inline-flex justify-center items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-medium py-2 px-8 mt-4 md:mt-0 md:text-base text-small"
+            >
+              <h1 className="">Show More</h1>
+            </button>
+          </div>
         )}
-        <LoadOrRetry
-          fetching={posts.fetching}
-          error={posts.error}
-          refetch={() => fetchPosts(posts.currPage === 1)}
-        />
+        <div className="flex justify-center items-center mt-4">
+          <LoadOrRetry
+            fetching={posts.fetching}
+            error={posts.error}
+            refetch={() => fetchPosts(posts.currPage === 1)}
+          />
+        </div>
       </Wrapper>
     </>
   );
