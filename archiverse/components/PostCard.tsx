@@ -99,11 +99,13 @@ const PostCard = ({ post, className = "" }: PostCardProps) => {
           </div>
         ) : (
           <div className="flex justify-center items-center">
-            <img src={post.DrawingUrl}/>
+            <img src={post.DrawingUrl} />
           </div>
         )
       ) : (
-        <h1 className="md:ml-14 text-left">{post.Text}</h1>
+        <h1 className={`${!post.ScreenshotUrl ? "md:ml-14" : ""} text-left`}>
+          {post.Text}
+        </h1>
       )}
       {post.ScreenshotUrl && (
         <div className="flex justify-center items-center mt-4 ">
