@@ -202,7 +202,7 @@ export default function Home({
       ) : (
         <SEO
           title={community.data.CommunityTitle}
-          description={`Check out the ${community.data.CommunityTitle} on Archiverse, the largest Miiverse archive on the internet! Millions of posts, drawings, and more are stored here.`}
+          description={`Check out the ${community.data.CommunityTitle} on Archiverse, the largest Miiverse archive on the internet with millions of posts, drawings, and more!`}
           imageUrl={
             community.data.CommunityBanner ?? community.data.CommunityIconUrl
           }
