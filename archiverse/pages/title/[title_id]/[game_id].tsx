@@ -1,5 +1,5 @@
 import SEO from "@/components/SEO";
-import { Community, Post } from "@server/database";
+import { Community, Post, getCommunity } from "@server/database";
 import Wrapper from "@components/Wrapper";
 import LoadOrRetry from "@components/LoadOrRetry";
 import { useEffect, useState } from "react";
@@ -9,12 +9,31 @@ import { BsFillPeopleFill, BsGlobe } from "react-icons/bs";
 import Link from "next/link";
 import { IoIosArrowForward } from "react-icons/io";
 import PostCard from "@components/PostCard";
+import Loading from "@components/Loading";
 
-export default function Home({ title_id, game_id }) {
+export default function Home({
+  title_id,
+  game_id,
+  community: pulledCommunity,
+}) {
   const [beforeDate, setBeforeDate] = useState<{
     date: Date;
     useDate: boolean;
   }>({ date: new Date(Date.UTC(2017, 10, 9)), useDate: false });
+
+  const [popularSelected, setPopularSelected] = useState(true);
+
+  const [hasRelatedCommunities, setHasRelatedCommunities] = useState(false);
+
+  const [community, setCommunity] = useState<{
+    data: Community;
+    fetching: boolean;
+    error: string;
+  }>({
+    data: pulledCommunity,
+    fetching: false,
+    error: null,
+  });
 
   const getButtonStyles = (isSelected: boolean) => {
     const commonStyles =
@@ -31,19 +50,7 @@ export default function Home({ title_id, game_id }) {
     );
   };
 
-  const [popularSelected, setPopularSelected] = useState(true);
-
-  const [hasRelatedCommunities, setHasRelatedCommunities] = useState(false);
-
-  const [community, setCommunity] = useState<{
-    data: Community;
-    fetching: boolean;
-    error: string;
-  }>({
-    data: null,
-    fetching: false,
-    error: null,
-  });
+  const [isBannerLoading, setIsBannerLoading] = useState(true);
 
   const [recentPosts, setRecentPosts] = useState<{
     data: Post[];
@@ -175,41 +182,82 @@ export default function Home({ title_id, game_id }) {
     }
   }, [popularSelected]);
 
+  useEffect(() => {
+    if (community.data?.CommunityBanner) {
+      const img = new Image();
+      img.src = community.data.CommunityBanner;
+      img.onload = () => {
+        setIsBannerLoading(false);
+      };
+      img.onerror = () => setIsBannerLoading(false);
+    } else {
+      setIsBannerLoading(false);
+    }
+  }, [community.data]);
+
   return (
     <>
-      <SEO />
+      {!community?.data ? (
+        <SEO />
+      ) : (
+        <SEO
+          title={community.data.CommunityTitle}
+          description={`Check out the ${community.data.CommunityTitle} on Archiverse, the largest Miiverse archive on the internet! Millions of posts, drawings, and more are stored here.`}
+          imageUrl={
+            community.data.CommunityBanner ?? community.data.CommunityIconUrl
+          }
+          isImageBig={!!community.data.CommunityBanner}
+        />
+      )}
       <Wrapper>
-        <div className="flex bg-[#f6f6f6] text-[#969696] font-semibold mt-[-16px] mx-[-16px] md:rounded-t-md px-2 py-1 md:text-sm text-xs">
-          {community.data?.GameTitle}
-        </div>
-        <div className="mx-[-16px]">
-          <img src={community.data?.CommunityBanner} className="w-full" />
-        </div>
-        <div className={`flex py-2 mb-2`}>
-          <img
-            src={
-              community.data?.CommunityIconUrl ??
-              community.data?.CommunityBanner
-            }
-            alt={community.data?.GameTitle + " Icon"}
-            className="w-[54px] h-[54px] rounded-md border-gray border-[1px] mr-4"
+        <div className="flex justify-center items-center">
+          <LoadOrRetry
+            fetching={community.fetching}
+            error={community.error}
+            refetch={() => fetchCommunity()}
           />
-          <div>
-            <h2 className="font-bold sm:text-base text-sm mt-1">
-              {community.data?.CommunityTitle}
-            </h2>
-            <div className="flex mt-1">
-              <h3 className="flex items-center justify-center font-light text-xs sm:text-sm text-neutral-500 mr-4">
-                <BsFillPeopleFill className="mr-1 mb-[.5px]" />
-                {numberWithCommas(community.data?.NumPosts)}
-              </h3>
-              <h3 className="flex items-center justify-center font-light text-xs sm:text-sm text-neutral-500">
-                <BsGlobe className="mr-1" />
-                {community.data?.Region}
-              </h3>
-            </div>
-          </div>
         </div>
+        {community.data && (
+          <>
+            <div className="flex bg-[#f6f6f6] text-[#969696] font-semibold mt-[-16px] mx-[-16px] md:rounded-t-md px-2 py-1 md:text-sm text-xs">
+              {community.data?.GameTitle}
+            </div>
+            <div className="mx-[-16px]">
+              {isBannerLoading ? (
+                <div className="flex justify-center items-center h-[218px]">
+                  <Loading />
+                </div>
+              ) : (
+                <img src={community.data?.CommunityBanner} className="w-full" />
+              )}
+            </div>
+            <div className={`flex py-2 mb-2`}>
+              <img
+                src={
+                  community.data?.CommunityIconUrl ??
+                  community.data?.CommunityBanner
+                }
+                alt={community.data?.GameTitle + " Icon"}
+                className="w-[54px] h-[54px] rounded-md border-gray border-[1px] mr-4"
+              />
+              <div>
+                <h2 className="font-bold sm:text-base text-sm mt-1">
+                  {community.data?.CommunityTitle}
+                </h2>
+                <div className="flex mt-1">
+                  <h3 className="flex items-center justify-center font-light text-xs sm:text-sm text-neutral-500 mr-4">
+                    <BsFillPeopleFill className="mr-1 mb-[.5px]" />
+                    {numberWithCommas(community.data?.NumPosts)}
+                  </h3>
+                  <h3 className="flex items-center justify-center font-light text-xs sm:text-sm text-neutral-500">
+                    <BsGlobe className="mr-1" />
+                    {community.data?.Region}
+                  </h3>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
         {!hasRelatedCommunities ? (
           <div className="border-gray border-b-[1px] mx-[-16px]" />
         ) : (
@@ -221,12 +269,6 @@ export default function Home({ title_id, game_id }) {
             <IoIosArrowForward className="h-6 w-6 text-neutral-400" />
           </Link>
         )}
-
-        <LoadOrRetry
-          fetching={community.fetching}
-          error={community.error}
-          refetch={() => fetchCommunity()}
-        />
 
         <div className="flex mt-6">
           <button
@@ -282,10 +324,20 @@ export default function Home({ title_id, game_id }) {
 export const getServerSideProps = async (context) => {
   const { title_id, game_id } = context.query;
 
+  var community: Community = null;
+
+  try {
+    community = await getCommunity({
+      gameID: game_id,
+      titleID: title_id,
+    });
+  } catch (e) {}
+
   return {
     props: {
       title_id,
       game_id,
+      community,
     },
   };
 };

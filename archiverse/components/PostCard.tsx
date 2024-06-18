@@ -14,6 +14,7 @@ interface PostCardProps {
 
 const PostCard = ({ post, className = "" }: PostCardProps) => {
   const [isDrawingLoading, setIsDrawingLoading] = useState(true);
+  const [isScreenshotLoading, setIsScreenshotLoading] = useState(true);
 
   function getDate() {
     if (!post?.Date) {
@@ -65,7 +66,16 @@ const PostCard = ({ post, className = "" }: PostCardProps) => {
     } else {
       setIsDrawingLoading(false);
     }
-  }, [post.DrawingUrl]);
+
+    if (post.ScreenshotUrl) {
+      const img = new Image();
+      img.src = post.ScreenshotUrl;
+      img.onload = () => setIsScreenshotLoading(false);
+      img.onerror = () => setIsScreenshotLoading(false);
+    } else {
+      setIsScreenshotLoading(false);
+    }
+  }, [post.DrawingUrl, post.ScreenshotUrl]);
 
   return (
     <div className={`w-full md:px-2 ${className} mt-3`}>
@@ -108,9 +118,15 @@ const PostCard = ({ post, className = "" }: PostCardProps) => {
         </h1>
       )}
       {post.ScreenshotUrl && (
-        <div className="flex justify-center items-center mt-4 ">
-          <img className="rounded-md" src={post.ScreenshotUrl} />
-        </div>
+        isScreenshotLoading ? (
+          <div className="flex justify-center items-center md:h-[266px] h-[160px]">
+            <Loading />
+          </div>
+        ) : (
+          <div className="flex justify-center items-center mt-4">
+            <img className="rounded-md" src={post.ScreenshotUrl} />
+          </div>
+        )
       )}
       <div className="flex justify-end items-center text-[#969696] text-sm mt-3 mb-2">
         <GoPersonFill className="mr-1" />

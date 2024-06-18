@@ -13,7 +13,7 @@ const SEO: React.FC<MetaProps> = ({
   title,
   description,
   imageUrl,
-  isImageBig,
+  isImageBig = true,
 }) => {
   const metadata = {
     title: title ? title : SEO_METADATA.title,
