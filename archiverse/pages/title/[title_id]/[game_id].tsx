@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { queryAPI } from "@utils/queryAPI";
 import { numberWithCommas } from "@utils/utils";
 import { BsFillPeopleFill, BsGlobe } from "react-icons/bs";
+import Link from "next/link";
+import { IoIosArrowForward } from "react-icons/io";
 
 export default function Home({ title_id, game_id }) {
   const [beforeDate, setBeforeDate] = useState<{
@@ -60,7 +62,7 @@ export default function Home({ title_id, game_id }) {
       `communities?title_id=${title_id}`
     );
 
-    if (data && data.length !== 0) {
+    if (data && data.length > 1) {
       setHasRelatedCommunities(true);
     }
   };
@@ -69,15 +71,23 @@ export default function Home({ title_id, game_id }) {
     if (posts.fetching) {
       return;
     }
-    setPosts((prevState) => ({
-      ...prevState,
-      fetching: true,
-      canLoadMore: true,
-      error: null,
-    }));
     var page = posts.currPage + 1;
     if (restart) {
+      setPosts((prevState) => ({
+        ...prevState,
+        data: [],
+        fetching: true,
+        canLoadMore: true,
+        error: null,
+      }));
       page = 1;
+    } else {
+      setPosts((prevState) => ({
+        ...prevState,
+        fetching: true,
+        canLoadMore: true,
+        error: null,
+      }));
     }
     var queryUrl = `posts?title_id=${title_id}&game_id=${game_id}`;
     if (beforeDate.useDate) {
@@ -141,7 +151,7 @@ export default function Home({ title_id, game_id }) {
         <div className="mx-[-16px]">
           <img src={community.data?.CommunityBanner} className="w-full" />
         </div>
-        <div className={`flex py-2 `}>
+        <div className={`flex py-2 mb-2`}>
           <img
             src={
               community.data?.CommunityIconUrl ??
@@ -166,7 +176,17 @@ export default function Home({ title_id, game_id }) {
             </div>
           </div>
         </div>
-        {hasRelatedCommunities && <div>Has related communities</div>}
+        {!hasRelatedCommunities ? (
+          <div className="border-gray border-b-[1px] mx-[-16px]" />
+        ) : (
+          <Link
+            href={`/title/${title_id}`}
+            className="border-gray border-y-[1px] mx-[-16px] px-[16px] bg-[#f6f6f6] flex justify-between py-2 font-medium items-center"
+          >
+            <h1 className="text-neutral-600 text-sm">Related Communities</h1>
+            <IoIosArrowForward className="h-6 w-6 text-neutral-400" />
+          </Link>
+        )}
 
         <LoadOrRetry
           fetching={community.fetching}
