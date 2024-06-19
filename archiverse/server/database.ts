@@ -411,6 +411,7 @@ export type User = {
   MiiName: string;
   MiiUrl: string;
   Bio: string;
+  BannerUrl: string;
   Country: string | null;
   NumFollowers: number | null;
   NumFollowing: number | null;
@@ -423,16 +424,36 @@ export type User = {
 const convertUser = (data): User => {
   if (data.HideRequested) {
     return {
-      NNID: null,
+      NNID: data.NNID,
       MiiName: "Hidden",
-      MiiUrl: null,
-      Bio: "This user has requested their data to be deleted",
+      MiiUrl: getMiiImageUrl(null, null),
+      Bio: "This user has requested their data to be deleted.",
       Country: "Hidden",
       NumFollowers: null,
       NumFollowing: null,
       NumFriends: null,
       NumPosts: 0,
+      BannerUrl: null,
       Birthday: "Hidden",
+      DoNotShow: true,
+    };
+  }
+  if (data.IsHidden || data.IsError) {
+    return {
+      NNID: data.NNID,
+      MiiName: data.NNID,
+      MiiUrl: getMiiImageUrl(null, null),
+      Bio:
+        "This user " + data.IsHidden
+          ? " was banned by Nintendo."
+          : " was deleted by Nintendo.",
+      Country: "Unknown",
+      NumFollowers: null,
+      NumFollowing: null,
+      NumFriends: null,
+      BannerUrl: null,
+      NumPosts: data.NumPosts,
+      Birthday: "Unknown",
       DoNotShow: true,
     };
   }
@@ -448,6 +469,7 @@ const convertUser = (data): User => {
     NumFriends: data.FriendsCount === 0 ? null : data.FriendsCount,
     NumPosts: data.TotalPosts,
     Birthday: data.Birthday,
+    BannerUrl: data.SidebarCoverUrl,
     DoNotShow: false,
   };
 
@@ -580,6 +602,10 @@ const getArchiveFromUri = (uri: string) => {
 
 const getMiiImageUrl = (url: string, feeling: number) => {
   // url is assumed to just have _normal_face.png because the database only contains those values
+
+  if (!url) {
+    return "/unknown_mii.png";
+  }
 
   if (!feeling || feeling < 0 || feeling > 5) {
     return url;
