@@ -34,30 +34,36 @@ const validateQueryParams = (query: QueryParams) => {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { search, page, title_id } = req.query;
+  try {
+    const { search, page, title_id } = req.query;
 
-  const queryParams: QueryParams = {
-    search: search as string,
-    page: page as string | number,
-    title_id: title_id as string,
-  };
+    const queryParams: QueryParams = {
+      search: search as string,
+      page: page as string | number,
+      title_id: title_id as string,
+    };
 
-  if (!validateQueryParams(queryParams)) {
-    return res.status(400).json({ error: "Invalid query parameters" });
+    if (!validateQueryParams(queryParams)) {
+      return res.status(400).json({ error: "Invalid query parameters" });
+    }
+
+    const pageNumber = page ? Number(page) : 1;
+
+    var communities: Community[];
+    if (search) {
+      communities = await searchCommunities({ query: search as string });
+    } else if (title_id) {
+      communities = await getRelatedCommunities({
+        titleID: title_id as string,
+      });
+    } else {
+      communities = await getCommunities({ page: pageNumber });
+    }
+
+    return res.status(200).json(communities);
+  } catch (e) {
+    return res.status(500).json({ error: e?.message });
   }
-
-  const pageNumber = page ? Number(page) : 1;
-
-  var communities: Community[];
-  if (search) {
-    communities = await searchCommunities({ query: search as string });
-  } else if (title_id) {
-    communities = await getRelatedCommunities({ titleID: title_id as string });
-  } else {
-    communities = await getCommunities({ page: pageNumber });
-  }
-
-  res.status(200).json(communities);
 };
 
 export default handler;

@@ -1,5 +1,6 @@
 import { IMAGES } from "@constants/constants";
 import supabaseAdmin from "./supabaseAdmin";
+import _ from "lodash";
 
 export const getPost = async ({ postID }): Promise<Post> => {
   const { data, error } = await supabaseAdmin
@@ -72,6 +73,51 @@ export const getPostReplies = async ({
   data?.map((value) => replies.push(convertReply(value)));
 
   return replies;
+};
+
+export const getHomepageDrawings = async (): Promise<Post[]> => {
+  const start = Math.floor(Math.random() * 1001);
+  const end = start + 30;
+
+  // Filter out all low-quality drawings / stamp posts.
+  // Usually includes youtubers, official Nintendo staff, MK8 WR posts, and others. May add to this list for finetuning
+
+  // This list is good from 0 through 1050. If extending list, do some more manual checking
+  const { data, error } = await supabaseAdmin
+    .from("Posts")
+    .select("*")
+    .neq("ImageUri", "")
+    .lt("EmpathyCount", 17000)
+    .gt("EmpathyCount", 500)
+    .not("NNID", "like", "Nintendo%")
+    .neq("NNID", "JaKool6")
+    .neq("NNID", "TimothyJS")
+    .neq("NNID", "SadeMKH")
+    .neq("NNID", "shiyou123")
+    .neq("NNID", "narami")
+    .neq("NNID", "chuggaaconroy")
+    .neq("NNID", "monsieurdream")
+    .neq("NNID", "LeKamek")
+    .neq("NNID", "cole77")
+    .neq("NNID", "madsun8213")
+    .neq("NNID", "Speed64Demon")
+    .neq("NNID", "Agile.Espeon")
+    .range(start, end);
+
+  if (error) {
+    console.error("Error fetching posts:", error);
+    return;
+  }
+
+  const drawings: Post[] = [];
+
+  data?.map((value) => {
+    drawings.push(convertPost(value));
+  });
+
+  const shuffledDrawings = _.shuffle(drawings);
+
+  return shuffledDrawings;
 };
 
 export const getPosts = async ({

@@ -1,12 +1,14 @@
 import {
   Community,
   getCommunities,
+  getHomepageDrawings,
   getPosts,
   searchCommunities,
 } from "@server/database";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type QueryParams = {
+  homepage?: boolean;
   sort_mode: "recent" | "popular";
   before_datetime?: string;
   game_id?: string;
@@ -20,6 +22,10 @@ const validateQueryParams = (query: QueryParams): string[] => {
 
   const errors: string[] = [];
   const sortModes = ["recent", "popular"];
+
+  if (query.homepage) {
+    return []; // just quit early. we don't care about other variables now
+  }
 
   if (!sortModes.includes(sort_mode)) {
     errors.push("Invalid sort_mode. Must be 'recent' or 'popular'.");
@@ -41,8 +47,10 @@ const validateQueryParams = (query: QueryParams): string[] => {
     errors.push("Invalid title_id. Must be a non-empty string.");
   }
 
-  if (before_datetime && (!game_id || !title_id)){
-    errors.push("If a before_datetime is set, a title_id and game_id must also be set.");
+  if (before_datetime && (!game_id || !title_id)) {
+    errors.push(
+      "If a before_datetime is set, a title_id and game_id must also be set."
+    );
   }
 
   if (page && isNaN(Number(page))) {
@@ -53,41 +61,58 @@ const validateQueryParams = (query: QueryParams): string[] => {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { title_id, game_id, sort_mode, before_datetime, page, only_drawings } =
-    req.query;
+  try {
+    const {
+      title_id,
+      game_id,
+      sort_mode,
+      before_datetime,
+      page,
+      only_drawings,
+      homepage,
+    } = req.query;
 
-  const queryParams: QueryParams = {
-    title_id: title_id as string,
-    game_id: game_id as string,
-    sort_mode: sort_mode as "recent" | "popular",
-    before_datetime: before_datetime as string,
-    page: page as string | number,
-    only_drawings: only_drawings === "true",
-  };
+    const queryParams: QueryParams = {
+      homepage: homepage === "true",
+      title_id: title_id as string,
+      game_id: game_id as string,
+      sort_mode: sort_mode as "recent" | "popular",
+      before_datetime: before_datetime as string,
+      page: page as string | number,
+      only_drawings: only_drawings === "true",
+    };
 
-  const errors = validateQueryParams(queryParams);
+    const errors = validateQueryParams(queryParams);
 
-  if (errors.length > 0) {
-    return res.status(400).json({ error: errors.join(", ") });
+    if (errors.length > 0) {
+      return res.status(400).json({ error: errors.join(", ") });
+    }
+
+    if (homepage === "true") {
+      const posts = await getHomepageDrawings();
+      return res.status(200).json(posts);
+    }
+
+    const limit = 25; // default limit for pagination
+    const pageNumber = page ? parseInt(page as string, 10) : 1;
+    const beforeDate = before_datetime
+      ? new Date(queryParams.before_datetime)
+      : null;
+
+    const posts = await getPosts({
+      sortMode: queryParams.sort_mode,
+      beforeDateTime: beforeDate,
+      gameID: queryParams.game_id,
+      titleID: queryParams.title_id,
+      limit,
+      onlyDrawings: only_drawings === "true",
+      page: pageNumber,
+    });
+
+    return res.status(200).json(posts);
+  } catch (e) {
+    return res.status(500).json({ error: e?.message });
   }
-
-  const limit = 25; // default limit for pagination
-  const pageNumber = page ? parseInt(page as string, 10) : 1;
-  const beforeDate = before_datetime
-    ? new Date(queryParams.before_datetime)
-    : null;
-
-  const posts = await getPosts({
-    sortMode: queryParams.sort_mode,
-    beforeDateTime: beforeDate,
-    gameID: queryParams.game_id,
-    titleID: queryParams.title_id,
-    limit,
-    onlyDrawings: only_drawings === "true",
-    page: pageNumber,
-  });
-
-  return res.status(200).json(posts);
 };
 
 export default handler;

@@ -2,6 +2,7 @@
 import {
   getCommunities,
   getCommunity,
+  getHomepageDrawings,
   getPost,
   getPostReplies,
   getUserInfo,
@@ -20,6 +21,6 @@ export default async function handler(
   }
 
   // const data = await getPost({postID: "AYIHAAAEAAAOU4XCvEQWvA"})
-  const data = await getCommunity({gameID: "14866558073513315450", titleID: "14866558073513315430"});
+  const data = await getHomepageDrawings();
   return res.status(200).json(data);
 }

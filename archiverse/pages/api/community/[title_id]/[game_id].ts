@@ -28,23 +28,27 @@ const validateQueryParams = (query: QueryParams) => {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { title_id, game_id } = req.query;
+  try {
+    const { title_id, game_id } = req.query;
 
-  const queryParams: QueryParams = {
-    title_id: title_id as string,
-    game_id: game_id as string,
-  };
+    const queryParams: QueryParams = {
+      title_id: title_id as string,
+      game_id: game_id as string,
+    };
 
-  if (!validateQueryParams(queryParams)) {
-    return res.status(400).json({ error: "Invalid parameters" });
+    if (!validateQueryParams(queryParams)) {
+      return res.status(400).json({ error: "Invalid parameters" });
+    }
+
+    const community = await getCommunity({
+      gameID: game_id as string,
+      titleID: title_id as string,
+    });
+
+    res.status(200).json(community);
+  } catch (e) {
+    return res.status(500).json({ error: e?.message });
   }
-
-  const community = await getCommunity({
-    gameID: game_id as string,
-    titleID: title_id as string,
-  });
-
-  res.status(200).json(community);
 };
 
 export default handler;
