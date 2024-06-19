@@ -140,7 +140,13 @@ export default function Home() {
           (community, index) => {
             return (
               <Link
-                key={"community " + community.GameID + community.TitleID}
+                key={
+                  "community " +
+                  community.GameID +
+                  community.TitleID +
+                  "index " +
+                  index
+                }
                 className={`flex py-2 ${
                   index ===
                   (displaySearchResults ? searchedCommunities : communityList)

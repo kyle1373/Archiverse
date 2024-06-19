@@ -56,10 +56,10 @@ const LoadingIcon = () => {
   return (
     <div className="inline-block">
       {frames[frameIndex].map((row, rowIndex) => (
-        <div key={rowIndex} className="flex">
+        <div key={rowIndex + " loading icon row"} className="flex">
           {row.map((cell, cellIndex) => (
             <div
-              key={cellIndex}
+              key={cellIndex + " loading icon column"}
               className={`w-[6px] h-[6px] m-[1px] ${cell ? 'bg-green' : 'bg-gray'}`}
             />
           ))}
