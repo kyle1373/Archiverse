@@ -1,3 +1,4 @@
+import { IMAGES } from "@constants/constants";
 import supabaseAdmin from "./supabaseAdmin";
 
 export const getPost = async ({ postID }): Promise<Post> => {
@@ -26,7 +27,7 @@ export const getPost = async ({ postID }): Promise<Post> => {
       ScreenshotUrl: null,
       VideoUrl: null,
       CommunityTitle: "Unknown",
-      CommunityIconUrl: getMiiImageUrl(null, null),
+      CommunityIconUrl: IMAGES.unknownMii,
       GameID: "0",
       TitleID: "0",
       IsSpoiler: false,
@@ -256,7 +257,7 @@ export const getCommunity = async ({
       TitleID: titleID,
       CommunityTitle: "Not found",
       CommunityBanner: null,
-      CommunityIconUrl: getMiiImageUrl(null, null),
+      CommunityIconUrl: IMAGES.unknownMii,
       Badge: null,
       GameTitle: "Not Found",
       NumPosts: 0,
@@ -283,7 +284,7 @@ export const getUserInfo = async ({ NNID }: { NNID: string }) => {
     return {
       NNID: "unknown",
       MiiName: "Not Found",
-      MiiUrl: getMiiImageUrl(null, null),
+      MiiUrl: IMAGES.unknownMii,
       Bio: "This user does not exist.",
       Country: "Unknown",
       NumFollowers: null,
@@ -479,7 +480,7 @@ const convertUser = (data): User => {
     return {
       NNID: data.NNID,
       MiiName: "Hidden",
-      MiiUrl: getMiiImageUrl(null, null),
+      MiiUrl: IMAGES.unknownMii,
       Bio: "This user has requested their data to be deleted.",
       Country: "Hidden",
       NumFollowers: null,
@@ -495,7 +496,7 @@ const convertUser = (data): User => {
     return {
       NNID: data.NNID,
       MiiName: data.NNID,
-      MiiUrl: getMiiImageUrl(null, null),
+      MiiUrl: IMAGES.unknownMii,
       Bio:
         "This user " +
         (data.IsHidden
@@ -658,7 +659,7 @@ const getMiiImageUrl = (url: string, feeling: number) => {
   // url is assumed to just have _normal_face.png because the database only contains those values
 
   if (!url) {
-    return "/unknown_mii.png";
+    return IMAGES.unknownMii;
   }
 
   if (!feeling || feeling < 0 || feeling > 5) {

@@ -12,6 +12,7 @@ import LoadOrRetry from "@components/LoadOrRetry";
 import Wrapper from "@components/Wrapper";
 import { useEffect, useRef, useState } from "react";
 import { queryAPI } from "@utils/queryAPI";
+import { IMAGES } from "@constants/constants";
 
 export default function Home() {
   const searchQuery = useRef("");
@@ -99,6 +100,10 @@ export default function Home() {
                 src={user.MiiUrl}
                 alt={user.MiiName + " Icon"}
                 className="w-[54px] h-[54px] rounded-md border-gray border-[1px] mr-4"
+                onError={({ currentTarget }) => {
+                  currentTarget.onerror = null; // prevents looping
+                  currentTarget.src = IMAGES.unknownMii;
+                }}
               />
               <div className="flex flex-col justify-between">
                 <h2 className="font-bold text-base">
@@ -108,7 +113,7 @@ export default function Home() {
                   </span>
                 </h2>
                 <div className="h-full flex-col justify-center items-center">
-                  <h2 className="font-normal text-xs text-black overflow-hidden overflow-ellipsis line-clamp-2">
+                  <h2 className="font-normal text-xs text-neutral-800 overflow-hidden overflow-ellipsis line-clamp-2">
                     {user.Bio}
                   </h2>
                 </div>

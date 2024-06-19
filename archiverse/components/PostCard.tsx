@@ -1,4 +1,4 @@
-import { SEO_METADATA } from "@/constants/constants";
+import { IMAGES, SEO_METADATA } from "@/constants/constants";
 import { Post } from "@server/database";
 import Head from "next/head";
 import React, { useState, useEffect } from "react";
@@ -83,6 +83,10 @@ const PostCard = ({ post, className = "" }: PostCardProps) => {
         <img
           src={post.MiiUrl}
           className="w-[50px] h-[50px] rounded-md border-gray border-[1px] mr-2"
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; // prevents looping
+            currentTarget.src = IMAGES.unknownMii;
+          }}
         />
         <div className="w-full">
           <div className="flex justify-between items-center">
@@ -113,12 +117,10 @@ const PostCard = ({ post, className = "" }: PostCardProps) => {
           </div>
         )
       ) : (
-        <h1 className={`text-left`}>
-          {post.Text}
-        </h1>
+        <h1 className={`text-left`}>{post.Text}</h1>
       )}
-      {post.ScreenshotUrl && (
-        isScreenshotLoading ? (
+      {post.ScreenshotUrl &&
+        (isScreenshotLoading ? (
           <div className="flex justify-center items-center md:h-[266px] h-[160px]">
             <Loading />
           </div>
@@ -126,8 +128,7 @@ const PostCard = ({ post, className = "" }: PostCardProps) => {
           <div className="flex justify-center items-center mt-4">
             <img className="rounded-md" src={post.ScreenshotUrl} />
           </div>
-        )
-      )}
+        ))}
       <div className="flex justify-end items-center text-[#969696] text-sm mt-3 mb-2">
         <GoPersonFill className="mr-1" />
         {post.NumYeahs}

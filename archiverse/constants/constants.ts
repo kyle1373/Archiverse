@@ -6,6 +6,10 @@ export const SEO_METADATA = {
 };
 
 export const LINKS = {
-    discord: "https://discord.gg/jUAWHNzMer",
-    github: "https://github.com/kyle1373/archiverse"
-}
+  discord: "https://discord.gg/jUAWHNzMer",
+  github: "https://github.com/kyle1373/archiverse",
+};
+
+export const IMAGES = {
+  unknownMii: "/unknown_mii.png",
+};
