@@ -17,10 +17,9 @@ export default function Home() {
   const searchQuery = useRef("");
   const currentPage = useRef(1);
 
-  const [communityList, setCommunityList] = useState<Community[]>([]);
-  const [searchedCommunities, setSearchedCommunities] = useState<Community[]>(
-    []
-  );
+  const [communityList, setCommunityList] = useState<Community[]>(null);
+  const [searchedCommunities, setSearchedCommunities] =
+    useState<Community[]>(null);
   const [displaySearchResults, setDisplaySearchResults] =
     useState<boolean>(false);
   const [canPullMore, setCanPullMore] = useState(true);
@@ -47,7 +46,11 @@ export default function Home() {
       setCanPullMore(false);
       return;
     }
-    setCommunityList((value) => [...value, ...data]);
+    if (!communityList) {
+      setCommunityList(data);
+    } else {
+      setCommunityList((value) => [...value, ...data]);
+    }
     currentPage.current = currentPage.current + 1;
   };
 
@@ -149,9 +152,7 @@ export default function Home() {
                 href={"/title/" + community.TitleID + "/" + community.GameID}
               >
                 <img
-                  src={
-                    community.CommunityIconUrl ?? community.CommunityBanner
-                  }
+                  src={community.CommunityIconUrl ?? community.CommunityBanner}
                   alt={community.GameTitle + " Icon"}
                   className="w-[54px] h-[54px] rounded-md border-gray border-[1px] mr-4"
                 />

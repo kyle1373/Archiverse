@@ -50,7 +50,9 @@ export default function Home({ title_id }) {
   };
 
   useEffect(() => {
-    fetchCommunities();
+    if (!communities.data) {
+      fetchCommunities();
+    }
   }, []);
 
   function getGameTitle() {

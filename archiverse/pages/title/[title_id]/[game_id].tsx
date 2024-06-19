@@ -291,13 +291,17 @@ export default function Home({
         </div>
         {posts.data?.map((post, index) => {
           return (
-            <PostCard
-              key={post.ID + index + "PostcardCommunity"}
-              post={post}
-              className={`${
-                index !== posts.data.length - 1 && "border-b-[1px] border-gray"
-              }`}
-            />
+            <Link href={`/post/${post.ID}`}>
+              <PostCard
+                key={post.ID + index + "PostcardCommunity"}
+                post={post}
+                className={`${
+                  index !== posts.data.length - 1 &&
+                  "border-b-[1px] border-gray"
+                }`}
+                variant="list"
+              />
+            </Link>
           );
         })}
         {posts.canLoadMore && !posts.fetching && !posts.error && (

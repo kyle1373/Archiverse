@@ -8,13 +8,14 @@ export const getPost = async ({ postID }): Promise<Post> => {
     .select(
       "Id, EmpathyCount, Feeling, GameCommunityIconUri, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ReplyCount, ScreenName, ScreenShotUri, Text, Title, TitleId, VideoUrl, NNID, HideRequested"
     )
-    .eq("Id", postID);
+    .eq("Id", postID)
+    .maybeSingle();
 
   if (error) {
     throw new Error(error.message);
   }
 
-  if (data.length === 0) {
+  if (!data) {
     return {
       ID: postID,
       MiiName: "Not Found",
@@ -38,7 +39,7 @@ export const getPost = async ({ postID }): Promise<Post> => {
     };
   }
 
-  return convertPost(data[0]);
+  return convertPost(data);
 };
 
 export const getPostReplies = async ({
@@ -292,13 +293,14 @@ export const getCommunity = async ({
       "GameId, TitleId, Title, CommunityBadge, CommunityListIcon, IconUri, Type, TotalPosts, ViewRegion"
     )
     .eq("GameId", gameID)
-    .eq("TitleId", titleID);
+    .eq("TitleId", titleID)
+    .maybeSingle();
 
   if (error) {
     throw new Error(error.message);
   }
 
-  if (data.length === 0) {
+  if (!data) {
     return {
       GameID: gameID,
       TitleID: titleID,
@@ -312,7 +314,7 @@ export const getCommunity = async ({
     };
   }
 
-  return convertCommunity(data[0]);
+  return convertCommunity(data);
 };
 
 export const getUserInfo = async ({ NNID }: { NNID: string }) => {
@@ -321,13 +323,14 @@ export const getUserInfo = async ({ NNID }: { NNID: string }) => {
     .select(
       "NNID, Bio, Birthday, Country, FollowerCount, FollowingCount, FriendsCount, GameSkill, IconUri, IsBirthdayHidden, IsError, IsHidden, ScreenName, SidebarCoverUrl, TotalPosts, HideRequested"
     )
-    .eq("NNID", NNID);
+    .eq("NNID", NNID)
+    .maybeSingle();
 
   if (error) {
     throw new Error(error.message);
   }
 
-  if (data.length === 0) {
+  if (!data) {
     return {
       NNID: "unknown",
       MiiName: "Not Found",
@@ -344,7 +347,7 @@ export const getUserInfo = async ({ NNID }: { NNID: string }) => {
     };
   }
 
-  return convertUser(data[0]);
+  return convertUser(data);
 };
 
 export const getUserPosts = async ({

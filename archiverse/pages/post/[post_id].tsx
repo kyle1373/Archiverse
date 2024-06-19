@@ -7,41 +7,43 @@ import { queryAPI } from "@utils/queryAPI";
 import { numberWithCommas } from "@utils/utils";
 import { BsFillPeopleFill, BsGlobe } from "react-icons/bs";
 import Link from "next/link";
+import PostCard from "@components/PostCard";
 
-export default function Home({ title_id }) {
-  const [communities, setCommunities] = useState<{
-    data: Community[];
+export default function Home({ post_id, post: pulledPost }) {
+  const [post, setPost] = useState<{
+    data: Post;
     fetching: boolean;
     error: string;
   }>({
-    data: [],
+    data: pulledPost
+      ? { ...pulledPost, Date: new Date(pulledPost.Date) }
+      : null,
     fetching: false,
     error: null,
   });
 
-  const fetchCommunities = async () => {
-    if (communities.fetching) {
+  const fetchPost = async () => {
+    if (post.fetching) {
       return;
     }
-    setCommunities((prevState) => ({
+    setPost((prevState) => ({
       ...prevState,
       fetching: true,
       error: null,
     }));
 
-    const { data, error } = await queryAPI<Community[]>(
-      `communities?title_id=${title_id}`
-    );
+    const { data, error } = await queryAPI<Post>(`post/${post_id}`);
 
     if (error) {
-      setCommunities((prevState) => ({
+      setPost((prevState) => ({
         ...prevState,
         fetching: false,
         error: error,
       }));
       return;
     }
-    setCommunities((prevState) => ({
+
+    setPost((prevState) => ({
       ...prevState,
       data: data,
       fetching: false,
@@ -50,85 +52,32 @@ export default function Home({ title_id }) {
   };
 
   useEffect(() => {
-    fetchCommunities();
-  }, []);
-
-  function getGameTitle() {
-    // Check if the array exists and has at least one element
-    if (communities?.data && communities?.data?.length > 0) {
-      // Return the first element of the array
-      return communities.data[0].GameTitle;
-    } else {
-      // Return null if the array is empty or doesn't exist
-      return null;
+    if (!post.data) {
+      fetchPost();
     }
-  }
-
-  const gameTitle = getGameTitle();
+  }, []);
 
   return (
     <>
       <SEO />
       <Wrapper>
-        {gameTitle && (
-          <div className="flex bg-[#f6f6f6] text-[#969696] border-b-[1px] border-gray font-semibold mt-[-16px] mx-[-16px] md:rounded-t-md px-2 py-1 md:text-sm text-xs">
-            {gameTitle}
-          </div>
-        )}
-        <div className="flex justify-center items-center">
-          <LoadOrRetry
-            fetching={communities.fetching}
-            error={communities.error}
-            refetch={fetchCommunities}
-            className="mt-4"
-          />
-        </div>
-
-        <div className="mb-4" />
-        {communities.data?.map((community, index) => {
-          return (
+        {post.data && (
+          <div className="md:mx-[-16px] mt-[-16px]">
             <Link
-              key={"community " + community.GameID + community.TitleID}
-              className={`flex py-2 ${
-                index === communities.data.length - 1
-                  ? "mb-2"
-                  : "border-b-[1px]"
-              } border-gray hover:brightness-95 bg-white cursor-pointer`}
-              href={"/title/" + community.TitleID + "/" + community.GameID}
+              className="flex bg-[#f6f6f6] text-neutral-700 font-semibold md:rounded-t-md p-2 border-gray border-b-[1px] text-base  md:mx-0 mx-[-16px] items-center hover:underline"
+              href={`/title/${post.data.TitleID}/${post.data.GameID}`}
             >
               <img
-                src={community.CommunityIconUrl ?? community.CommunityBanner}
-                alt={community.GameTitle + " Icon"}
-                className="w-[54px] h-[54px] rounded-md border-gray border-[1px] mr-4"
+                src={post.data.CommunityIconUrl}
+                className="h-6 w-6 rounded-sm mr-2"
               />
-              <div>
-                <h2 className="font-bold sm:text-base text-sm mt-1">
-                  {community.CommunityTitle}
-                </h2>
-                <div className="flex mt-1">
-                  <h3 className="flex items-center justify-center font-light text-xs sm:text-sm text-neutral-500 mr-4">
-                    <BsFillPeopleFill className="mr-1 mb-[.5px]" />
-                    {numberWithCommas(community.NumPosts)}
-                  </h3>
-                  <h3 className="flex items-center justify-center font-light text-xs sm:text-sm text-neutral-500">
-                    <BsGlobe className="mr-1" />
-                    {community.Region}
-                  </h3>
-                </div>
-              </div>
+              {post.data?.CommunityTitle}
             </Link>
-          );
-        })}
-
-        {!communities.fetching &&
-          communities.data &&
-          communities.data?.length === 0 && (
-            <h3 className="text-neutral-400 mt-[15px] mb-[6px] font-light text-base">
-              No communities found.
-            </h3>
-          )}
-
-        <div className="mb-2" />
+            <div className="md:mx-2">
+              <PostCard post={post.data} variant="main" />
+            </div>
+          </div>
+        )}
       </Wrapper>
     </>
   );
@@ -141,7 +90,7 @@ export const getServerSideProps = async (context) => {
   return {
     props: {
       post_id,
-      post,
+      post: { ...post, Date: post.Date.toISOString() },
     },
   };
 };
