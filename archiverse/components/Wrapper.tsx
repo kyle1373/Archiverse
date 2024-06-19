@@ -21,19 +21,25 @@ const Wrapper = ({ children }) => {
               </Link>
               <div className="flex-col md:flex">
                 <Link className="md:mt-8 mt-[-20px]" href="/">
-                  <div className="md:ml-2 hover:brightness-95 inline-flex justify-center items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-bold py-2 px-4 md:mt-0 text-base md:mr-0 mr-2 md:mb-4">
-                    <BsPeopleFill />
-                    <h1 className="md:block hidden ml-3">Communities</h1>
+                  <div className="md:ml-2 hover:brightness-95 inline-flex items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-bold py-2 px-4 md:mt-0 text-base md:mr-0 mr-2 md:mb-4 md:w-48">
+                    <BsPeopleFill className="md:mr-2" />
+                    <h1 className="flex-grow text-center hidden md:block">
+                      Communities
+                    </h1>
                   </div>
                 </Link>
-                <Link className="" href="/search">
-                  <div className="md:ml-2 hover:brightness-95 inline-flex justify-center items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-bold py-2 px-4 md:mt-0 text-base md:mr-0 mr-4">
-                    <FaSearch />
-                    <h1 className="ml-3 md:block hidden">Users</h1>
+                <Link href="/search">
+                  <div className="md:ml-2 hover:brightness-95 inline-flex items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-bold py-2 px-4 md:mt-0 text-base md:mr-0 mr-4 md:w-48">
+                    <FaSearch className="md:mr-2" />
+                    <h1 className="flex-grow text-center hidden md:block">
+                      Users
+                    </h1>
                   </div>
                 </Link>
+
+
               </div>
-              <div className="md:flex hidden items-center ml-3 mt-10">
+              <div className="md:flex hidden items-center justify-center mt-10">
                 <Link
                   href={LINKS.github}
                   className="mr-5"
