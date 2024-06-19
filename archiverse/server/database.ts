@@ -6,14 +6,37 @@ export const getPost = async ({ postID }): Promise<Post> => {
     .select(
       "Id, EmpathyCount, Feeling, GameCommunityIconUri, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ReplyCount, ScreenName, ScreenShotUri, Text, Title, TitleId, VideoUrl, NNID, HideRequested"
     )
-    .eq("Id", postID)
-    .single();
+    .eq("Id", postID);
 
   if (error) {
     throw new Error(error.message);
   }
 
-  return convertPost(data);
+  if (data.length === 0) {
+    return {
+      ID: postID,
+      MiiName: "Not Found",
+      NNID: "unknown",
+      MiiUrl: null,
+      NumYeahs: 0,
+      NumReplies: 0,
+      Title: null,
+      Text: "This post does not exist.",
+      DrawingUrl: null,
+      ScreenshotUrl: null,
+      VideoUrl: null,
+      CommunityTitle: "Unknown",
+      CommunityIconUrl: getMiiImageUrl(null, null),
+      GameID: "0",
+      TitleID: "0",
+      IsSpoiler: false,
+      IsPlayed: false,
+      Date: undefined,
+      DoNotShow: false,
+    };
+  }
+
+  return convertPost(data[0]);
 };
 
 export const getPostReplies = async ({
@@ -131,7 +154,7 @@ export const searchUsers = async ({
 
   data?.map((value) => users.push(convertUser(value)));
 
-  return data;
+  return users;
 };
 
 export const searchCommunities = async ({
@@ -221,14 +244,27 @@ export const getCommunity = async ({
       "GameId, TitleId, Title, CommunityBadge, CommunityListIcon, IconUri, Type, TotalPosts, ViewRegion"
     )
     .eq("GameId", gameID)
-    .eq("TitleId", titleID)
-    .single();
+    .eq("TitleId", titleID);
 
   if (error) {
     throw new Error(error.message);
   }
 
-  return convertCommunity(data);
+  if (data.length === 0) {
+    return {
+      GameID: gameID,
+      TitleID: titleID,
+      CommunityTitle: "Not found",
+      CommunityBanner: null,
+      CommunityIconUrl: getMiiImageUrl(null, null),
+      Badge: null,
+      GameTitle: "Not Found",
+      NumPosts: 0,
+      Region: "Worldwide",
+    };
+  }
+
+  return convertCommunity(data[0]);
 };
 
 export const getUserInfo = async ({ NNID }: { NNID: string }) => {
@@ -237,13 +273,30 @@ export const getUserInfo = async ({ NNID }: { NNID: string }) => {
     .select(
       "NNID, Bio, Birthday, Country, FollowerCount, FollowingCount, FriendsCount, GameSkill, IconUri, IsBirthdayHidden, IsError, IsHidden, ScreenName, SidebarCoverUrl, TotalPosts, HideRequested"
     )
-    .eq("NNID", NNID)
-    .single();
+    .eq("NNID", NNID);
 
   if (error) {
     throw new Error(error.message);
   }
-  return convertUser(data);
+
+  if (data.length === 0) {
+    return {
+      NNID: "unknown",
+      MiiName: "Not Found",
+      MiiUrl: getMiiImageUrl(null, null),
+      Bio: "This user does not exist.",
+      Country: "Unknown",
+      NumFollowers: null,
+      NumFollowing: null,
+      NumFriends: null,
+      BannerUrl: null,
+      NumPosts: 0,
+      Birthday: "Unknown",
+      DoNotShow: true,
+    };
+  }
+
+  return convertUser(data[0]);
 };
 
 export const getUserPosts = async ({
@@ -444,9 +497,10 @@ const convertUser = (data): User => {
       MiiName: data.NNID,
       MiiUrl: getMiiImageUrl(null, null),
       Bio:
-        "This user " + data.IsHidden
+        "This user " +
+        (data.IsHidden
           ? " was banned by Nintendo."
-          : " was deleted by Nintendo.",
+          : " was deleted by Nintendo."),
       Country: "Unknown",
       NumFollowers: null,
       NumFollowing: null,
@@ -469,7 +523,7 @@ const convertUser = (data): User => {
     NumFriends: data.FriendsCount === 0 ? null : data.FriendsCount,
     NumPosts: data.TotalPosts,
     Birthday: data.Birthday,
-    BannerUrl: data.SidebarCoverUrl,
+    BannerUrl: data.SidebarCoverUrl === "" ? null : data.SidebarCoverUrl,
     DoNotShow: false,
   };
 

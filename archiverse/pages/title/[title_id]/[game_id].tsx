@@ -91,6 +91,7 @@ export default function Home({
     setCommunity((prevState) => ({
       ...prevState,
       fetching: true,
+      error: null,
     }));
     const { data, error } = await queryAPI<Community>(
       `community/${title_id}/${game_id}`
