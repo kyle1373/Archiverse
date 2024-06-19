@@ -76,7 +76,7 @@ export default function Home() {
             type="text"
             onChange={handleSearchChangeText}
             placeholder="Search by NNID"
-            className="rounded-md pl-2 sm:pr-10 pr-4 bg-neutral-200 sm:text-sm py-1 placeholder-neutral-500 text-xs w-full"
+            className="rounded-md pl-2 sm:pr-10 pr-4 bg-neutral-200 md:text-sm py-1 placeholder-neutral-500 text-xs w-full"
           />
           <button
             type="submit"

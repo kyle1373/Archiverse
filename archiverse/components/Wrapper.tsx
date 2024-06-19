@@ -2,6 +2,7 @@ import { LINKS, SEO_METADATA } from "@/constants/constants";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
+import { BsPeopleFill } from "react-icons/bs";
 import { FaDiscord, FaGithub, FaSearch } from "react-icons/fa";
 
 const Wrapper = ({ children }) => {
@@ -18,13 +19,21 @@ const Wrapper = ({ children }) => {
                   className="w-40 md:w-52 md:ml-0 ml-4"
                 />
               </Link>
-              <Link className="md:mt-8 mt-[-20px]" href="/search">
-                <div className="md:ml-2 hover:brightness-95 inline-flex justify-center items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-bold py-2 px-4 mt-5 md:mt-0 md:text-base text-xs md:mr-0 mr-4">
-                  <FaSearch />
-                  <h1 className="ml-3">Users</h1>
-                </div>
-              </Link>
-              <div className="md:flex hidden items-center ml-6 mt-10">
+              <div className="flex-col md:flex">
+                <Link className="md:mt-8 mt-[-20px]" href="/">
+                  <div className="md:ml-2 hover:brightness-95 inline-flex justify-center items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-bold py-2 px-4 md:mt-0 text-base md:mr-0 mr-2 md:mb-4">
+                    <BsPeopleFill />
+                    <h1 className="md:block hidden ml-3">Communities</h1>
+                  </div>
+                </Link>
+                <Link className="" href="/search">
+                  <div className="md:ml-2 hover:brightness-95 inline-flex justify-center items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-bold py-2 px-4 md:mt-0 text-base md:mr-0 mr-4">
+                    <FaSearch />
+                    <h1 className="ml-3 md:block hidden">Users</h1>
+                  </div>
+                </Link>
+              </div>
+              <div className="md:flex hidden items-center ml-3 mt-10">
                 <Link
                   href={LINKS.github}
                   className="mr-5"
