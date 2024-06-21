@@ -78,7 +78,7 @@ export const getPostReplies = async ({
 
 export const getHomepageDrawings = async (): Promise<Post[]> => {
   const start = Math.floor(Math.random() * 1001);
-  const end = start + 30;
+  const end = start + 15;
 
   // Filter out all low-quality drawings / stamp posts.
   // Usually includes youtubers, official Nintendo staff, MK8 WR posts, and others. May add to this list for finetuning
@@ -452,7 +452,7 @@ export type Post = {
   TitleID: string;
   IsSpoiler: boolean;
   IsPlayed: boolean;
-  Date: Date;
+  Date: string;
   DoNotShow: boolean;
 };
 
@@ -503,7 +503,7 @@ const convertPost = (data): Post => {
     TitleID: data.TitleId,
     IsSpoiler: data.IsSpoiler,
     IsPlayed: data.IsPlayed,
-    Date: new Date(data.PostedDate * 1000),
+    Date: new Date(data.PostedDate * 1000).toISOString(),
     DoNotShow: data.HideRequested,
   };
 
@@ -593,7 +593,7 @@ export type Reply = {
   ReplyingToID: string;
   IsSpoiler: boolean;
   IsPlayed: boolean;
-  Date: Date;
+  Date: string;
   DoNotShow: boolean;
 };
 
@@ -630,7 +630,7 @@ const convertReply = (data): Reply => {
     ReplyingToID: data.InReplyToId,
     IsSpoiler: data.IsSpoiler,
     IsPlayed: data.IsPlayed,
-    Date: new Date(data.PostedDate * 1000),
+    Date: new Date(data.PostedDate * 1000).toISOString(),
     DoNotShow: false,
   };
 

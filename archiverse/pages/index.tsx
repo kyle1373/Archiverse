@@ -1,9 +1,8 @@
 import Image from "next/image";
 import SEO from "@/components/SEO";
-import styles from "./index.module.css";
 import { FaSearch } from "react-icons/fa";
 import Link from "next/link";
-import { Community } from "@server/database";
+import { Community, Post, getHomepageDrawings } from "@server/database";
 import { BsFillPeopleFill, BsGlobe } from "react-icons/bs";
 import { numberWithCommas } from "@utils/utils";
 import Loading from "@components/Loading";
@@ -12,8 +11,9 @@ import LoadOrRetry from "@components/LoadOrRetry";
 import Wrapper from "@components/Wrapper";
 import { useEffect, useRef, useState } from "react";
 import { queryAPI } from "@utils/queryAPI";
+import HomepageDrawings from "@components/HomepageDrawings";
 
-export default function Home() {
+export default function Home({ drawings }) {
   const searchQuery = useRef("");
   const currentPage = useRef(1);
 
@@ -116,6 +116,17 @@ export default function Home() {
           8, 2017. This archive stores millions of archived Miiverse users,
           posts, drawings, comments, and more, totaling over 17TB of data.
         </p>
+        {drawings && (
+          <div>
+            <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green">
+              <h1 className="text-green font-bold sm:text-lg text-sm">
+                Popular Drawings
+              </h1>
+            </div>
+
+            <HomepageDrawings posts={drawings} />
+          </div>
+        )}
         <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green">
           <h1 className="text-green font-bold sm:text-lg text-sm">
             Communities
@@ -216,3 +227,17 @@ export default function Home() {
     </>
   );
 }
+
+export const getServerSideProps = async (context) => {
+  var drawings: Post[] = null;
+
+  try {
+    drawings = await getHomepageDrawings();
+  } catch (e) {}
+
+  return {
+    props: {
+      drawings,
+    },
+  };
+};

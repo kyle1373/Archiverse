@@ -291,7 +291,7 @@ export default function Home({
         </div>
         {posts.data?.map((post, index) => {
           return (
-            <Link  key={post.ID + index} href={`/post/${post.ID}`}>
+            <Link href={`/post/${post.ID}`}>
               <PostCard
                 key={post.ID + index + "PostcardCommunity"}
                 post={post}

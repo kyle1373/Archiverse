@@ -11,7 +11,7 @@ import Link from "next/link";
 interface PostCardProps {
   post: Post;
   className?: any;
-  variant: "list" | "main";
+  variant: "list" | "main" | "carossel";
 }
 
 const PostCard = ({ post, className = "", variant }: PostCardProps) => {
@@ -79,10 +79,14 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
     }
   }, [post.DrawingUrl, post.ScreenshotUrl]);
 
-  if (variant === "list") {
+  if (variant === "list" || variant === "carossel") {
     return (
-      <div className={`w-full md:px-2 ${className} mt-3`}>
-        <div className="flex items-center relative mb-4">
+      <div
+        className={`w-full md:px-2 ${className} ${
+          variant === "list" ? "mt-3" : ""
+        }`}
+      >
+        <div className={`flex items-center relative mb-4`}>
           <Link href={`/user/${post.NNID}`} className="mr-2">
             <img
               src={post.MiiUrl}
@@ -134,7 +138,8 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
         ) : (
           <h1 className={`text-left`}>{post.Text}</h1>
         )}
-        {post.ScreenshotUrl &&
+        {variant === "list" &&
+          post.ScreenshotUrl &&
           (isScreenshotLoading ? (
             <div className="flex justify-center items-center md:h-[266px] h-[160px]">
               <Loading />

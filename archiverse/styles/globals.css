@@ -40,8 +40,28 @@ body {
   background: #3caa00 !important;
 }
 
-/* Optional: Customize the spinner */
 #nprogress .spinner-icon {
   border-top-color: #3caa00 !important;
   border-left-color: #3caa00 !important;
+}
+
+.fade-enter {
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 1s;
+}
+.fade-exit {
+  opacity: 1;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 1s;
 }

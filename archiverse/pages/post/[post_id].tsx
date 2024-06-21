@@ -90,7 +90,7 @@ export const getServerSideProps = async (context) => {
   return {
     props: {
       post_id,
-      post: { ...post, Date: post.Date.toISOString() },
+      post,
     },
   };
 };
