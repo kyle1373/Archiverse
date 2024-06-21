@@ -168,9 +168,13 @@ export const getPosts = async ({
   query.range(start, end);
 
   if (sortMode === "recent") {
-    query.order("PostedDate", { ascending: false });
+    query
+      .order("PostedDate", { ascending: false })
+      .order("EmpathyCount", { ascending: false });
   } else {
-    query.order("EmpathyCount", { ascending: false });
+    query
+      .order("EmpathyCount", { ascending: false })
+      .order("PostedDate", { ascending: false });
   }
 
   const { data, error } = await query;
@@ -242,6 +246,7 @@ export const getCommunities = async ({
     .select(
       "GameId, TitleId, Title, CommunityBadge, CommunityListIcon, IconUri, Type, TotalPosts, ViewRegion"
     )
+    .eq("Visible", true)
     .order("TotalPosts", { ascending: false })
     .range(start, end);
 
