@@ -21,7 +21,7 @@ const HomepageDrawings = ({ posts }: HomepageDrawingsProps) => {
     if (isClient) {
       const intervalId = setInterval(() => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % posts.length);
-      }, 13000); // 6 seconds for display + 1 second for fade transition
+      }, 7000);
 
       return () => clearInterval(intervalId);
     }
