@@ -10,11 +10,11 @@ import Link from "next/link";
 
 interface ReplyCardProps {
   reply: Reply;
+  isAuthor: boolean;
   className?: any;
-  variant: "list" | "main" | "carossel";
 }
 
-const ReplyCard = ({ reply, className = "", variant }: ReplyCardProps) => {
+const ReplyCard = ({ reply, className = "", isAuthor }: ReplyCardProps) => {
   const [isDrawingLoading, setIsDrawingLoading] = useState(true);
   const [isScreenshotLoading, setIsScreenshotLoading] = useState(true);
 
@@ -80,12 +80,16 @@ const ReplyCard = ({ reply, className = "", variant }: ReplyCardProps) => {
   }, [reply.DrawingUrl, reply.ScreenshotUrl]);
 
   return (
-    <div className={`w-full md:px-2 ${className} mt-3`}>
-      <div className="flex items-center relative mb-4">
+    <div
+      className={`w-full md:px-4 ${className} pb-2 pt-3 ${
+        isAuthor ? "bg-[#effbe7]" : ""
+      }`}
+    >
+      <div className="flex items-center relative mb-3">
         <Link href={`/user/${reply.NNID}`} className="mr-2">
           <img
             src={reply.MiiUrl}
-            className="w-[50px] h-[50px] rounded-md border-gray border-[1px] mr-3"
+            className="w-[50px] h-[50px] rounded-md border-gray bg-white border-[1px] mr-3"
             onError={({ currentTarget }) => {
               currentTarget.onerror = null; // prevents looping
               currentTarget.src = IMAGES.unknownMii;
@@ -95,16 +99,16 @@ const ReplyCard = ({ reply, className = "", variant }: ReplyCardProps) => {
         <div className="w-full">
           <div className="flex items-center">
             <Link
-              className="font-bold text-black text-[17px] hover:underline"
+              className="font-bold text-black text-[14px] hover:underline"
               href={`/user/${reply.NNID}`}
             >
               {reply.MiiName}
             </Link>
-            <h1 className="text-left ml-2 mt-[.5px] text-neutral-400 font-medium text-[13px]">
+            <h1 className="text-left ml-2 mt-[.5px] text-neutral-400 font-medium text-[11px]">
               {reply.NNID}
             </h1>
           </div>
-          <h1 className="text-left mt-[-2px] text-neutral-400 font-medium text-[13px]">
+          <h1 className="text-left mt-[-2px] text-neutral-400 font-medium text-[12px]">
             {getDate()}
           </h1>
         </div>
@@ -132,7 +136,7 @@ const ReplyCard = ({ reply, className = "", variant }: ReplyCardProps) => {
             <img className="rounded-md" src={reply.ScreenshotUrl} />
           </div>
         ))}
-      <div className="flex justify-end items-center text-[#969696] text-sm mt-3 mb-2">
+      <div className="flex justify-end items-center text-[#969696] text-sm mt-3">
         <GoPersonFill className="mr-1" />
         {reply.NumYeahs}
 

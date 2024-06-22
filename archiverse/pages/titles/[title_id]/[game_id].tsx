@@ -263,7 +263,7 @@ export default function Home({
           <div className="border-gray border-b-[1px] mx-[-16px]" />
         ) : (
           <Link
-            href={`/title/${title_id}`}
+            href={`/titles/${title_id}`}
             className="border-gray border-y-[1px] mx-[-16px] px-[16px] bg-[#f6f6f6] flex justify-between py-2 font-medium items-center"
           >
             <h1 className="text-neutral-600 text-sm">Related Communities</h1>
@@ -291,7 +291,7 @@ export default function Home({
         </div>
         {posts.data?.map((post, index) => {
           return (
-            <Link  key={post.ID + index} href={`/post/${post.ID}`}>
+            <Link  key={post.ID + index} href={`/posts/${post.ID}`}>
               <PostCard
                 key={post.ID + index + "PostcardCommunity"}
                 post={post}

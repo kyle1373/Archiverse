@@ -38,7 +38,7 @@ const HomepageDrawings = ({ posts }: HomepageDrawingsProps) => {
       <div className="transition-height duration-1000 ease-in-out mt-3 mb-4 h-[218px]">
         <TransitionGroup component={null}>
           <CSSTransition key={currentPost.ID} timeout={1000} classNames="fade">
-            <Link href={`/post/${currentPost?.ID}`}>
+            <Link href={`/posts/${currentPost?.ID}`}>
               <PostCard post={currentPost} variant={"carossel"} />
             </Link>
           </CSSTransition>

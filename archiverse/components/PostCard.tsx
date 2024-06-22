@@ -112,7 +112,7 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
             <div className="flex mt-1 items-center ">
               <Link
                 className="hover:underline flex"
-                href={`/title/${post.TitleID}/${post.GameID}`}
+                href={`/titles/${post.TitleID}/${post.GameID}`}
               >
                 <img
                   src={post.CommunityIconUrl}

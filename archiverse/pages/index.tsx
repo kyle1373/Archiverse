@@ -166,7 +166,7 @@ export default function Home({ drawings }) {
                     ? "mb-2"
                     : "border-b-[1px]"
                 } border-gray hover:brightness-95 bg-white cursor-pointer`}
-                href={"/title/" + community.TitleID + "/" + community.GameID}
+                href={"/titles/" + community.TitleID + "/" + community.GameID}
               >
                 <img
                   src={community.CommunityIconUrl ?? community.CommunityBanner}
