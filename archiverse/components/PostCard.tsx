@@ -154,7 +154,7 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
           {post.NumYeahs}
           <IoIosChatboxes className=" ml-2 mr-1" />
           {post.NumReplies}
-          <IoCheckbox className="ml-2 mb-[.5px]" />
+          {post.IsPlayed && <IoCheckbox className="ml-2 mb-[.5px]" />}
         </div>
       </div>
     );
@@ -217,7 +217,7 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
         {post.NumYeahs}
         <IoIosChatboxes className=" ml-2 mr-1" />
         {post.NumReplies}
-        <IoCheckbox className="ml-2 mb-[.5px]" />
+        {post.IsPlayed && <IoCheckbox className="ml-2 mb-[.5px]" />}
       </div>
     </div>
   );

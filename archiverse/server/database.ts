@@ -63,7 +63,7 @@ export const getPostReplies = async ({
     )
     .eq("InReplyToId", postID)
     .range(start, end)
-    .order("PostedDate", { ascending: sortMode === "newest" });
+    .order("PostedDate", { ascending: sortMode === "oldest" });
 
   if (error) {
     throw new Error(error.message);

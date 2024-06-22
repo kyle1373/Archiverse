@@ -1,5 +1,5 @@
 import SEO from "@/components/SEO";
-import { Community, Post, getPost } from "@server/database";
+import { Community, Post, Reply, getPost } from "@server/database";
 import Wrapper from "@components/Wrapper";
 import LoadOrRetry from "@components/LoadOrRetry";
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import { numberWithCommas } from "@utils/utils";
 import { BsFillPeopleFill, BsGlobe } from "react-icons/bs";
 import Link from "next/link";
 import PostCard from "@components/PostCard";
+import ReplyCard from "@components/ReplyCard";
 
 export default function Home({ post_id, post: pulledPost }) {
   const [post, setPost] = useState<{
@@ -20,6 +21,22 @@ export default function Home({ post_id, post: pulledPost }) {
       : null,
     fetching: false,
     error: null,
+  });
+
+  const [replies, setReplies] = useState<{
+    data: Reply[];
+    fetching: boolean;
+    error: string;
+    currPage: number;
+    sortMethod: "oldest" | "newest";
+    canPullMore: boolean;
+  }>({
+    data: null,
+    fetching: false,
+    error: null,
+    currPage: 0,
+    sortMethod: "newest",
+    canPullMore: false,
   });
 
   const fetchPost = async () => {
@@ -51,10 +68,73 @@ export default function Home({ post_id, post: pulledPost }) {
     }));
   };
 
+  const fetchReplies = async (reset: boolean) => {
+    var page = 1;
+    if (!reset) {
+      page = replies.currPage + 1;
+    }
+    if (replies.fetching) {
+      return;
+    }
+
+    const { data, error } = await queryAPI<Reply[]>(
+      `replies?post_id=${post_id}&sort_mode=${replies.sortMethod}&page=${page}`
+    );
+
+    if (error) {
+      setReplies((prevState) => ({
+        ...prevState,
+        fetching: false,
+        error: error,
+        canPullMore: true,
+      }));
+      return;
+    }
+    if (replies.sortMethod === "newest") {
+      const newData = [...data].reverse();
+      if (replies.data) {
+        setReplies((prevState) => ({
+          ...prevState,
+          data: [...newData, ...prevState.data],
+          fetching: false,
+          error: null,
+          canPullMore: data.length !== 0,
+        }));
+      } else {
+        setReplies((prevState) => ({
+          ...prevState,
+          data: newData,
+          fetching: false,
+          error: null,
+          canPullMore: data.length !== 0,
+        }));
+      }
+    } else {
+      if (replies.data) {
+        setReplies((prevState) => ({
+          ...prevState,
+          data: [...prevState.data, ...data],
+          fetching: false,
+          error: null,
+          canPullMore: data.length !== 0,
+        }));
+      } else {
+        setReplies((prevState) => ({
+          ...prevState,
+          data: data,
+          fetching: false,
+          error: null,
+          canPullMore: data.length !== 0,
+        }));
+      }
+    }
+  };
+
   useEffect(() => {
     if (!post.data) {
       fetchPost();
     }
+    fetchReplies(true);
   }, []);
 
   return (
@@ -76,6 +156,16 @@ export default function Home({ post_id, post: pulledPost }) {
             <div className="md:mx-2">
               <PostCard post={post.data} variant="main" />
             </div>
+            {replies.data &&
+              replies.data.map((reply, index) => {
+                return (
+                  <ReplyCard
+                    key={reply.ID + index}
+                    reply={reply}
+                    variant={"main"}
+                  />
+                );
+              })}
           </div>
         )}
       </Wrapper>
