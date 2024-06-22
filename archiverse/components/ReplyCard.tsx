@@ -128,12 +128,15 @@ const ReplyCard = ({ reply, className = "", isAuthor }: ReplyCardProps) => {
       )}
       {reply.ScreenshotUrl &&
         (isScreenshotLoading ? (
-          <div className="flex justify-center items-center md:h-[266px] h-[160px]">
+          <div className="flex justify-center items-center mt-4 md:h-[266px] h-[160px]">
             <Loading />
           </div>
         ) : (
-          <div className="flex justify-center items-center mt-4">
-            <img className="rounded-md" src={reply.ScreenshotUrl} />
+          <div className="flex justify-center items-center mt-4 md:h-[266px] h-[160px]">
+            <img
+              className="rounded-md max-w-full h-auto max-h-full"
+              src={reply.ScreenshotUrl}
+            />
           </div>
         ))}
       <div className="flex justify-end items-center text-[#969696] text-sm mt-3">

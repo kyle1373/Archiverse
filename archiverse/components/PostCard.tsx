@@ -141,12 +141,15 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
         {variant === "list" &&
           post.ScreenshotUrl &&
           (isScreenshotLoading ? (
-            <div className="flex justify-center items-center md:h-[266px] h-[160px]">
+            <div className="flex justify-center items-center mt-4 md:h-[266px] h-[160px]">
               <Loading />
             </div>
           ) : (
-            <div className="flex justify-center items-center mt-4">
-              <img className="rounded-md" src={post.ScreenshotUrl} />
+            <div className="flex justify-center items-center mt-4 md:h-[266px] h-[160px]">
+              <img
+                className="rounded-md max-w-full h-auto max-h-full"
+                src={post.ScreenshotUrl}
+              />
             </div>
           ))}
         <div className="flex justify-end items-center text-[#969696] text-sm mt-3 mb-2">
@@ -180,11 +183,11 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
             >
               {post.MiiName}
             </Link>
-            <h1 className="text-left ml-2 mt-[.5px] text-neutral-400 font-medium text-[13px]">
+            <h1 className="text-left ml-2 mt-[.5px] text-neutral-400 font-medium text-[13px] break-words">
               {post.NNID}
             </h1>
           </div>
-          <h1 className="text-left mt-[-2px] text-neutral-400 font-medium text-[13px]">
+          <h1 className="text-left mt-[-2px] text-neutral-400 font-medium text-[13px] break-words">
             {getDate()}
           </h1>
         </div>
@@ -204,12 +207,15 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
       )}
       {post.ScreenshotUrl &&
         (isScreenshotLoading ? (
-          <div className="flex justify-center items-center md:h-[266px] h-[160px]">
+          <div className="flex justify-center items-center mt-4 md:h-[266px] h-[160px]">
             <Loading />
           </div>
         ) : (
-          <div className="flex justify-center items-center mt-4">
-            <img className="rounded-md" src={post.ScreenshotUrl} />
+          <div className="flex justify-center items-center mt-4 md:h-[266px] h-[160px]">
+            <img
+              className="rounded-md max-w-full h-auto max-h-full"
+              src={post.ScreenshotUrl}
+            />
           </div>
         ))}
       <div className="flex justify-end items-center text-[#969696] text-sm mt-3 mb-2">
