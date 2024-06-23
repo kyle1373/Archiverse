@@ -2,7 +2,7 @@ import SEO from "@/components/SEO";
 import { Community, Post, Reply, getPost } from "@server/database";
 import Wrapper from "@components/Wrapper";
 import LoadOrRetry from "@components/LoadOrRetry";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { queryAPI } from "@utils/queryAPI";
 import { numberWithCommas } from "@utils/utils";
 import { BsFillPeopleFill, BsGlobe } from "react-icons/bs";
@@ -10,6 +10,7 @@ import Link from "next/link";
 import PostCard from "@components/PostCard";
 import ReplyCard from "@components/ReplyCard";
 import { LIMIT } from "@constants/constants";
+import Loading from "@components/Loading";
 
 export default function Home({ post_id, post: pulledPost }) {
   const [post, setPost] = useState<{
@@ -21,26 +22,6 @@ export default function Home({ post_id, post: pulledPost }) {
     fetching: false,
     error: null,
   });
-
-  const clickShowNewer = () => {
-    setReplies((prevState) => ({ ...prevState, showMoreCategory: "new" }));
-    fetchReplies(false, "oldest");
-  };
-
-  const clickShowNewest = () => {
-    setReplies((prevState) => ({ ...prevState, showMoreCategory: "old" }));
-    fetchReplies(true, "newest");
-  };
-
-  const clickShowOlder = () => {
-    setReplies((prevState) => ({ ...prevState, showMoreCategory: "old" }));
-    fetchReplies(false, "newest");
-  };
-
-  const clickShowOldest = () => {
-    setReplies((prevState) => ({ ...prevState, showMoreCategory: "new" }));
-    fetchReplies(true, "oldest");
-  };
 
   const [replies, setReplies] = useState<{
     data: Reply[];
@@ -87,20 +68,29 @@ export default function Home({ post_id, post: pulledPost }) {
     }));
   };
 
-  const fetchReplies = async (reset: boolean, mode: "oldest" | "newest") => {
+  const fetchReplies = async (
+    reset: boolean,
+    mode: "oldest" | "newest",
+    category: "old" | "new"
+  ) => {
     var page = 1;
     if (!reset) {
       page = replies.currPage + 1;
     }
+
     if (replies.fetching) {
       return;
     }
 
+    setReplies((prevState) => ({
+      ...prevState,
+      fetching: true,
+      error: null,
+    }));
+
     const { data, error } = await queryAPI<Reply[]>(
       `replies?post_id=${post_id}&sort_mode=${mode}&page=${page}`
     );
-
-    console.log(data);
 
     if (error) {
       setReplies((prevState) => ({
@@ -115,39 +105,23 @@ export default function Home({ post_id, post: pulledPost }) {
 
     const prevData = replies.data ? replies.data : [];
 
+    let newData;
     if (mode === "newest") {
-      console.log("Here");
       const reversedData = [...data].reverse();
-      var newData = [...reversedData, ...prevData];
-
-      if (reset) {
-        newData = reversedData;
-      }
-
-      setReplies((prevState) => ({
-        ...prevState,
-        data: newData,
-        fetching: false,
-        error: null,
-        currPage: page,
-        canPullMore: data.length === LIMIT.PostReplies,
-      }));
+      newData = reset ? reversedData : [...reversedData, ...prevData];
     } else {
-      var newData = [...prevData, ...data];
-
-      if (reset) {
-        newData = data;
-      }
-
-      setReplies((prevState) => ({
-        ...prevState,
-        data: newData,
-        currPage: page,
-        fetching: false,
-        error: null,
-        canPullMore: data.length === LIMIT.PostReplies,
-      }));
+      newData = reset ? data : [...prevData, ...data];
     }
+
+    setReplies((prevState) => ({
+      ...prevState,
+      data: newData,
+      currPage: page,
+      fetching: false,
+      error: null,
+      canPullMore: data.length === LIMIT.PostReplies,
+      showMoreCategory: category,
+    }));
   };
 
   const roundBottomCorner = (index) => {
@@ -169,7 +143,7 @@ export default function Home({ post_id, post: pulledPost }) {
     if (!post.data) {
       fetchPost();
     }
-    fetchReplies(true, "newest");
+    fetchReplies(true, "newest", "old");
   }, []);
 
   return (
@@ -198,9 +172,25 @@ export default function Home({ post_id, post: pulledPost }) {
             )}
             <div>
               {replies.canPullMore && replies.showMoreCategory === "old" && (
-                <div>
-                  <button onClick={clickShowOldest}>Show oldest</button>
-                  <button onClick={clickShowOlder}>Show older</button>
+                <div className="flex flex-col space-y-2">
+                  {!replies.fetching ? (
+                    <>
+                      <button
+                        onClick={() => fetchReplies(true, "oldest", "new")}
+                      >
+                        Show oldest
+                      </button>
+                      <button
+                        onClick={() => fetchReplies(false, "newest", "old")}
+                      >
+                        Show older
+                      </button>
+                    </>
+                  ) : (
+                    <div className="w-full items-center flex justify-center py-3">
+                      <Loading />
+                    </div>
+                  )}
                 </div>
               )}
               {replies.data &&
@@ -220,9 +210,25 @@ export default function Home({ post_id, post: pulledPost }) {
                   );
                 })}
               {replies.canPullMore && replies.showMoreCategory === "new" && (
-                <div>
-                  <button onClick={clickShowNewer}>Show newer</button>
-                  <button onClick={clickShowNewest}>Show newest</button>
+                <div className="flex flex-col space-y-2">
+                  {!replies.fetching ? (
+                    <>
+                      <button
+                        onClick={() => fetchReplies(false, "oldest", "new")}
+                      >
+                        Show newer
+                      </button>
+                      <button
+                        onClick={() => fetchReplies(true, "newest", "old")}
+                      >
+                        Show newest
+                      </button>
+                    </>
+                  ) : (
+                    <div className="w-full items-center flex justify-center py-3">
+                      <Loading />
+                    </div>
+                  )}
                 </div>
               )}
             </div>
