@@ -87,7 +87,7 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
         }`}
       >
         <div className={`flex items-center relative mb-4`}>
-          <Link href={`/user/${post.NNID}`} className="mr-2">
+          <Link href={`/users/${post.NNID}`} className="mr-2">
             <img
               src={post.MiiUrl}
               className="w-[50px] h-[50px] rounded-md border-gray border-[1px] mr-3"
@@ -101,7 +101,7 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
             <div className="flex justify-between items-center">
               <Link
                 className="font-bold text-black text-sm hover:underline"
-                href={`/user/${post.NNID}`}
+                href={`/users/${post.NNID}`}
               >
                 {post.MiiName}
               </Link>
@@ -165,7 +165,7 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
   return (
     <div className={`w-full md:px-2 ${className} mt-3`}>
       <div className="flex items-center relative mb-4">
-        <Link href={`/user/${post.NNID}`} className="mr-2">
+        <Link href={`/users/${post.NNID}`} className="mr-2">
           <img
             src={post.MiiUrl}
             className="w-[50px] h-[50px] rounded-md border-gray border-[1px] mr-3"
@@ -179,7 +179,7 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
           <div className="flex items-center">
             <Link
               className="font-bold text-black text-[17px] hover:underline"
-              href={`/user/${post.NNID}`}
+              href={`/users/${post.NNID}`}
             >
               {post.MiiName}
             </Link>

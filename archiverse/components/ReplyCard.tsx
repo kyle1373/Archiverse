@@ -84,7 +84,7 @@ const ReplyCard = ({ reply, className = "" }: ReplyCardProps) => {
       }`}
     >
       <div className="flex items-center relative mb-3">
-        <Link href={`/user/${reply.NNID}`} className="mr-2">
+        <Link href={`/users/${reply.NNID}`} className="mr-2">
           <img
             src={reply.MiiUrl}
             className="w-[50px] h-[50px] rounded-md border-gray bg-white border-[1px] mr-3"
@@ -98,7 +98,7 @@ const ReplyCard = ({ reply, className = "" }: ReplyCardProps) => {
           <div className="flex items-center">
             <Link
               className="font-bold text-black text-[14px] hover:underline"
-              href={`/user/${reply.NNID}`}
+              href={`/users/${reply.NNID}`}
             >
               {reply.MiiName}
             </Link>

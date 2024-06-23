@@ -94,7 +94,7 @@ export default function Home() {
               className={`flex py-2 ${
                 index === users.data.length - 1 ? "mb-2" : "border-b-[1px]"
               } border-gray hover:brightness-95 bg-white cursor-pointer`}
-              href={`/user/${user.NNID}`}
+              href={`/users/${user.NNID}`}
             >
               <img
                 src={user.MiiUrl}
