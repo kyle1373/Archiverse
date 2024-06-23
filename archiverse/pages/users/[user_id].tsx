@@ -75,7 +75,7 @@ export default function Home({ user: pulledUser, user_id }) {
         )}
         <div className={`relative ${user.data.BannerUrl && "mt-[-12px]"} flex`}>
           <div className="bg-white inline-block border-[1px] border-gray rounded-md">
-            <img src={user.data.MiiUrl} className="w-16 h-16 object-cover rounded-md" />
+            <img src={user.data.MiiUrl} className="w-16 h-16 object-cover" />
           </div>
           <div
             className={` ${
@@ -99,7 +99,7 @@ export default function Home({ user: pulledUser, user_id }) {
           {showMore && (
             <div className="my-4">
               <div className="flex items-center">
-                <div className="inline-block bg-[#5ac800] rounded-full px-4 py-[3px]">
+                <div className="inline-block bg-[#5ac800] text-center rounded-full w-[80px] py-[3px]">
                   <h1 className="text-white text-xs">Country</h1>
                 </div>
                 <h1 className="ml-4 text-neutral-700 text-sm">
@@ -107,7 +107,7 @@ export default function Home({ user: pulledUser, user_id }) {
                 </h1>
               </div>
               <div className="flex mt-2 items-center">
-                <div className="inline-block bg-[#5ac800] rounded-full px-4 py-[3px]">
+                <div className="inline-block bg-[#5ac800] text-center rounded-full w-[80px] py-[3px]">
                   <h1 className="text-white text-xs">Birthday</h1>
                 </div>
                 <h1 className="ml-4 text-neutral-700 text-sm">

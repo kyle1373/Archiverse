@@ -573,7 +573,7 @@ const convertUser = (data): User => {
     MiiName: data.ScreenName,
     MiiUrl: getArchiveFromUri(getMiiImageUrl(data.IconUri, null)),
     Bio: data.Bio,
-    Country: data.Country,
+    Country: data.Country ?? "Hidden",
     NumFollowers: data.FollowerCount === 0 ? null : data.FollowerCount,
     NumFollowing: data.FollowingCount === 0 ? null : data.FollowingCount,
     NumFriends: data.FriendsCount === 0 ? null : data.FriendsCount,
