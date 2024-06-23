@@ -132,7 +132,7 @@ export default function Home({
           </div>
           <div className={` ${user.BannerUrl ? "mt-[16px]" : "mt-[4px]"} ml-4`}>
             <h1 className="font-bold text-base">{user.MiiName}</h1>
-            <h2 className="font-normal text-base mt-[-3px] text-[#969696]">
+            <h2 className="font-normal text-sm mt-[-3px] text-[#969696]">
               {user.NNID}
             </h2>
           </div>
