@@ -126,14 +126,16 @@ export const getPosts = async ({
   sortMode,
   beforeDateTime,
   gameID,
+  NNID,
   titleID,
   onlyDrawings = false,
-  limit = LIMIT.CommunityPosts,
+  limit = LIMIT.Posts,
   page = 1,
 }: {
-  sortMode: "recent" | "popular";
+  sortMode: "recent" | "popular" | "oldest";
   gameID?: string;
   titleID?: string;
+  NNID?: string;
   onlyDrawings?: boolean;
   beforeDateTime?: Date;
   limit?: number;
@@ -165,11 +167,19 @@ export const getPosts = async ({
     query.eq("GameId", gameID).eq("TitleId", titleID);
   }
 
+  if (NNID) {
+    query.eq("NNID", NNID);
+  }
+
   query.range(start, end);
 
   if (sortMode === "recent") {
     query
       .order("PostedDate", { ascending: false })
+      .order("EmpathyCount", { ascending: false });
+  } else if (sortMode === "oldest") {
+    query
+      .order("PostedDate", { ascending: true })
       .order("EmpathyCount", { ascending: false });
   } else {
     query
@@ -353,48 +363,6 @@ export const getUserInfo = async ({ NNID }: { NNID: string }) => {
   }
 
   return convertUser(data);
-};
-
-export const getUserPosts = async ({
-  NNID,
-  sortMode,
-  limit = LIMIT.UserPosts,
-  page = 1,
-}: {
-  NNID: string;
-  sortMode: "newest" | "oldest" | "popular";
-  limit?: number;
-  page?: number;
-}): Promise<Post[]> => {
-  const start = (page - 1) * limit;
-  const end = start + limit - 1;
-
-  const query = supabaseAdmin
-    .from("Posts")
-    .select(
-      "Id, EmpathyCount, Feeling, GameCommunityIconUri, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ReplyCount, ScreenName, ScreenShotUri, Text, Title, TitleId, VideoUrl, NNID, HideRequested"
-    )
-    .eq("NNID", NNID)
-    .range(start, end);
-
-  if (sortMode === "newest") {
-    query.order("PostedDate", { ascending: false });
-  } else if (sortMode === "oldest") {
-    query.order("PostedDate", { ascending: true });
-  } else {
-    query.order("EmpathyCount", { ascending: false });
-  }
-
-  const { data, error } = await query;
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  const posts: Post[] = [];
-  data?.map((value) => posts.push(convertPost(value)));
-
-  return posts;
 };
 
 export const getUserReplies = async ({

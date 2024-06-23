@@ -16,8 +16,7 @@ export const IMAGES = {
 
 export const LIMIT = {
   PostReplies: 25,
-  CommunityPosts: 25,
+  Posts: 25,
   Communities: 25,
-  UserPosts: 25,
   UserReplies: 25,
 };

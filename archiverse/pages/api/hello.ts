@@ -6,7 +6,6 @@ import {
   getPost,
   getPostReplies,
   getUserInfo,
-  getUserPosts,
   searchCommunities,
   searchUsers,
 } from "@server/database";

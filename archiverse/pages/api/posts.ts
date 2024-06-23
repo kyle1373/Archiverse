@@ -9,7 +9,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 type QueryParams = {
   homepage?: boolean;
-  sort_mode: "recent" | "popular";
+  user_id?: string;
+  sort_mode: "recent" | "popular" | "oldest";
   before_datetime?: string;
   game_id?: string;
   title_id?: string;
@@ -18,21 +19,32 @@ type QueryParams = {
 };
 
 const validateQueryParams = (query: QueryParams): string[] => {
-  const { sort_mode, before_datetime, game_id, title_id, page } = query;
+  const { sort_mode, before_datetime, user_id, game_id, title_id, page } =
+    query;
 
   const errors: string[] = [];
   const sortModes = ["recent", "popular"];
+
+  const sortModesWithoutUserID = ["recent", "popular", "oldest"];
 
   if (query.homepage) {
     return []; // just quit early. we don't care about other variables now
   }
 
-  if (!sortModes.includes(sort_mode)) {
+  if (user_id && !sortModesWithoutUserID.includes(sort_mode)) {
+    errors.push(
+      "Invalid sort_mode with user_id. Must be 'recent', 'popular', or 'oldest'."
+    );
+  } else if (!user_id && !sortModes.includes(sort_mode)) {
     errors.push("Invalid sort_mode. Must be 'recent' or 'popular'.");
   }
 
   if (query.only_drawings && sort_mode !== "popular") {
     errors.push("If only_drawings is true, then sort_mode must be 'popular'.");
+  }
+
+  if (user_id && (typeof user_id !== "string" || user_id.length === 0)) {
+    errors.push("Invalid user_id. Must be a non-empty string.");
   }
 
   if (before_datetime && isNaN(Date.parse(before_datetime))) {
@@ -65,6 +77,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const {
       title_id,
       game_id,
+      user_id,
       sort_mode,
       before_datetime,
       page,
@@ -77,6 +90,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       title_id: title_id as string,
       game_id: game_id as string,
       sort_mode: sort_mode as "recent" | "popular",
+      user_id: user_id as string,
       before_datetime: before_datetime as string,
       page: page as string | number,
       only_drawings: only_drawings === "true",
@@ -102,6 +116,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       sortMode: queryParams.sort_mode,
       beforeDateTime: beforeDate,
       gameID: queryParams.game_id,
+      NNID: queryParams.user_id,
       titleID: queryParams.title_id,
       onlyDrawings: only_drawings === "true",
       page: pageNumber,
