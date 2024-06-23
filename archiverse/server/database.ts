@@ -579,7 +579,10 @@ const convertUser = (data): User => {
     NumFriends: data.FriendsCount === 0 ? null : data.FriendsCount,
     NumPosts: data.TotalPosts,
     Birthday: data.Birthday,
-    BannerUrl: data.SidebarCoverUrl === "" ? null : data.SidebarCoverUrl,
+    BannerUrl:
+      data.SidebarCoverUrl === ""
+        ? null
+        : getArchiveFromUri(data.SidebarCoverUrl),
     DoNotShow: false,
   };
 

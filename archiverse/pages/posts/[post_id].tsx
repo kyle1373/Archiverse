@@ -124,21 +124,6 @@ export default function Home({ post_id, post: pulledPost }) {
     }));
   };
 
-  const roundBottomCorner = (index) => {
-    // Hotfix when bottom does not show buttons and comments are shown
-    if (!replies.data) {
-      return "";
-    }
-    if (
-      index !== replies.data.length - 1 &&
-      (replies.canPullMore === false || replies.showMoreCategory === "old")
-    ) {
-      return "";
-    }
-
-    return "md:rounded-b-md";
-  };
-
   useEffect(() => {
     if (!post.data) {
       fetchPost();
@@ -201,7 +186,7 @@ export default function Home({ post_id, post: pulledPost }) {
                       key={reply.ID + index + "div"}
                       className={`px-4 md:mx-[0px] mx-[-16px] ${
                         reply.NNID === post.data.NNID ? "bg-[#effbe7]" : ""
-                      } ${roundBottomCorner(index)}`}
+                      }`}
                     >
                       <ReplyCard key={reply.ID + index} reply={reply} />
                       {index !== replies.data.length - 1 && (

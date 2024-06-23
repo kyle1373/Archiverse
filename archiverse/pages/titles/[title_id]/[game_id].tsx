@@ -220,7 +220,7 @@ export default function Home({
         </div>
         {community.data && (
           <>
-            <div className="flex bg-[#f6f6f6] text-[#969696] font-semibold mt-[-16px] mx-[-16px] md:rounded-t-md px-2 py-1 md:text-sm text-xs">
+            <div className="flex bg-[#f6f6f6] text-[#969696] font-semibold mt-[-16px] mx-[-16px] px-2 py-1 md:text-sm text-xs">
               {community.data?.GameTitle}
             </div>
             <div className="mx-[-16px]">

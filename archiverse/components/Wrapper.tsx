@@ -36,8 +36,6 @@ const Wrapper = ({ children }) => {
                     </h1>
                   </div>
                 </Link>
-
-
               </div>
               <div className="md:flex hidden items-center justify-center mt-10">
                 <Link
@@ -60,7 +58,7 @@ const Wrapper = ({ children }) => {
           </div>
         </div>
         <div className="md:mt-12 md:w-2/3">
-          <div className="bg-white p-4 md:border-[1px] border-y-[1px] md:rounded-md border-gray items-center">
+          <div className="bg-white p-4 md:border-[1px] border-y-[1px] md:rounded-md border-gray items-center overflow-hidden">
             {children}
           </div>
           <div className="md:hidden flex justify-center items-center mt-6">
