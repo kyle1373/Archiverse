@@ -51,12 +51,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(400).json({ error: errors.join(", ") });
     }
 
-    const limit = 25; // default limit for pagination
     const pageNumber = page ? parseInt(page as string, 10) : 1;
 
     const replies = await getPostReplies({
       sortMode: queryParams.sort_mode,
-      limit,
       postID: post_id as string,
       page: pageNumber,
     });

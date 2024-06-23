@@ -10,11 +10,10 @@ import Link from "next/link";
 
 interface ReplyCardProps {
   reply: Reply;
-  isAuthor: boolean;
   className?: any;
 }
 
-const ReplyCard = ({ reply, className = "", isAuthor }: ReplyCardProps) => {
+const ReplyCard = ({ reply, className = "" }: ReplyCardProps) => {
   const [isDrawingLoading, setIsDrawingLoading] = useState(true);
   const [isScreenshotLoading, setIsScreenshotLoading] = useState(true);
 
@@ -81,8 +80,7 @@ const ReplyCard = ({ reply, className = "", isAuthor }: ReplyCardProps) => {
 
   return (
     <div
-      className={`w-full md:px-4 ${className} pb-2 pt-3 ${
-        isAuthor ? "bg-[#effbe7]" : ""
+      className={`${className} pb-2 pt-3
       }`}
     >
       <div className="flex items-center relative mb-3">

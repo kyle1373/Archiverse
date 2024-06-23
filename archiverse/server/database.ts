@@ -1,4 +1,4 @@
-import { IMAGES } from "@constants/constants";
+import { IMAGES, LIMIT } from "@constants/constants";
 import supabaseAdmin from "./supabaseAdmin";
 import _ from "lodash";
 
@@ -45,7 +45,7 @@ export const getPost = async ({ postID }): Promise<Post> => {
 export const getPostReplies = async ({
   postID,
   sortMode,
-  limit = 10,
+  limit = LIMIT.PostReplies,
   page = 1,
 }: {
   postID: string;
@@ -128,7 +128,7 @@ export const getPosts = async ({
   gameID,
   titleID,
   onlyDrawings = false,
-  limit = 25,
+  limit = LIMIT.CommunityPosts,
   page = 1,
 }: {
   sortMode: "recent" | "popular";
@@ -232,7 +232,7 @@ export const searchCommunities = async ({
 };
 
 export const getCommunities = async ({
-  limit = 25,
+  limit = LIMIT.Communities,
   page = 1,
 }: {
   limit?: number;
@@ -358,7 +358,7 @@ export const getUserInfo = async ({ NNID }: { NNID: string }) => {
 export const getUserPosts = async ({
   NNID,
   sortMode,
-  limit = 10,
+  limit = LIMIT.UserPosts,
   page = 1,
 }: {
   NNID: string;
@@ -400,7 +400,7 @@ export const getUserPosts = async ({
 export const getUserReplies = async ({
   NNID,
   sortMode,
-  limit = 10,
+  limit = LIMIT.UserReplies,
   page = 1,
 }: {
   NNID: string;

@@ -93,7 +93,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(200).json(posts);
     }
 
-    const limit = 25; // default limit for pagination
     const pageNumber = page ? parseInt(page as string, 10) : 1;
     const beforeDate = before_datetime
       ? new Date(queryParams.before_datetime)
@@ -104,7 +103,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       beforeDateTime: beforeDate,
       gameID: queryParams.game_id,
       titleID: queryParams.title_id,
-      limit,
       onlyDrawings: only_drawings === "true",
       page: pageNumber,
     });

@@ -13,3 +13,11 @@ export const LINKS = {
 export const IMAGES = {
   unknownMii: "/unknown_mii.png",
 };
+
+export const LIMIT = {
+  PostReplies: 25,
+  CommunityPosts: 25,
+  Communities: 25,
+  UserPosts: 25,
+  UserReplies: 25,
+};
