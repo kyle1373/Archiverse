@@ -246,11 +246,11 @@ export default function Home({
                   {community.data?.CommunityTitle}
                 </h2>
                 <div className="flex mt-1">
-                  <h3 className="flex items-center justify-center font-light text-xs sm:text-sm text-neutral-500 mr-4">
+                  <h3 className="flex items-center justify-center font-normal text-xs sm:text-sm text-neutral-500 mr-4">
                     <BsFillPeopleFill className="mr-1 mb-[.5px]" />
                     {numberWithCommas(community.data?.NumPosts)}
                   </h3>
-                  <h3 className="flex items-center justify-center font-light text-xs sm:text-sm text-neutral-500">
+                  <h3 className="flex items-center justify-center font-normal text-xs sm:text-sm text-neutral-500">
                     <BsGlobe className="mr-1" />
                     {community.data?.Region}
                   </h3>
@@ -316,7 +316,7 @@ export default function Home({
         )}
 
         {!posts.fetching && posts.data?.length === 0 && !posts.error && (
-          <h3 className="text-neutral-400 mt-[20px] font-light text-base text-center">
+          <h3 className="text-neutral-400 mt-[20px] font-normal text-base text-center">
             No posts found.
           </h3>
         )}

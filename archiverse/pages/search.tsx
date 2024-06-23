@@ -96,19 +96,21 @@ export default function Home() {
               } border-gray hover:brightness-95 bg-white cursor-pointer`}
               href={`/users/${user.NNID}`}
             >
-              <img
-                src={user.MiiUrl}
-                alt={user.MiiName + " Icon"}
-                className="w-[54px] h-[54px] rounded-md border-gray border-[1px] mr-4"
-                onError={({ currentTarget }) => {
-                  currentTarget.onerror = null; // prevents looping
-                  currentTarget.src = IMAGES.unknownMii;
-                }}
-              />
+              <div className="w-[54px] h-[54px] flex-shrink-0 rounded-md border-gray border-[1px] mr-4">
+                <img
+                  src={user.MiiUrl}
+                  alt={user.MiiName + " Icon"}
+                  className="w-full h-full object-cover rounded-md"
+                  onError={({ currentTarget }) => {
+                    currentTarget.onerror = null; // prevents looping
+                    currentTarget.src = IMAGES.unknownMii;
+                  }}
+                />
+              </div>
               <div className="flex flex-col justify-between">
                 <h2 className="font-bold text-base">
                   {user.MiiName}
-                  <span className="ml-2 font-light text-xs text-[#797979]">
+                  <span className="ml-2 font-normal text-xs text-[#797979]">
                     {user.NNID}
                   </span>
                 </h2>

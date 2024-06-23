@@ -266,7 +266,7 @@ export default function Home({ user: pulledUser, user_id }) {
         )}
 
         {!posts.fetching && posts.data?.length === 0 && !posts.error && (
-          <h3 className="text-neutral-400 mt-[20px] font-light text-base text-center">
+          <h3 className="text-neutral-400 mt-[20px] font-normal text-base text-center">
             No posts found.
           </h3>
         )}

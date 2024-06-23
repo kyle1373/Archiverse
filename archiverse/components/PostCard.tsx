@@ -118,7 +118,7 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
                   src={post.CommunityIconUrl}
                   className="h-4 w-4 border-[1px] rounded-sm border-gray"
                 />
-                <h1 className="font-thin text-[#969696] md:text-xs text-[10px] ml-1">
+                <h1 className="font-normal text-[#969696] md:text-xs text-[10px] ml-1">
                   {post.CommunityTitle}
                 </h1>
               </Link>

@@ -11,6 +11,13 @@ import PostCard from "@components/PostCard";
 import ReplyCard from "@components/ReplyCard";
 import { LIMIT } from "@constants/constants";
 import Loading from "@components/Loading";
+import {
+  LuArrowDown,
+  LuArrowDownToLine,
+  LuArrowRightToLine,
+  LuArrowUp,
+  LuArrowUpToLine,
+} from "react-icons/lu";
 
 export default function Home({ post_id, post: pulledPost }) {
   const [post, setPost] = useState<{
@@ -155,69 +162,83 @@ export default function Home({ post_id, post: pulledPost }) {
                 Comments
               </div>
             )}
-            <div>
-              {replies.canPullMore && replies.showMoreCategory === "old" && (
-                <div className="flex flex-col space-y-2">
-                  {!replies.fetching ? (
-                    <>
-                      <button
-                        onClick={() => fetchReplies(true, "oldest", "new")}
+            {replies.fetching && !replies.data ? (
+              <div className="w-full items-center flex justify-center py-3 mb-3">
+                <Loading />
+              </div>
+            ) : (
+              <div>
+                {replies.canPullMore && replies.showMoreCategory === "old" && (
+                  <div className="flex flex-col">
+                    {!replies.fetching ? (
+                      <>
+                        <button
+                          onClick={() => fetchReplies(true, "oldest", "new")}
+                          className="flex items-center justify-center font-bold py-2 border-b-[1px] border-gray hover:bg-neutral-100 text-sm"
+                        >
+                          <LuArrowUpToLine className="mr-2" />
+                          View oldest comments
+                        </button>
+                        <button
+                          onClick={() => fetchReplies(false, "newest", "old")}
+                          className="flex items-center justify-center font-bold py-2 border-b-[1px] border-gray hover:bg-neutral-100 text-sm"
+                        >
+                          <LuArrowUp className="mr-2" />
+                          View older comments
+                        </button>
+                      </>
+                    ) : (
+                      <div className="w-full items-center flex justify-center border-b-[1px] border-gray py-3">
+                        <Loading />
+                      </div>
+                    )}
+                  </div>
+                )}
+                {replies.data &&
+                  post.data &&
+                  replies.data.map((reply, index) => {
+                    return (
+                      <div
+                        key={reply.ID + index + "div"}
+                        className={`px-4 md:mx-[0px] mx-[-16px] ${
+                          reply.NNID === post.data.NNID ? "bg-[#effbe7]" : ""
+                        }`}
                       >
-                        Show oldest
-                      </button>
-                      <button
-                        onClick={() => fetchReplies(false, "newest", "old")}
-                      >
-                        Show older
-                      </button>
-                    </>
-                  ) : (
-                    <div className="w-full items-center flex justify-center py-3">
-                      <Loading />
-                    </div>
-                  )}
-                </div>
-              )}
-              {replies.data &&
-                post.data &&
-                replies.data.map((reply, index) => {
-                  return (
-                    <div
-                      key={reply.ID + index + "div"}
-                      className={`px-4 md:mx-[0px] mx-[-16px] ${
-                        reply.NNID === post.data.NNID ? "bg-[#effbe7]" : ""
-                      }`}
-                    >
-                      <ReplyCard key={reply.ID + index} reply={reply} />
-                      {index !== replies.data.length - 1 && (
-                        <div className="border-b-[1px] mx-[-16px] border-gray" />
-                      )}
-                    </div>
-                  );
-                })}
-              {replies.canPullMore && replies.showMoreCategory === "new" && (
-                <div className="flex flex-col space-y-2">
-                  {!replies.fetching ? (
-                    <>
-                      <button
-                        onClick={() => fetchReplies(false, "oldest", "new")}
-                      >
-                        Show newer
-                      </button>
-                      <button
-                        onClick={() => fetchReplies(true, "newest", "old")}
-                      >
-                        Show newest
-                      </button>
-                    </>
-                  ) : (
-                    <div className="w-full items-center flex justify-center py-3">
-                      <Loading />
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+                        <ReplyCard key={reply.ID + index} reply={reply} />
+                        {index !== replies.data.length - 1 && (
+                          <div className="border-b-[1px] mx-[-16px] border-gray" />
+                        )}
+                      </div>
+                    );
+                  })}
+                {replies.canPullMore && replies.showMoreCategory === "new" && (
+                  <div className="flex flex-col space-y-2">
+                    {!replies.fetching ? (
+                      <>
+                        <button
+                          onClick={() => fetchReplies(false, "oldest", "new")}
+                          className="flex items-center justify-center text-sm font-bold py-2 border-t-[1px] border-gray hover:bg-neutral-100"
+                        >
+                          <LuArrowDown className="mr-2" />
+                          View newer comments
+                        </button>
+                        <button
+                          onClick={() => fetchReplies(true, "newest", "old")}
+                          className="flex items-center justify-center text-sm font-bold py-2 border-t-[1px] border-gray hover:bg-neutral-100"
+                        >
+                          <LuArrowDownToLine className="mr-2" />
+                          View newest comments{" "}
+                        </button>
+                      </>
+                    ) : (
+                      <div className="w-full items-center flex justify-center py-3 border-t-[1px] border-gray">
+                        <Loading />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
       </Wrapper>
