@@ -15,18 +15,14 @@ import { queryAPI } from "@utils/queryAPI";
 import { IMAGES, LIMIT } from "@constants/constants";
 import PostCard from "@components/PostCard";
 
-export default function Home({ user: pulledUser, user_id }) {
+export default function Home({
+  user,
+  user_id,
+}: {
+  user: User;
+  user_id: string;
+}) {
   const [showMore, setShowMore] = useState(false);
-
-  const [user, setUser] = useState<{
-    data: User;
-    fetching: boolean;
-    error: string;
-  }>({
-    data: pulledUser,
-    fetching: false,
-    error: null,
-  });
 
   const [posts, setPosts] = useState<{
     data: Post[];
@@ -64,7 +60,7 @@ export default function Home({ user: pulledUser, user_id }) {
         error: null,
       }));
     }
-    var queryUrl = `posts?user_id=${user.data.NNID}&page=${page}&sort_mode=recent`;
+    var queryUrl = `posts?user_id=${user.NNID}&page=${page}&sort_mode=recent`;
 
     const { data, error } = await queryAPI<Post[]>(queryUrl);
 
@@ -99,27 +95,6 @@ export default function Home({ user: pulledUser, user_id }) {
     }
   };
 
-  const fetchUser = async () => {
-    if (user.fetching) {
-      return;
-    }
-
-    setUser((prevState) => ({
-      ...prevState,
-      data: null,
-      fetching: true,
-      error: null,
-    }));
-    const { data, error } = await queryAPI<User>(`user/${user_id}`);
-
-    setUser((prevState) => ({
-      ...prevState,
-      fetching: false,
-      data: data,
-      error: error,
-    }));
-  };
-
   const displayDashIfZero = (number) => {
     if (!number) {
       return "-";
@@ -128,37 +103,37 @@ export default function Home({ user: pulledUser, user_id }) {
   };
 
   useEffect(() => {
-    if (!user.data) {
-      fetchUser();
-    }
-
     fetchPosts(true);
   }, []);
 
   return (
     <>
-      <SEO />
+      <SEO
+        title={user.MiiName + "'s Profile"}
+        description={`Check out ${user.MiiName}'s profile on Archiverse, the largest Miiverse archive on the internet.`}
+        isImageBig={false}
+        imageUrl={user.MiiUrl}
+      />
       <Wrapper>
-        {user.data.BannerUrl && (
+        {user.BannerUrl && (
           <div className="flex bg-[#f6f6f6] text-neutral-700 font-semibold border-b-[1px] border-gray mt-[-16px] mx-[-16px] text-base">
             <img
-              src={user.data?.BannerUrl}
+              src={user?.BannerUrl}
               className="w-full md:h-[195px] sm:h-[200px] h-[140px] object-cover object-center"
             />
           </div>
         )}
-        <div className={`relative ${user.data.BannerUrl && "mt-[-12px]"} flex`}>
+        <div className={`relative ${user.BannerUrl && "mt-[-12px]"} flex`}>
           <div className="bg-white inline-block border-[1px] border-gray rounded-md">
-            <img src={user.data.MiiUrl} className="w-16 h-16 object-cover rounded-md" />
+            <img
+              src={user.MiiUrl}
+              className="w-16 h-16 object-cover rounded-md"
+            />
           </div>
-          <div
-            className={` ${
-              user.data.BannerUrl ? "mt-[16px]" : "mt-[4px]"
-            } ml-4`}
-          >
-            <h1 className="font-bold text-base">{user.data.MiiName}</h1>
+          <div className={` ${user.BannerUrl ? "mt-[16px]" : "mt-[4px]"} ml-4`}>
+            <h1 className="font-bold text-base">{user.MiiName}</h1>
             <h2 className="font-normal text-base mt-[-3px] text-[#969696]">
-              {user.data.NNID}
+              {user.NNID}
             </h2>
           </div>
         </div>
@@ -168,7 +143,7 @@ export default function Home({ user: pulledUser, user_id }) {
               !showMore && "line-clamp-2"
             }`}
           >
-            {user.data.Bio}
+            {user.Bio}
           </p>
           {showMore && (
             <div className="my-4">
@@ -177,7 +152,7 @@ export default function Home({ user: pulledUser, user_id }) {
                   <h1 className="text-white text-xs">Country</h1>
                 </div>
                 <h1 className="ml-4 text-neutral-700 text-sm">
-                  {user.data.Country}
+                  {user.Country}
                 </h1>
               </div>
               <div className="flex mt-2 items-center">
@@ -185,7 +160,7 @@ export default function Home({ user: pulledUser, user_id }) {
                   <h1 className="text-white text-xs">Birthday</h1>
                 </div>
                 <h1 className="ml-4 text-neutral-700 text-sm">
-                  {user.data.Birthday}
+                  {user.Birthday}
                 </h1>
               </div>
             </div>
@@ -202,7 +177,7 @@ export default function Home({ user: pulledUser, user_id }) {
           <div className="flex-1 flex justify-center border-r-[1px] border-gray">
             <div className="text-center">
               <h1 className="sm:text-[18px] text-[15px] font-normal text-neutral-800">
-                {user.data.NumPosts ?? "-"}
+                {user.NumPosts ?? "-"}
               </h1>
               <h1 className="text-[10px] text-[#969696]">Posts</h1>
             </div>
@@ -210,7 +185,7 @@ export default function Home({ user: pulledUser, user_id }) {
           <div className="flex-1 flex justify-center border-r-[1px] border-gray">
             <div className="text-center">
               <h1 className="sm:text-[18px] text-[15px] font-normal text-neutral-800">
-                {displayDashIfZero(user.data.NumFriends) + " / 100"}
+                {displayDashIfZero(user.NumFriends) + " / 100"}
               </h1>
               <h1 className="text-[10px] text-[#969696]">Friends</h1>
             </div>
@@ -218,7 +193,7 @@ export default function Home({ user: pulledUser, user_id }) {
           <div className="flex-1 flex justify-center border-r-[1px] border-gray">
             <div className="text-center">
               <h1 className="sm:text-[18px] text-[15px] font-normal text-neutral-800">
-                {displayDashIfZero(user.data.NumFollowing)}
+                {displayDashIfZero(user.NumFollowing)}
               </h1>
               <h1 className="text-[10px] text-[#969696]">Following</h1>
             </div>
@@ -226,7 +201,7 @@ export default function Home({ user: pulledUser, user_id }) {
           <div className="flex-1 flex justify-center">
             <div className="text-center">
               <h1 className="sm:text-[18px] text-[15px] font-normal text-neutral-800">
-                {displayDashIfZero(user.data.NumFollowers)}
+                {displayDashIfZero(user.NumFollowers)}
               </h1>
               <h1 className="text-[10px] text-[#969696]">Followers</h1>
             </div>

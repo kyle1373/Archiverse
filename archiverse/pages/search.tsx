@@ -64,7 +64,7 @@ export default function Home() {
 
   return (
     <>
-      <SEO />
+      <SEO title={"Search Users"} makeDescriptionBlank={true} />
       <Wrapper>
         <div className="flex bg-[#f6f6f6] text-neutral-700 font-semibold border-b-[1px] border-gray mt-[-16px] mx-[-16px] px-2 py-1 text-base">
           Users

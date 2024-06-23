@@ -19,17 +19,13 @@ import {
   LuArrowUpToLine,
 } from "react-icons/lu";
 
-export default function Home({ post_id, post: pulledPost }) {
-  const [post, setPost] = useState<{
-    data: Post;
-    fetching: boolean;
-    error: string;
-  }>({
-    data: pulledPost ? { ...pulledPost } : null,
-    fetching: false,
-    error: null,
-  });
-
+export default function Home({
+  post_id,
+  post,
+}: {
+  post_id: string;
+  post: Post;
+}) {
   const [replies, setReplies] = useState<{
     data: Reply[];
     fetching: boolean;
@@ -45,35 +41,6 @@ export default function Home({ post_id, post: pulledPost }) {
     currPage: 1,
     canPullMore: false,
   });
-
-  const fetchPost = async () => {
-    if (post.fetching) {
-      return;
-    }
-    setPost((prevState) => ({
-      ...prevState,
-      fetching: true,
-      error: null,
-    }));
-
-    const { data, error } = await queryAPI<Post>(`post/${post_id}`);
-
-    if (error) {
-      setPost((prevState) => ({
-        ...prevState,
-        fetching: false,
-        error: error,
-      }));
-      return;
-    }
-
-    setPost((prevState) => ({
-      ...prevState,
-      data: data,
-      fetching: false,
-      error: null,
-    }));
-  };
 
   const fetchReplies = async (
     reset: boolean,
@@ -132,30 +99,33 @@ export default function Home({ post_id, post: pulledPost }) {
   };
 
   useEffect(() => {
-    if (!post.data) {
-      fetchPost();
-    }
     fetchReplies(true, "newest", "old");
   }, []);
 
   return (
     <>
-      <SEO />
+      <SEO
+        title={post.MiiName + "'s Post"}
+        description={post.Text}
+        makeDescriptionBlank={post.Text ? false : true}
+        isImageBig={post.ScreenshotUrl || post.DrawingUrl ? true : false}
+        imageUrl={post.DrawingUrl ?? post.ScreenshotUrl ?? post.MiiUrl}
+      />
       <Wrapper>
-        {post.data && (
+        {post && (
           <div className="md:mx-[-16px] my-[-16px]">
             <Link
               className="flex bg-[#f6f6f6] text-neutral-700 font-semibold md:rounded-t-md p-2 border-gray border-b-[1px] md:text-base text-sm  md:mx-0 mx-[-16px] items-center hover:underline"
-              href={`/titles/${post.data.TitleID}/${post.data.GameID}`}
+              href={`/titles/${post.TitleID}/${post.GameID}`}
             >
               <img
-                src={post.data.CommunityIconUrl}
+                src={post.CommunityIconUrl}
                 className="h-6 w-6 rounded-sm mr-2"
               />
-              {post.data?.CommunityTitle}
+              {post?.CommunityTitle}
             </Link>
             <div className="md:mx-2">
-              <PostCard post={post.data} variant="main" />
+              <PostCard post={post} variant="main" />
             </div>
             {replies.data && replies.data.length !== 0 && (
               <div className="bg-[#5ac800] border-y-[1px] border-t-[#4faf00] border-b-gray flex py-1 text-sm text-white px-2 md:mx-0 mx-[-16px]">
@@ -195,13 +165,13 @@ export default function Home({ post_id, post: pulledPost }) {
                   </div>
                 )}
                 {replies.data &&
-                  post.data &&
+                  post &&
                   replies.data.map((reply, index) => {
                     return (
                       <div
                         key={reply.ID + index + "div"}
                         className={`px-4 md:mx-[0px] mx-[-16px] ${
-                          reply.NNID === post.data.NNID ? "bg-[#effbe7]" : ""
+                          reply.NNID === post.NNID ? "bg-[#effbe7]" : ""
                         }`}
                       >
                         <ReplyCard key={reply.ID + index} reply={reply} />
