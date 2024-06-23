@@ -93,8 +93,9 @@ CREATE OR REPLACE FUNCTION "public"."search_communities"("search_query" "text") 
         g."TotalPosts",
         g."ViewRegion"
     FROM "Games" g
-    WHERE g."Title" ILIKE '%' || search_query || '%'
-    OR g."Type" ILIKE '%' || search_query || '%'
+    WHERE (g."Title" ILIKE '%' || search_query || '%'
+    OR g."Type" ILIKE '%' || search_query || '%')
+    AND g."Visible" = TRUE
     ORDER BY similarity(g."Type", search_query) DESC
     LIMIT 35;
 END;$$;
@@ -148,10 +149,13 @@ CREATE TABLE IF NOT EXISTS "public"."Games" (
     "ViewRegion" integer NOT NULL,
     "TotalDeletedPosts" integer DEFAULT 0 NOT NULL,
     "TotalPosts" integer DEFAULT 0 NOT NULL,
-    "TotalReplies" integer DEFAULT 0 NOT NULL
+    "TotalReplies" integer DEFAULT 0 NOT NULL,
+    "Visible" boolean DEFAULT true NOT NULL
 );
 
 ALTER TABLE "public"."Games" OWNER TO "postgres";
+
+COMMENT ON COLUMN "public"."Games"."Visible" IS 'Some Rows here seem to point to nonsense with no posts. This column being false makes the community not visible on the communities tab or search';
 
 CREATE SEQUENCE IF NOT EXISTS "public"."Games_Id_seq"
     START WITH 1
@@ -284,6 +288,8 @@ CREATE INDEX "Games_TitleId_idx" ON "public"."Games" USING "btree" ("TitleId");
 CREATE INDEX "Games_TotalPosts_desc_idx" ON "public"."Games" USING "btree" ("TotalPosts" DESC);
 
 CREATE INDEX "Games_TotalPosts_idx" ON "public"."Games" USING "btree" ("TotalPosts");
+
+CREATE INDEX "Games_Visible_idx" ON "public"."Games" USING "btree" ("Visible");
 
 CREATE INDEX "Posts_EmpathyCount_idx_desc" ON "public"."Posts" USING "btree" ("EmpathyCount" DESC);
 
