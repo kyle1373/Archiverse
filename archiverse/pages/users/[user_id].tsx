@@ -149,7 +149,7 @@ export default function Home({ user: pulledUser, user_id }) {
         )}
         <div className={`relative ${user.data.BannerUrl && "mt-[-12px]"} flex`}>
           <div className="bg-white inline-block border-[1px] border-gray rounded-md">
-            <img src={user.data.MiiUrl} className="w-16 h-16 object-cover" />
+            <img src={user.data.MiiUrl} className="w-16 h-16 object-cover rounded-md" />
           </div>
           <div
             className={` ${
@@ -202,7 +202,7 @@ export default function Home({ user: pulledUser, user_id }) {
           <div className="flex-1 flex justify-center border-r-[1px] border-gray">
             <div className="text-center">
               <h1 className="sm:text-[18px] text-[15px] font-normal text-neutral-800">
-                {user.data.NumPosts}
+                {user.data.NumPosts ?? "-"}
               </h1>
               <h1 className="text-[10px] text-[#969696]">Posts</h1>
             </div>

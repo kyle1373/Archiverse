@@ -34,7 +34,7 @@ export const getPost = async ({ postID }): Promise<Post> => {
       TitleID: "0",
       IsSpoiler: false,
       IsPlayed: false,
-      Date: undefined,
+      Date: null,
       DoNotShow: false,
     };
   }
@@ -530,7 +530,7 @@ const convertUser = (data): User => {
       NumFollowing: null,
       NumFriends: null,
       BannerUrl: null,
-      NumPosts: data.NumPosts,
+      NumPosts: data.NumPosts ?? null,
       Birthday: "Unknown",
       DoNotShow: true,
     };
