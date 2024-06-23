@@ -198,6 +198,7 @@ export default function Home({ post_id, post: pulledPost }) {
                 replies.data.map((reply, index) => {
                   return (
                     <div
+                      key={reply.ID + index + "div"}
                       className={`px-4 md:mx-[0px] mx-[-16px] ${
                         reply.NNID === post.data.NNID ? "bg-[#effbe7]" : ""
                       } ${roundBottomCorner(index)}`}
