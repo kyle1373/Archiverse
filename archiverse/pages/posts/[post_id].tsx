@@ -184,7 +184,7 @@ export default function Home({
                     );
                   })}
                 {replies.canPullMore && replies.showMoreCategory === "new" && (
-                  <div className="flex flex-col space-y-2">
+                  <div className="flex flex-col">
                     {!replies.fetching ? (
                       <>
                         <button
