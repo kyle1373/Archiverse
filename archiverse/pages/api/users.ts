@@ -11,6 +11,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { search } = req.query;
 
+    if (!search || (typeof search !== "string" || search.length < 3)) {
+      return res.status(200).json([]);
+    }
+
     const posts = await searchUsers({
       query: search as string,
     });
