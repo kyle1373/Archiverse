@@ -141,7 +141,7 @@ export default function Home({
             ) : (
               <div>
                 {replies.canPullMore && replies.showMoreCategory === "old" && (
-                  <div className="flex flex-col">
+                  <div className="flex flex-col mx-[-16px]">
                     {!replies.fetching ? (
                       <>
                         <button
@@ -184,7 +184,7 @@ export default function Home({
                     );
                   })}
                 {replies.canPullMore && replies.showMoreCategory === "new" && (
-                  <div className="flex flex-col">
+                  <div className="flex flex-col mx-[-16px]">
                     {!replies.fetching ? (
                       <>
                         <button
