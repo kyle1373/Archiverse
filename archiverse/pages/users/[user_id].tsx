@@ -263,17 +263,15 @@ export const getServerSideProps = async (context) => {
 
   var user: User = null;
 
-  try {
-    const userInfo = await getUserInfo({ NNID: user_id });
+  const userInfo = await getUserInfo({ NNID: user_id });
 
-    if ((userInfo as any).redirect) {
-      return {
-        redirect: (userInfo as any).redirect,
-      };
-    }
+  if ((userInfo as any).redirect) {
+    return {
+      redirect: (userInfo as any).redirect,
+    };
+  }
 
-    user = userInfo as User;
-  } catch (e) {}
+  user = userInfo as User;
 
   return {
     props: {

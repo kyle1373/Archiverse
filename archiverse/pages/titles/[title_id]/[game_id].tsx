@@ -169,9 +169,7 @@ export default function Home({ title_id, game_id, community }) {
       <SEO
         title={community.CommunityTitle}
         description={`Check out the ${community.CommunityTitle} on Archiverse, the largest Miiverse archive on the internet.`}
-        imageUrl={
-          community.CommunityBanner ?? community.CommunityIconUrl
-        }
+        imageUrl={community.CommunityBanner ?? community.CommunityIconUrl}
         isImageBig={!!community.CommunityBanner}
       />
 
@@ -192,10 +190,7 @@ export default function Home({ title_id, game_id, community }) {
             </div>
             <div className={`flex py-2 mb-2`}>
               <img
-                src={
-                  community?.CommunityIconUrl ??
-                  community?.CommunityBanner
-                }
+                src={community?.CommunityIconUrl ?? community?.CommunityBanner}
                 alt={community?.GameTitle + " Icon"}
                 className="w-[54px] h-[54px] rounded-md border-gray border-[1px] mr-4"
               />
@@ -293,14 +288,10 @@ export default function Home({ title_id, game_id, community }) {
 export const getServerSideProps = async (context) => {
   const { title_id, game_id } = context.query;
 
-  var community: Community = null;
-
-  try {
-    community = await getCommunity({
-      gameID: game_id,
-      titleID: title_id,
-    });
-  } catch (e) {}
+  var community: Community = await getCommunity({
+    gameID: game_id,
+    titleID: title_id,
+  });
 
   return {
     props: {

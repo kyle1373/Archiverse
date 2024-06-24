@@ -12,7 +12,27 @@ export const getPost = async ({ postID }): Promise<Post> => {
     .maybeSingle();
 
   if (error) {
-    throw new Error(error.message);
+    return {
+      ID: postID,
+      MiiName: "Error: " + error.code,
+      NNID: "unknown",
+      MiiUrl: null,
+      NumYeahs: 0,
+      NumReplies: 0,
+      Title: null,
+      Text: error.message,
+      DrawingUrl: null,
+      ScreenshotUrl: null,
+      VideoUrl: null,
+      CommunityTitle: "Unknown",
+      CommunityIconUrl: IMAGES.unknownMii,
+      GameID: "0",
+      TitleID: "0",
+      IsSpoiler: false,
+      IsPlayed: false,
+      Date: null,
+      DoNotShow: false,
+    };
   }
 
   if (!data) {
@@ -312,7 +332,17 @@ export const getCommunity = async ({
     .maybeSingle();
 
   if (error) {
-    throw new Error(error.message);
+    return {
+      GameID: gameID,
+      TitleID: titleID,
+      CommunityTitle: "Error: " + error.code,
+      CommunityBanner: null,
+      CommunityIconUrl: IMAGES.unknownMii,
+      Badge: null,
+      GameTitle: error.message,
+      NumPosts: 0,
+      Region: "Worldwide",
+    };
   }
 
   if (!data) {
@@ -341,7 +371,24 @@ export const getUserInfo = async ({ NNID }: { NNID: string }) => {
     .ilike("NNID", `${NNID}`)
     .maybeSingle();
 
-  if (!data || error) {
+  if (error) {
+    return {
+      NNID: NNID,
+      MiiName: "Error: " + error.code,
+      MiiUrl: IMAGES.unknownMii,
+      Bio: error.message,
+      Country: "Unknown",
+      NumFollowers: null,
+      NumFollowing: null,
+      NumFriends: null,
+      BannerUrl: null,
+      NumPosts: 0,
+      Birthday: "Unknown",
+      DoNotShow: true,
+    };
+  }
+  
+  if (!data) {
     return {
       NNID: NNID,
       MiiName: "Not Found",
