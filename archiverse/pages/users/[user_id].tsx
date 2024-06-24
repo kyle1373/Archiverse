@@ -165,7 +165,7 @@ export default function Home({
               </div>
             </div>
           )}
-          <div className="flex justify-end">
+          <div className="flex justify-end mt-4">
             <button onClick={() => setShowMore((prevState) => !prevState)}>
               <h1 className="text-green text-sm hover:underline">
                 {showMore ? "Show less" : "Show more"}
