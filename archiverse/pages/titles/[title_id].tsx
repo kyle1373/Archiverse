@@ -14,7 +14,7 @@ export default function Home({ title_id }) {
     fetching: boolean;
     error: string;
   }>({
-    data: [],
+    data: null,
     fetching: false,
     error: null,
   });
@@ -50,9 +50,7 @@ export default function Home({ title_id }) {
   };
 
   useEffect(() => {
-    if (!communities.data) {
-      fetchCommunities();
-    }
+    fetchCommunities();
   }, []);
 
   function getGameTitle() {
@@ -86,7 +84,6 @@ export default function Home({ title_id }) {
           />
         </div>
 
-        <div className="mb-4" />
         {communities.data?.map((community, index) => {
           return (
             <Link
