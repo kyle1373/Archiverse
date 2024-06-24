@@ -106,8 +106,10 @@ export default function Home({
     <>
       <SEO
         title={post.MiiName + "'s Post"}
-        description={post.Text}
-        makeDescriptionBlank={post.Text ? false : true}
+        description={
+          post.Text ??
+          `Check out ${post.MiiName}'s post on Archiverse, the largest Miiverse archive on the internet.`
+        }
         isImageBig={post.ScreenshotUrl || post.DrawingUrl ? true : false}
         imageUrl={post.DrawingUrl ?? post.ScreenshotUrl ?? post.MiiUrl}
       />
