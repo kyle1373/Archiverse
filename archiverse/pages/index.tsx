@@ -116,6 +116,24 @@ export default function Home({ drawings }) {
           8, 2017. This archive stores millions of archived Miiverse users,
           posts, drawings, comments, and more, totaling over 17TB of data.
         </p>
+        <p className="text-sm mt-6 text-neutral-700">
+          Thank you{" "}
+          <Link
+            className="underline"
+            href={"https://github.com/drasticactions"}
+          >
+            Drastic Actions
+          </Link>{" "}
+          for running the original website from 2018 - 2024,{" "}
+          <Link className="underline" href={"https://wiki.archiveteam.org/"}>
+            Archive Team
+          </Link>{" "}
+          for archiving Miiverse before it shut down, and Luna for creating
+          the polished icons that you see throughout the website. Archiverse would not be possible without these people.
+        </p>
+        <p className="text-sm mt-6 text-neutral-700">
+          - Kyle (SuperFX)
+        </p>
         {drawings && (
           <div>
             <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green">
