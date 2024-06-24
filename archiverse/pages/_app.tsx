@@ -7,6 +7,7 @@ import Router from "next/router";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css"; // Import the nprogress CSS
 import { useEffect } from "react";
+import Script from "next/script";
 
 NProgress.configure({ showSpinner: false });
 
@@ -40,6 +41,13 @@ export default function App({ Component, pageProps }: AppProps) {
       <Provider store={store}>
         <Component {...pageProps} />{" "}
       </Provider>
+      {process.env.NODE_ENV === "production" && (
+        <Script
+          async
+          src="https://umami.archiverse.app/script.js"
+          data-website-id="23d6f0a7-aa02-4372-a89e-02d7c50e070b"
+        />
+      )}
     </>
   );
 }
