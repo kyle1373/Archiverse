@@ -338,16 +338,12 @@ export const getUserInfo = async ({ NNID }: { NNID: string }) => {
     .select(
       "NNID, Bio, Birthday, Country, FollowerCount, FollowingCount, FriendsCount, GameSkill, IconUri, IsBirthdayHidden, IsError, IsHidden, ScreenName, SidebarCoverUrl, TotalPosts, HideRequested"
     )
-    .eq("NNID", NNID)
+    .ilike("NNID", `${NNID}`)
     .maybeSingle();
 
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  if (!data) {
+  if (!data || error) {
     return {
-      NNID: "unknown",
+      NNID: NNID,
       MiiName: "Not Found",
       MiiUrl: IMAGES.unknownMii,
       Bio: "This user does not exist.",
@@ -359,6 +355,17 @@ export const getUserInfo = async ({ NNID }: { NNID: string }) => {
       NumPosts: 0,
       Birthday: "Unknown",
       DoNotShow: true,
+    };
+  }
+
+  // Check if the case-sensitive NNID matches
+  if (data.NNID !== NNID) {
+    // Redirect to the correct URL with the correct case
+    return {
+      redirect: {
+        destination: `/users/${data.NNID}`,
+        permanent: false,
+      },
     };
   }
 

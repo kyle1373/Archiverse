@@ -257,13 +257,22 @@ export default function Home({
   );
 }
 
+// Next.js server-side props function
 export const getServerSideProps = async (context) => {
   const { user_id } = context.query;
 
   var user: User = null;
 
   try {
-    user = await getUserInfo({ NNID: user_id });
+    const userInfo = await getUserInfo({ NNID: user_id });
+
+    if ((userInfo as any).redirect) {
+      return {
+        redirect: (userInfo as any).redirect,
+      };
+    }
+
+    user = userInfo as User;
   } catch (e) {}
 
   return {
