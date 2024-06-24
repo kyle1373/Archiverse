@@ -363,12 +363,15 @@ export const getCommunity = async ({
 };
 
 export const getUserInfo = async ({ NNID }: { NNID: string }) => {
+  // Escape underscores for the ilike query
+  const escapedNNID = NNID.replace(/_/g, "\\_");
+
   const { data, error } = await supabaseAdmin
     .from("Users")
     .select(
       "NNID, Bio, Birthday, Country, FollowerCount, FollowingCount, FriendsCount, GameSkill, IconUri, IsBirthdayHidden, IsError, IsHidden, ScreenName, SidebarCoverUrl, TotalPosts, HideRequested"
     )
-    .ilike("NNID", `${NNID}`)
+    .ilike("NNID", `${escapedNNID}`)
     .maybeSingle();
 
   if (error) {
@@ -387,7 +390,7 @@ export const getUserInfo = async ({ NNID }: { NNID: string }) => {
       DoNotShow: true,
     };
   }
-  
+
   if (!data) {
     return {
       NNID: NNID,

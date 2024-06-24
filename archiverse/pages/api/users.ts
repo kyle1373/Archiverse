@@ -15,11 +15,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(200).json([]);
     }
 
-    const posts = await searchUsers({
-      query: search as string,
+    const searchWithEscaped = search.replace(/_/g, "\\_");
+
+    const users = await searchUsers({
+      query: searchWithEscaped as string,
     });
 
-    return res.status(200).json(posts);
+    return res.status(200).json(users);
   } catch (e) {
     return res.status(500).json({ error: e?.message });
   }
