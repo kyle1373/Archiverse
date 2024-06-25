@@ -175,7 +175,7 @@ export default function Home({ title_id, game_id, community }) {
 
       <Wrapper>
         {community && (
-          <>
+          <div>
             <div className="flex bg-[#f6f6f6] text-[#969696] font-semibold mt-[-16px] mx-[-16px] px-2 py-1 md:text-sm text-xs">
               {community?.GameTitle}
             </div>
@@ -188,17 +188,17 @@ export default function Home({ title_id, game_id, community }) {
                 <img src={community?.CommunityBanner} className="w-full" />
               )}
             </div>
-            <div className={`flex py-2 mb-2`}>
+            <div className={`flex my-2`}>
               <img
                 src={community?.CommunityIconUrl ?? community?.CommunityBanner}
                 alt={community?.GameTitle + " Icon"}
                 className="w-[54px] h-[54px] rounded-md border-gray border-[1px] mr-4"
               />
               <div>
-                <h2 className="font-bold sm:text-base text-sm mt-1">
+                <h2 className="font-bold sm:text-base text-sm mt-[-3px]">
                   {community?.CommunityTitle}
                 </h2>
-                <div className="flex mt-1">
+                <div className="flex mt-[-1px]">
                   <h3 className="flex items-center justify-center font-normal text-xs sm:text-sm text-neutral-500 mr-4">
                     <BsFillPeopleFill className="mr-1 mb-[.5px]" />
                     {numberWithCommas(community?.NumPosts)}
@@ -208,9 +208,19 @@ export default function Home({ title_id, game_id, community }) {
                     {community?.Region}
                   </h3>
                 </div>
+                {community.WebArchiveUrl && (
+                  <div className=" mt-[-4px]">
+                    <Link
+                      href={community.WebArchiveUrl}
+                      className="hover:underline text-[10px] text-[#969696]"
+                    >
+                      Web Archive
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
-          </>
+          </div>
         )}
         {!hasRelatedCommunities ? (
           <div className="border-gray border-b-[1px] mx-[-16px]" />
