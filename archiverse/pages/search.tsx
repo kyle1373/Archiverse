@@ -1,18 +1,16 @@
 import Image from "next/image";
 import SEO from "@/components/SEO";
 import styles from "./index.module.css";
-import { FaSearch } from "react-icons/fa";
 import Link from "next/link";
 import { Community, User } from "@server/database";
-import { BsFillPeopleFill, BsGlobe } from "react-icons/bs";
 import { numberWithCommas } from "@utils/utils";
 import Loading from "@components/Loading";
-import { VscDebugRestart } from "react-icons/vsc";
 import LoadOrRetry from "@components/LoadOrRetry";
 import Wrapper from "@components/Wrapper";
 import { useEffect, useRef, useState } from "react";
 import { queryAPI } from "@utils/queryAPI";
 import { IMAGES } from "@constants/constants";
+import MiiverseSymbol from "@components/MiiverseSymbol";
 
 export default function Home() {
   const searchQuery = useRef("");
@@ -83,7 +81,10 @@ export default function Home() {
             type="submit"
             className="absolute right-2 bg-neutral-200 top-1/2 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
           >
-            <FaSearch className="text-neutral-500 hover:text-neutral-700 sm:text-sm text-xs" />
+            <MiiverseSymbol
+              className="fill-neutral-500 hover:fill-neutral-700 sm:h-4 sm:w-4 h-3 w-3"
+              symbol={"magnifying_glass"}
+            />
           </button>
         </form>
 

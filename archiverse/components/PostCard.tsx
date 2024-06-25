@@ -2,11 +2,9 @@ import { IMAGES, SEO_METADATA } from "@/constants/constants";
 import { Post } from "@server/database";
 import Head from "next/head";
 import React, { useState, useEffect } from "react";
-import { GoPersonFill } from "react-icons/go";
-import { IoIosChatboxes } from "react-icons/io";
-import { IoCheckbox } from "react-icons/io5";
 import Loading from "@/components/Loading"; // Make sure to adjust the import path as needed
 import Link from "next/link";
+import MiiverseSymbol from "./MiiverseSymbol";
 
 interface PostCardProps {
   post: Post;
@@ -128,7 +126,9 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
             </div>
           </div>
         </div>
-        {realTitle && <h1 className="text-left font-bold text-lg">{realTitle}</h1>}
+        {realTitle && (
+          <h1 className="text-left font-bold text-lg">{realTitle}</h1>
+        )}
         {post.DrawingUrl ? (
           isDrawingLoading ? (
             <div className="flex justify-center items-center h-[120px]">
@@ -176,11 +176,22 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
             )}
           </div>
           <div className="flex items-center">
-            <GoPersonFill className="mr-1" />
+            <MiiverseSymbol
+              className="w-[14px] h-[14px] fill-[#969696] mr-[3px]"
+              symbol={"person_happy"}
+            />
             {post.NumYeahs}
-            <IoIosChatboxes className=" ml-2 mr-1" />
+            <MiiverseSymbol
+              className="w-4 h-4 fill-[#969696] ml-3 mr-[3px]"
+              symbol={"comment_reply"}
+            />
             {post.NumReplies}
-            {post.IsPlayed && <IoCheckbox className="ml-2 mb-[.5px]" />}
+            {post.IsPlayed && (
+              <MiiverseSymbol
+                className="ml-3 mb-[.5px] w-5 h-5 fill-[#969696]"
+                symbol={"online_check"}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -216,7 +227,9 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
           </h1>
         </div>
       </div>
-      {realTitle && <h1 className="text-left font-bold text-lg">{realTitle}</h1>}
+      {realTitle && (
+        <h1 className="text-left font-bold text-lg">{realTitle}</h1>
+      )}
       {post.DrawingUrl ? (
         isDrawingLoading ? (
           <div className="flex justify-center items-center h-[120px]">
@@ -263,11 +276,22 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
           )}
         </div>
         <div className="flex items-center">
-          <GoPersonFill className="mr-1" />
+          <MiiverseSymbol
+            className="w-[14px] h-[14px] fill-[#969696] mr-[3px]"
+            symbol={"person_happy"}
+          />
           {post.NumYeahs}
-          <IoIosChatboxes className=" ml-2 mr-1" />
+          <MiiverseSymbol
+            className="w-4 h-4 fill-[#969696] ml-3 mr-[3px]"
+            symbol={"comment_reply"}
+          />
           {post.NumReplies}
-          {post.IsPlayed && <IoCheckbox className="ml-2 mb-[.5px]" />}
+          {post.IsPlayed && (
+            <MiiverseSymbol
+              className="ml-3 mb-[.5px] w-5 h-5 fill-[#969696]"
+              symbol={"online_check"}
+            />
+          )}
         </div>
       </div>
     </div>

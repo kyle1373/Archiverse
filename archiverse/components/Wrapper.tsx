@@ -2,8 +2,8 @@ import { LINKS, SEO_METADATA } from "@/constants/constants";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
-import { BsPeopleFill } from "react-icons/bs";
-import { FaDiscord, FaGithub, FaSearch } from "react-icons/fa";
+import { FaDiscord, FaGithub } from "react-icons/fa";
+import MiiverseSymbol from "./MiiverseSymbol";
 
 const Wrapper = ({ children }) => {
   return (
@@ -22,7 +22,10 @@ const Wrapper = ({ children }) => {
               <div className="flex-col md:flex">
                 <Link className="md:mt-8 mt-[-20px]" href="/">
                   <div className="md:ml-2 hover:brightness-95 inline-flex items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-bold py-2 px-4 md:mt-0 text-base md:mr-0 mr-2 md:mb-4 md:w-48">
-                    <BsPeopleFill className="md:mr-2" />
+                    <MiiverseSymbol
+                      className="md:mr-2 fill-neutral-600 h-[20px] w-[20px]"
+                      symbol={"silhouette_people"}
+                    />
                     <h1 className="flex-grow text-center hidden md:block">
                       Communities
                     </h1>
@@ -30,7 +33,10 @@ const Wrapper = ({ children }) => {
                 </Link>
                 <Link href="/search">
                   <div className="md:ml-2 hover:brightness-95 inline-flex items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-bold py-2 px-4 md:mt-0 text-base md:mr-0 mr-4 md:w-48">
-                    <FaSearch className="md:mr-2" />
+                    <MiiverseSymbol
+                      className="md:mr-2 fill-neutral-600 h-[18px] w-[18px] md:ml-[1.5px]"
+                      symbol={"magnifying_glass"}
+                    />
                     <h1 className="flex-grow text-center hidden md:block">
                       Users
                     </h1>

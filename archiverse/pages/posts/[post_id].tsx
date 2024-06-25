@@ -5,7 +5,6 @@ import LoadOrRetry from "@components/LoadOrRetry";
 import { useEffect, useState } from "react";
 import { queryAPI } from "@utils/queryAPI";
 import { numberWithCommas } from "@utils/utils";
-import { BsFillPeopleFill, BsGlobe } from "react-icons/bs";
 import Link from "next/link";
 import PostCard from "@components/PostCard";
 import ReplyCard from "@components/ReplyCard";
@@ -18,6 +17,7 @@ import {
   LuArrowUp,
   LuArrowUpToLine,
 } from "react-icons/lu";
+import MiiverseSymbol from "@components/MiiverseSymbol";
 
 export default function Home({
   post_id,
@@ -148,14 +148,20 @@ export default function Home({
                           onClick={() => fetchReplies(true, "oldest", "new")}
                           className="flex items-center justify-center font-bold py-2 border-b-[1px] border-gray hover:bg-neutral-100 text-sm"
                         >
-                          <LuArrowUpToLine className="mr-2" />
+                          <MiiverseSymbol
+                            className="mr-2 h-4 w-4"
+                            symbol={"upbar"}
+                          />
                           View oldest comments
                         </button>
                         <button
                           onClick={() => fetchReplies(false, "newest", "old")}
                           className="flex items-center justify-center font-bold py-2 border-b-[1px] border-gray hover:bg-neutral-100 text-sm"
                         >
-                          <LuArrowUp className="mr-2" />
+                          <MiiverseSymbol
+                            className="mr-2 h-4 w-4"
+                            symbol={"up"}
+                          />
                           View older comments
                         </button>
                       </>
@@ -191,15 +197,21 @@ export default function Home({
                           onClick={() => fetchReplies(false, "oldest", "new")}
                           className="flex items-center justify-center text-sm font-bold py-2 border-t-[1px] border-gray hover:bg-neutral-100"
                         >
-                          <LuArrowDown className="mr-2" />
+                          <MiiverseSymbol
+                            className="mr-2 h-4 w-4"
+                            symbol={"down"}
+                          />
                           View newer comments
                         </button>
                         <button
                           onClick={() => fetchReplies(true, "newest", "old")}
                           className="flex items-center justify-center text-sm font-bold py-2 border-t-[1px] border-gray hover:bg-neutral-100"
                         >
-                          <LuArrowDownToLine className="mr-2" />
-                          View newest comments{" "}
+                          <MiiverseSymbol
+                            className="mr-2 h-4 w-4"
+                            symbol={"downbar"}
+                          />
+                          View newest comments
                         </button>
                       </>
                     ) : (

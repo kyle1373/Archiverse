@@ -1,13 +1,10 @@
 import Image from "next/image";
 import SEO from "@/components/SEO";
 import styles from "./index.module.css";
-import { FaSearch } from "react-icons/fa";
 import Link from "next/link";
 import { Community, Post, User, getUserInfo } from "@server/database";
-import { BsFillPeopleFill, BsGlobe } from "react-icons/bs";
 import { numberWithCommas } from "@utils/utils";
 import Loading from "@components/Loading";
-import { VscDebugRestart } from "react-icons/vsc";
 import LoadOrRetry from "@components/LoadOrRetry";
 import Wrapper from "@components/Wrapper";
 import { useEffect, useRef, useState } from "react";

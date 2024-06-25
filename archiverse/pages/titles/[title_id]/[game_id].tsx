@@ -5,11 +5,11 @@ import LoadOrRetry from "@components/LoadOrRetry";
 import { useEffect, useState } from "react";
 import { queryAPI } from "@utils/queryAPI";
 import { numberWithCommas } from "@utils/utils";
-import { BsFillPeopleFill, BsGlobe } from "react-icons/bs";
 import Link from "next/link";
 import { IoIosArrowForward } from "react-icons/io";
 import PostCard from "@components/PostCard";
 import Loading from "@components/Loading";
+import MiiverseSymbol from "@components/MiiverseSymbol";
 
 export default function Home({ title_id, game_id, community }) {
   const [beforeDate, setBeforeDate] = useState<{
@@ -198,14 +198,20 @@ export default function Home({ title_id, game_id, community }) {
                 <h2 className="font-bold sm:text-base text-sm mt-[0px]">
                   {community?.CommunityTitle}
                 </h2>
-                <div className="flex mt-[-0px]">
+                <div className="flex mt-[1px]">
                   <h3 className="flex items-center justify-center font-normal text-xs text-neutral-500 mr-4">
-                    <BsFillPeopleFill className="mr-1 mb-[.5px]" />
-                    {numberWithCommas(community?.NumPosts)}
+                    <MiiverseSymbol
+                      className="mr-[6px] h-[14px] w-[14px] fill-neutral-500 "
+                      symbol={"silhouette_people"}
+                    />
+                    {numberWithCommas(community.NumPosts)}
                   </h3>
                   <h3 className="flex items-center justify-center font-normal text-xs text-neutral-500">
-                    <BsGlobe className="mr-1" />
-                    {community?.Region}
+                    <MiiverseSymbol
+                      className="mr-[5px] h-3 w-3 fill-neutral-500 "
+                      symbol={"globe"}
+                    />
+                    {community.Region}
                   </h3>
                 </div>
                 {community.WebArchiveUrl && (

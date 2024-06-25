@@ -2,11 +2,9 @@ import { IMAGES, SEO_METADATA } from "@/constants/constants";
 import { Post, Reply } from "@server/database";
 import Head from "next/head";
 import React, { useState, useEffect } from "react";
-import { GoPersonFill } from "react-icons/go";
-import { IoIosChatboxes } from "react-icons/io";
-import { IoCheckbox } from "react-icons/io5";
 import Loading from "@/components/Loading"; // Make sure to adjust the import path as needed
 import Link from "next/link";
+import MiiverseSymbol from "./MiiverseSymbol";
 
 interface ReplyCardProps {
   reply: Reply;
@@ -149,11 +147,18 @@ const ReplyCard = ({ reply, className = "" }: ReplyCardProps) => {
           )}
         </div>
 
-        <div className="flex justify-center items-center">
-          <GoPersonFill className="mr-1" />
+        <div className="flex items-center">
+          <MiiverseSymbol
+            className="w-[14px] h-[14px] fill-[#969696] mr-[3px]"
+            symbol={"person_happy"}
+          />
           {reply.NumYeahs}
-
-          {reply.IsPlayed && <IoCheckbox className="ml-2 mb-[.5px]" />}
+          {reply.IsPlayed && (
+            <MiiverseSymbol
+              className="ml-3 mb-[.5px] w-5 h-5 fill-[#969696]"
+              symbol={"online_check"}
+            />
+          )}
         </div>
       </div>
     </div>

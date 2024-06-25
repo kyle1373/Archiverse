@@ -1,12 +1,9 @@
 import Image from "next/image";
 import SEO from "@/components/SEO";
-import { FaSearch } from "react-icons/fa";
 import Link from "next/link";
 import { Community, Post, getHomepageDrawings } from "@server/database";
-import { BsFillPeopleFill, BsGlobe } from "react-icons/bs";
 import { numberWithCommas } from "@utils/utils";
 import Loading from "@components/Loading";
-import { VscDebugRestart } from "react-icons/vsc";
 import LoadOrRetry from "@components/LoadOrRetry";
 import Wrapper from "@components/Wrapper";
 import { useEffect, useRef, useState } from "react";
@@ -14,6 +11,7 @@ import { queryAPI } from "@utils/queryAPI";
 import HomepageDrawings from "@components/HomepageDrawings";
 import PostCard from "@components/PostCard";
 import { LINKS } from "@constants/constants";
+import MiiverseSymbol from "@components/MiiverseSymbol";
 
 export default function Home({ drawings }) {
   const searchQuery = useRef("");
@@ -165,7 +163,8 @@ export default function Home({ drawings }) {
           <Link className="underline" href={"https://wiki.archiveteam.org/"}>
             Archive Team
           </Link>{" "}
-          for archiving Miiverse before its shutdown, and Luna for creating polished icons shown throughout the website.
+          for archiving Miiverse before its shutdown, and Luna for creating
+          polished icons shown throughout the website.
         </p>
         <p className="text-sm mt-6 text-neutral-700">
           If you enjoy Archiverse, consider{" "}
@@ -175,15 +174,22 @@ export default function Home({ drawings }) {
           and/or{" "}
           <Link className="underline" href={LINKS.discord}>
             joining the Archiverse Discord
-          </Link>. Have fun!
+          </Link>
+          . Have fun!
         </p>
         <p className="text-sm mt-6 text-neutral-700">- Kyle (SuperFX)</p>
         {drawings && (
           <div>
             <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green items-end">
-              <h1 className="text-green font-bold sm:text-lg text-sm">
-                Popular Drawings
-              </h1>
+              <div className="flex items-end">
+                <MiiverseSymbol
+                  symbol={"pencil_draw"}
+                  className="fill-green sm:h-6 sm:w-6 h-5 w-5 mr-2 sm:mb-[4px] mb-[2px]"
+                />
+                <h1 className="text-green font-bold sm:text-lg text-sm">
+                  Popular Drawings
+                </h1>
+              </div>
             </div>
 
             <HomepageDrawings posts={drawings} />
@@ -191,9 +197,15 @@ export default function Home({ drawings }) {
         )}
         <div>
           <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green mb-3 items-end">
-            <h1 className="text-green font-bold sm:text-lg text-sm">
-              Random Post
-            </h1>
+            <div className="flex items-end">
+              <MiiverseSymbol
+                symbol={"star_fill"}
+                className="fill-green sm:h-5 sm:w-5 h-4 w-4 mr-2 sm:mb-[6px] mb-1"
+              />
+              <h1 className="text-green font-bold sm:text-lg text-sm">
+                Random Post
+              </h1>
+            </div>
             <button
               onClick={fetchRandomPost}
               className="md:ml-2 hover:brightness-95 inline-flex justify-center items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-medium py-[2px] px-4 mt-4 md:mt-0 md:text-base text-sm"
@@ -219,9 +231,16 @@ export default function Home({ drawings }) {
           )}
         </div>
         <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green items-end">
-          <h1 className="text-green font-bold sm:text-lg text-sm">
-            Communities
-          </h1>
+          <div className="flex items-end">
+            <MiiverseSymbol
+              symbol={"silhouette_people"}
+              className="fill-green sm:h-6 sm:w-6 h-5 w-5 mr-2 sm:mb-[4px] mb-[2px]"
+            />
+            <h1 className="text-green font-bold sm:text-lg text-sm">
+              Communities
+            </h1>
+          </div>
+
           <form onSubmit={handleSearch} className="flex items-center relative">
             <input
               type="text"
@@ -233,7 +252,10 @@ export default function Home({ drawings }) {
               type="submit"
               className="absolute right-2 bg-neutral-200 top-1/2 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
             >
-              <FaSearch className="text-neutral-500 hover:text-neutral-700 sm:text-sm text-xs" />
+              <MiiverseSymbol
+                className="fill-neutral-500 hover:fill-neutral-700 sm:h-4 sm:w-4 h-3 w-3"
+                symbol={"magnifying_glass"}
+              />
             </button>
           </form>
         </div>
@@ -270,11 +292,17 @@ export default function Home({ drawings }) {
                   </h2>
                   <div className="flex mt-1">
                     <h3 className="flex items-center justify-center font-normal text-xs sm:text-sm text-neutral-500 mr-4">
-                      <BsFillPeopleFill className="mr-1 mb-[.5px]" />
+                      <MiiverseSymbol
+                        className="mr-[6px] h-4 w-4 fill-neutral-500 "
+                        symbol={"silhouette_people"}
+                      />
                       {numberWithCommas(community.NumPosts)}
                     </h3>
                     <h3 className="flex items-center justify-center font-normal text-xs sm:text-sm text-neutral-500">
-                      <BsGlobe className="mr-1" />
+                      <MiiverseSymbol
+                        className="mr-[6px] h-4 w-4 fill-neutral-500 "
+                        symbol={"globe"}
+                      />
                       {community.Region}
                     </h3>
                   </div>

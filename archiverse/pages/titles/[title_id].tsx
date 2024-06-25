@@ -5,8 +5,8 @@ import LoadOrRetry from "@components/LoadOrRetry";
 import { useEffect, useState } from "react";
 import { queryAPI } from "@utils/queryAPI";
 import { numberWithCommas } from "@utils/utils";
-import { BsFillPeopleFill, BsGlobe } from "react-icons/bs";
 import Link from "next/link";
+import MiiverseSymbol from "@components/MiiverseSymbol";
 
 export default function Home({ title_id }) {
   const [communities, setCommunities] = useState<{
@@ -106,11 +106,17 @@ export default function Home({ title_id }) {
                 </h2>
                 <div className="flex mt-1">
                   <h3 className="flex items-center justify-center font-normal text-xs sm:text-sm text-neutral-500 mr-4">
-                    <BsFillPeopleFill className="mr-1 mb-[.5px]" />
+                    <MiiverseSymbol
+                      className="mr-[7px] h-[16px] w-[16px] fill-neutral-500 "
+                      symbol={"silhouette_people"}
+                    />
                     {numberWithCommas(community.NumPosts)}
                   </h3>
                   <h3 className="flex items-center justify-center font-normal text-xs sm:text-sm text-neutral-500">
-                    <BsGlobe className="mr-1" />
+                    <MiiverseSymbol
+                      className="mr-[6px] h-4 w-4 fill-neutral-500 "
+                      symbol={"globe"}
+                    />
                     {community.Region}
                   </h3>
                 </div>
