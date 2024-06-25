@@ -18,7 +18,7 @@ const SEO: React.FC<MetaProps> = ({
   makeDescriptionBlank = false,
 }) => {
   const metadata = {
-    title: title ? title : SEO_METADATA.title,
+    title: title ? `${title} | Archiverse` : SEO_METADATA.title,
     description: description ? description : SEO_METADATA.description,
     imageUrl: imageUrl ? imageUrl : SEO_METADATA.image,
   };
