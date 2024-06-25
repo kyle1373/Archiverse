@@ -100,9 +100,9 @@ export const getPostReplies = async ({
   return replies;
 };
 
-export const getRandomPost = async (): Promise<Post> => {
+export const getRandomPosts = async (): Promise<Post[]> => {
   const { data, error } = await supabaseAdmin.rpc("get_random_posts", {
-    num_rows: 1,
+    num_rows: 5, // This parameter is actually never used.
   });
 
   if (error) {
@@ -110,7 +110,9 @@ export const getRandomPost = async (): Promise<Post> => {
     throw new Error(error.message);
   }
 
-  return convertPost(data[0]);
+  const posts: Post[] = data.map((post) => convertPost(post))
+
+  return posts;
 };
 
 export const getHomepageDrawings = async (): Promise<Post[]> => {

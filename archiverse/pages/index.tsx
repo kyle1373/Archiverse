@@ -17,8 +17,14 @@ export default function Home({ drawings }) {
   const searchQuery = useRef("");
   const currentPage = useRef(1);
 
-  const [randomPost, setRandomPost] = useState({
-    data: null,
+  const [randomPosts, setRandomPosts] = useState<{
+    data: Post[];
+    currentIndex: number;
+    fetching: boolean;
+    error: string;
+  }>({
+    data: [],
+    currentIndex: 0,
     fetching: false,
     error: null,
   });
@@ -33,31 +39,33 @@ export default function Home({ drawings }) {
   const [communitiesError, setCommunitiesError] = useState(null);
   const [fetchingCommunities, setFetchingCommunities] = useState(false);
 
-  const fetchRandomPost = async () => {
-    if (randomPost.fetching) {
+  const fetchRandomPosts = async () => {
+    if (randomPosts.fetching) {
       return;
     }
-    setRandomPost((prevState) => ({
+    setRandomPosts((prevState) => ({
       ...prevState,
       fetching: true,
-      data: null,
+      data: [],
+      currentIndex: 0,
     }));
 
-    const { data, error } = await queryAPI<Community[]>(`post_random`, false);
+    const { data, error } = await queryAPI<Post[]>(`posts_random`, false);
 
     if (error) {
-      setRandomPost((prevState) => ({
+      setRandomPosts((prevState) => ({
         ...prevState,
         fetching: false,
         error: error,
       }));
       return;
     }
-    setRandomPost((prevState) => ({
+    setRandomPosts((prevState) => ({
       ...prevState,
       fetching: false,
       error: null,
       data: data,
+      currentIndex: 0,
     }));
   };
 
@@ -110,7 +118,7 @@ export default function Home({ drawings }) {
 
   useEffect(() => {
     fetchNewCommunities();
-    fetchRandomPost();
+    fetchRandomPosts();
   }, []);
 
   const handleSearchChangeText = (event) => {
@@ -127,6 +135,17 @@ export default function Home({ drawings }) {
       fetchSearchCommunities();
     } else {
       setDisplaySearchResults(false);
+    }
+  };
+
+  const handleGenerate = () => {
+    if (randomPosts.currentIndex < randomPosts.data.length - 1) {
+      setRandomPosts((prevState) => ({
+        ...prevState,
+        currentIndex: prevState.currentIndex + 1,
+      }));
+    } else {
+      fetchRandomPosts();
     }
   };
 
@@ -207,25 +226,29 @@ export default function Home({ drawings }) {
               </h1>
             </div>
             <button
-              onClick={fetchRandomPost}
+              onClick={handleGenerate}
               className="md:ml-2 hover:brightness-95 inline-flex justify-center items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-medium py-[2px] px-4 mt-4 md:mt-0 md:text-base text-sm"
             >
               <h1 className="">Generate</h1>
             </button>
           </div>
 
-          {!randomPost.data || randomPost.fetching ? (
+          {!randomPosts.data.length || randomPosts.fetching ? (
             <div className="flex justify-center items-center h-[280px]">
               <LoadOrRetry
-                fetching={randomPost.fetching}
-                error={randomPost.error}
-                refetch={fetchRandomPost}
+                fetching={randomPosts.fetching}
+                error={randomPosts.error}
+                refetch={fetchRandomPosts}
               />
             </div>
           ) : (
             <div className="w-full">
-              <Link href={`/posts/${randomPost.data.ID}`}>
-                <PostCard post={randomPost.data} variant={"list"} />
+              <Link href={`/posts/${randomPosts.data[randomPosts.currentIndex].ID}`}>
+                <PostCard
+                  key={randomPosts.data[randomPosts.currentIndex].ID}
+                  post={randomPosts.data[randomPosts.currentIndex]}
+                  variant={"list"}
+                />
               </Link>
             </div>
           )}
