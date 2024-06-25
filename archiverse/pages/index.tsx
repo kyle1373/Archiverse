@@ -180,7 +180,7 @@ export default function Home({ drawings }) {
             <HomepageDrawings posts={drawings} />
           </div>
         )}
-        <div>
+        {/* <div>
           <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green mb-3">
             <h1 className="text-green font-bold sm:text-lg text-sm">
               Random Post
@@ -210,7 +210,7 @@ export default function Home({ drawings }) {
               </div>
             </div>
           )}
-        </div>
+        </div> */}
         <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green">
           <h1 className="text-green font-bold sm:text-lg text-sm">
             Communities
