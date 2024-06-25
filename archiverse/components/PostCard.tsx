@@ -156,7 +156,7 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
               />
             </div>
           ))}
-        {post.VideoUrl && (
+        {variant === "list" && post.VideoUrl && (
           <div className="flex justify-center items-center mt-4">
             <div className="relative w-full pb-[56.25%]">
               <iframe
