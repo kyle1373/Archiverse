@@ -10,6 +10,10 @@ export const LINKS = {
   github: "https://github.com/kyle1373/archiverse",
 };
 
+export const SETTINGS = {
+  Maintenance: true
+}
+
 export const IMAGES = {
   unknownMii: "/unknown_mii.png",
 };

@@ -12,10 +12,17 @@ import Wrapper from "@components/Wrapper";
 import { useEffect, useRef, useState } from "react";
 import { queryAPI } from "@utils/queryAPI";
 import HomepageDrawings from "@components/HomepageDrawings";
+import PostCard from "@components/PostCard";
 
 export default function Home({ drawings }) {
   const searchQuery = useRef("");
   const currentPage = useRef(1);
+
+  const [randomPost, setRandomPost] = useState({
+    data: null,
+    fetching: false,
+    error: null,
+  });
 
   const [communityList, setCommunityList] = useState<Community[]>(null);
   const [searchedCommunities, setSearchedCommunities] =
@@ -26,6 +33,34 @@ export default function Home({ drawings }) {
   const [searchError, setSearchError] = useState<string>(null);
   const [communitiesError, setCommunitiesError] = useState(null);
   const [fetchingCommunities, setFetchingCommunities] = useState(false);
+
+  const fetchRandomPost = async () => {
+    if (randomPost.fetching) {
+      return;
+    }
+    setRandomPost((prevState) => ({
+      ...prevState,
+      fetching: true,
+      data: null,
+    }));
+
+    const { data, error } = await queryAPI<Community[]>(`post_random`, false);
+
+    if (error) {
+      setRandomPost((prevState) => ({
+        ...prevState,
+        fetching: false,
+        error: error,
+      }));
+      return;
+    }
+    setRandomPost((prevState) => ({
+      ...prevState,
+      fetching: false,
+      error: null,
+      data: data,
+    }));
+  };
 
   const fetchNewCommunities = async () => {
     if (fetchingCommunities) {
@@ -76,6 +111,7 @@ export default function Home({ drawings }) {
 
   useEffect(() => {
     fetchNewCommunities();
+    fetchRandomPost();
   }, []);
 
   const handleSearchChangeText = (event) => {
@@ -128,12 +164,11 @@ export default function Home({ drawings }) {
           <Link className="underline" href={"https://wiki.archiveteam.org/"}>
             Archive Team
           </Link>{" "}
-          for archiving Miiverse before its shutdown, and Luna for creating
-          the polished icons that you see throughout the website. Archiverse would not be possible without these people.
+          for archiving Miiverse before its shutdown, and Luna for creating the
+          polished icons that you see throughout the website. Archiverse would
+          not be possible without these people.
         </p>
-        <p className="text-sm mt-6 text-neutral-700">
-          - Kyle (SuperFX)
-        </p>
+        <p className="text-sm mt-6 text-neutral-700">- Kyle (SuperFX)</p>
         {drawings && (
           <div>
             <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green">
@@ -145,6 +180,37 @@ export default function Home({ drawings }) {
             <HomepageDrawings posts={drawings} />
           </div>
         )}
+        <div>
+          <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green mb-3">
+            <h1 className="text-green font-bold sm:text-lg text-sm">
+              Random Post
+            </h1>
+          </div>
+
+          {!randomPost.data || randomPost.fetching ? (
+            <div className="flex justify-center items-center h-[160px]">
+              <LoadOrRetry
+                fetching={randomPost.fetching}
+                error={randomPost.error}
+                refetch={fetchRandomPost}
+              />
+            </div>
+          ) : (
+            <div className="w-full">
+              <Link href={`/posts/${randomPost.data.ID}`}>
+                <PostCard post={randomPost.data} variant={"list"} />
+              </Link>
+              <div className="flex justify-center items-center">
+                <button
+                  onClick={fetchRandomPost}
+                  className="md:ml-2 hover:brightness-95 inline-flex justify-center items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-medium py-2 px-8 mt-4 md:mt-0 md:text-base text-small"
+                >
+                  <h1 className="">Random Post</h1>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
         <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green">
           <h1 className="text-green font-bold sm:text-lg text-sm">
             Communities
