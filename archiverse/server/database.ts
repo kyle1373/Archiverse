@@ -100,6 +100,33 @@ export const getPostReplies = async ({
   return replies;
 };
 
+export const getRandomPost = async ({
+  isDrawing,
+  hasReplies,
+}: {
+  isDrawing?: boolean;
+  hasReplies?: boolean;
+}): Promise<Post> => {
+  const query = supabaseAdmin.from("Posts").select("*");
+
+  if (isDrawing) {
+    query.neq("ImageUri", "");
+  }
+  if (hasReplies) {
+    query.gt("ReplyCount", 0);
+  }
+
+  query.limit(1);
+
+  const { data, error } = await query;
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return convertPost(data[0]);
+};
+
 export const getHomepageDrawings = async (): Promise<Post[]> => {
   const start = Math.floor(Math.random() * 1001);
   const end = start + 15;
