@@ -171,7 +171,7 @@ export default function Home({ drawings }) {
         <p className="text-sm mt-6 text-neutral-700">- Kyle (SuperFX)</p>
         {drawings && (
           <div>
-            <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green">
+            <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green items-end">
               <h1 className="text-green font-bold sm:text-lg text-sm">
                 Popular Drawings
               </h1>
@@ -209,7 +209,7 @@ export default function Home({ drawings }) {
             </div>
           )}
         </div>
-        <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green">
+        <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green items-end">
           <h1 className="text-green font-bold sm:text-lg text-sm">
             Communities
           </h1>
