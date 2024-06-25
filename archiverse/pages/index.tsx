@@ -175,7 +175,7 @@ export default function Home({ drawings }) {
           and/or{" "}
           <Link className="underline" href={LINKS.discord}>
             joining the Archiverse Discord
-          </Link>. Enjoy!
+          </Link>. Have fun!
         </p>
         <p className="text-sm mt-6 text-neutral-700">- Kyle (SuperFX)</p>
         {drawings && (
