@@ -16,8 +16,8 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
   const [isDrawingLoading, setIsDrawingLoading] = useState(true);
   const [isScreenshotLoading, setIsScreenshotLoading] = useState(true);
 
-  const realTitle = post.Title ? post.Text : null;
-  const realDescription = post.Title ? post.Title : post.Text;
+  const realTitle = post.Title ? post.Text?.trim() : null;
+  const realDescription = post.Title ? post.Title?.trim() : post.Text?.trim();
 
   function getDate() {
     if (!post?.Date) {
@@ -140,7 +140,7 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
             </div>
           )
         ) : (
-          <h1 className={`text-left`}>{realDescription}</h1>
+          <h1 className={`text-left whitespace-pre-line`}>{realDescription}</h1>
         )}
         {variant === "list" &&
           post.ScreenshotUrl &&
@@ -254,7 +254,7 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
           </div>
         )
       ) : (
-        <h1 className={`text-left`}>{realDescription}</h1>
+        <h1 className={`text-left whitespace-pre-line`}>{realDescription}</h1>
       )}
       {post.ScreenshotUrl &&
         (isScreenshotLoading ? (
