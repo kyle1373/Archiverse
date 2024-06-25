@@ -181,10 +181,16 @@ export default function Home({ drawings }) {
           </div>
         )}
         <div>
-          <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green mb-3">
+          <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green mb-3 items-end">
             <h1 className="text-green font-bold sm:text-lg text-sm">
               Random Post
             </h1>
+            <button
+              onClick={fetchRandomPost}
+              className="md:ml-2 hover:brightness-95 inline-flex justify-center items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-medium py-[2px] px-4 mt-4 md:mt-0 md:text-base text-sm"
+            >
+              <h1 className="">Generate</h1>
+            </button>
           </div>
 
           {!randomPost.data || randomPost.fetching ? (
@@ -200,14 +206,6 @@ export default function Home({ drawings }) {
               <Link href={`/posts/${randomPost.data.ID}`}>
                 <PostCard post={randomPost.data} variant={"list"} />
               </Link>
-              <div className="flex justify-center items-center">
-                <button
-                  onClick={fetchRandomPost}
-                  className="md:ml-2 hover:brightness-95 inline-flex justify-center items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-medium py-2 px-8 mt-4 md:mt-0 md:text-base text-small"
-                >
-                  <h1 className="">Random Post</h1>
-                </button>
-              </div>
             </div>
           )}
         </div>
