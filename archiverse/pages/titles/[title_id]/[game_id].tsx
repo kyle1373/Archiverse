@@ -195,7 +195,7 @@ export default function Home({ title_id, game_id, community }) {
                 className="w-[54px] h-[54px] rounded-md border-gray border-[1px] mr-4"
               />
               <div>
-                <h2 className="font-bold sm:text-base text-sm mt-[-3px]">
+                <h2 className="font-bold sm:text-base text-sm mt-[-2px]">
                   {community?.CommunityTitle}
                 </h2>
                 <div className="flex mt-[-1px]">
