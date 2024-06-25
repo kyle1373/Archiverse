@@ -361,7 +361,7 @@ export const getCommunity = async ({
       GameTitle: "Not Found",
       NumPosts: 0,
       Region: "Worldwide",
-      WebArchiveUrl: getCommunityArchiveLink(null, null),
+      WebArchiveUrl: getCommunityArchiveLink(titleID, gameID),
     };
   }
 
