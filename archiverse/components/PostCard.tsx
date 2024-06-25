@@ -156,6 +156,19 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
               />
             </div>
           ))}
+        {post.VideoUrl && (
+          <div className="flex justify-center items-center mt-4">
+            <div className="relative w-full pb-[56.25%]">
+              <iframe
+                title="YouTube video"
+                className="absolute top-0 left-0 w-full h-full rounded-md"
+                src={post.VideoUrl}
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        )}
         <div className="flex justify-between items-center text-[#969696] text-sm mt-3 mb-2">
           <div className="space-x-2 justify-center items-center">
             {post.WebArchiveUrl && (
@@ -256,6 +269,19 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
             />
           </div>
         ))}
+      {post.VideoUrl && (
+        <div className="flex justify-center items-center mt-4">
+          <div className="relative w-full pb-[56.25%]">
+            <iframe
+              title="YouTube video"
+              className="absolute top-0 left-0 w-full h-full rounded-md"
+              src={post.VideoUrl}
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      )}
       <div className="flex justify-between items-center text-[#969696] text-sm mt-3 mb-2">
         <div className="space-x-2 justify-center items-center">
           {post.WebArchiveUrl && (
