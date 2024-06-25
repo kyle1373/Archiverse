@@ -13,6 +13,7 @@ import { useEffect, useRef, useState } from "react";
 import { queryAPI } from "@utils/queryAPI";
 import HomepageDrawings from "@components/HomepageDrawings";
 import PostCard from "@components/PostCard";
+import { LINKS } from "@constants/constants";
 
 export default function Home({ drawings }) {
   const searchQuery = useRef("");
@@ -153,7 +154,7 @@ export default function Home({ drawings }) {
           posts, drawings, comments, and more, totaling over 17TB of data.
         </p>
         <p className="text-sm mt-6 text-neutral-700">
-          Thank you{" "}
+          Big thanks to{" "}
           <Link
             className="underline"
             href={"https://github.com/drasticactions"}
@@ -164,9 +165,17 @@ export default function Home({ drawings }) {
           <Link className="underline" href={"https://wiki.archiveteam.org/"}>
             Archive Team
           </Link>{" "}
-          for archiving Miiverse before its shutdown, and Luna for creating the
-          polished icons that you see throughout the website. Archiverse would
-          not be possible without these people.
+          for archiving Miiverse before its shutdown, and Luna for creating polished icons shown throughout the website.
+        </p>
+        <p className="text-sm mt-6 text-neutral-700">
+          If you enjoy Archiverse, consider{" "}
+          <Link className="underline" href={LINKS.github}>
+            starring the Github repository
+          </Link>{" "}
+          and/or{" "}
+          <Link className="underline" href={LINKS.discord}>
+            joining the Archiverse Discord
+          </Link>. Enjoy!
         </p>
         <p className="text-sm mt-6 text-neutral-700">- Kyle (SuperFX)</p>
         {drawings && (
