@@ -6,7 +6,7 @@ export const getPost = async ({ postID }): Promise<Post> => {
   const { data, error } = await supabaseAdmin
     .from("Posts")
     .select(
-      "Id, EmpathyCount, Feeling, GameCommunityIconUri, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ReplyCount, ScreenName, ScreenShotUri, Text, Title, TitleId, VideoUrl, NNID, HideRequested"
+      "Id, EmpathyCount, Feeling, GameCommunityIconUri, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ReplyCount, ScreenName, ScreenShotUri, Text, Title, TitleId, VideoUrl, NNID, HideRequested, WarcLocation"
     )
     .eq("Id", postID)
     .maybeSingle();
@@ -32,6 +32,8 @@ export const getPost = async ({ postID }): Promise<Post> => {
       IsPlayed: false,
       Date: null,
       DoNotShow: false,
+      WebArchiveUrl: getPostArchiveLink(null),
+      WarcLocationUrl: getWarcLocationLink(null),
     };
   }
 
@@ -56,6 +58,8 @@ export const getPost = async ({ postID }): Promise<Post> => {
       IsPlayed: false,
       Date: null,
       DoNotShow: false,
+      WebArchiveUrl: getPostArchiveLink(null),
+      WarcLocationUrl: getWarcLocationLink(null),
     };
   }
 
@@ -79,7 +83,7 @@ export const getPostReplies = async ({
   const { data, error } = await supabaseAdmin
     .from("Replies")
     .select(
-      "Id, EmpathyCount, Feeling, GameCommunityIconUri, InReplyToId, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ScreenName, ScreenShotUri, Text, TitleId, NNID, HideRequested"
+      "Id, EmpathyCount, Feeling, GameCommunityIconUri, InReplyToId, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ScreenName, ScreenShotUri, Text, TitleId, NNID, HideRequested, WarcLocation"
     )
     .eq("InReplyToId", postID)
     .range(start, end)
@@ -167,7 +171,7 @@ export const getPosts = async ({
   const query = supabaseAdmin
     .from("Posts")
     .select(
-      "Id, EmpathyCount, Feeling, GameCommunityIconUri, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ReplyCount, ScreenName, ScreenShotUri, Text, Title, TitleId, VideoUrl, NNID, HideRequested"
+      "Id, EmpathyCount, Feeling, GameCommunityIconUri, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ReplyCount, ScreenName, ScreenShotUri, Text, Title, TitleId, VideoUrl, NNID, HideRequested, WarcLocation"
     );
 
   if (beforeDateTime) {
@@ -342,6 +346,7 @@ export const getCommunity = async ({
       GameTitle: error.message,
       NumPosts: 0,
       Region: "Worldwide",
+      WebArchiveUrl: getCommunityArchiveLink(null, null),
     };
   }
 
@@ -356,6 +361,7 @@ export const getCommunity = async ({
       GameTitle: "Not Found",
       NumPosts: 0,
       Region: "Worldwide",
+      WebArchiveUrl: getCommunityArchiveLink(null, null),
     };
   }
 
@@ -369,7 +375,7 @@ export const getUserInfo = async ({ NNID }: { NNID: string }) => {
   const { data, error } = await supabaseAdmin
     .from("Users")
     .select(
-      "NNID, Bio, Birthday, Country, FollowerCount, FollowingCount, FriendsCount, GameSkill, IconUri, IsBirthdayHidden, IsError, IsHidden, ScreenName, SidebarCoverUrl, TotalPosts, HideRequested"
+      "NNID, Bio, Birthday, Country, FollowerCount, FollowingCount, FriendsCount, GameSkill, IconUri, IsBirthdayHidden, IsError, IsHidden, ScreenName, SidebarCoverUrl, TotalPosts, HideRequested, WarcLocation"
     )
     .ilike("NNID", `${escapedNNID}`)
     .maybeSingle();
@@ -388,7 +394,9 @@ export const getUserInfo = async ({ NNID }: { NNID: string }) => {
       NumPosts: 0,
       Birthday: "Unknown",
       DoNotShow: true,
-    };
+      WebArchiveUrl: getUserArchiveLink(NNID),
+      WarcLocationUrl: getWarcLocationLink(null),
+    } as User;
   }
 
   if (!data) {
@@ -405,6 +413,8 @@ export const getUserInfo = async ({ NNID }: { NNID: string }) => {
       NumPosts: 0,
       Birthday: "Unknown",
       DoNotShow: true,
+      WebArchiveUrl: getUserArchiveLink(NNID),
+      WarcLocationUrl: getWarcLocationLink(null),
     };
   }
 
@@ -439,7 +449,7 @@ export const getUserReplies = async ({
   const query = supabaseAdmin
     .from("Replies")
     .select(
-      "Id, EmpathyCount, Feeling, GameCommunityIconUri, InReplyToId, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ScreenName, ScreenShotUri, Text, TitleId, NNID, HideRequested"
+      "Id, EmpathyCount, Feeling, GameCommunityIconUri, InReplyToId, GameCommunityTitle, GameId, IconUri, ImageUri, IsPlayed, IsSpoiler, PostedDate, ScreenName, ScreenShotUri, Text, TitleId, NNID, HideRequested, WarcLocation"
     )
     .eq("NNID", NNID)
     .range(start, end);
@@ -484,6 +494,8 @@ export type Post = {
   IsPlayed: boolean;
   Date: string;
   DoNotShow: boolean;
+  WebArchiveUrl: string;
+  WarcLocationUrl: string;
 };
 
 const convertPost = (data): Post => {
@@ -508,6 +520,8 @@ const convertPost = (data): Post => {
       IsPlayed: false,
       Date: null,
       DoNotShow: true,
+      WebArchiveUrl: getPostArchiveLink(null),
+      WarcLocationUrl: getWarcLocationLink(null),
     };
   }
 
@@ -535,6 +549,8 @@ const convertPost = (data): Post => {
     IsPlayed: data.IsPlayed,
     Date: new Date(data.PostedDate * 1000).toISOString(),
     DoNotShow: data.HideRequested,
+    WebArchiveUrl: getPostArchiveLink(data.Id),
+    WarcLocationUrl: getWarcLocationLink(data.WarcLocation),
   };
 
   return post;
@@ -553,6 +569,8 @@ export type User = {
   NumPosts: number;
   Birthday: string;
   DoNotShow: boolean;
+  WebArchiveUrl: string;
+  WarcLocationUrl: string;
 };
 
 const convertUser = (data): User => {
@@ -570,6 +588,8 @@ const convertUser = (data): User => {
       BannerUrl: null,
       Birthday: "Hidden",
       DoNotShow: true,
+      WebArchiveUrl: getUserArchiveLink(null),
+      WarcLocationUrl: getWarcLocationLink(null),
     };
   }
   if (data.IsHidden || data.IsError) {
@@ -590,6 +610,8 @@ const convertUser = (data): User => {
       NumPosts: data.NumPosts ?? null,
       Birthday: "Unknown",
       DoNotShow: true,
+      WebArchiveUrl: getUserArchiveLink(data.NNID),
+      WarcLocationUrl: getWarcLocationLink(data.WarcLocation),
     };
   }
 
@@ -609,6 +631,8 @@ const convertUser = (data): User => {
         ? null
         : getArchiveFromUri(data.SidebarCoverUrl),
     DoNotShow: false,
+    WebArchiveUrl: getUserArchiveLink(data.NNID),
+    WarcLocationUrl: getWarcLocationLink(data.WarcLocation),
   };
 
   return user;
@@ -628,6 +652,7 @@ export type Reply = {
   IsPlayed: boolean;
   Date: string;
   DoNotShow: boolean;
+  WarcLocationUrl: string;
 };
 
 const convertReply = (data): Reply => {
@@ -646,6 +671,7 @@ const convertReply = (data): Reply => {
       IsPlayed: false,
       Date: null,
       DoNotShow: true,
+      WarcLocationUrl: getWarcLocationLink(null),
     };
   }
 
@@ -665,6 +691,7 @@ const convertReply = (data): Reply => {
     IsPlayed: data.IsPlayed,
     Date: new Date(data.PostedDate * 1000).toISOString(),
     DoNotShow: false,
+    WarcLocationUrl: getWarcLocationLink(data.WarcLocation),
   };
 
   return reply;
@@ -680,6 +707,7 @@ export type Community = {
   GameTitle: string;
   NumPosts: number;
   Region: "America" | "Japan" | "Europe" | "Worldwide";
+  WebArchiveUrl: string;
 };
 
 const convertCommunity = (data): Community => {
@@ -725,6 +753,7 @@ const convertCommunity = (data): Community => {
     GameTitle: data.Type,
     NumPosts: data.TotalPosts,
     Region: convertedRegion,
+    WebArchiveUrl: getCommunityArchiveLink(data.TitleId, data.GameId),
   };
 
   return community;
@@ -760,4 +789,34 @@ const getMiiImageUrl = (url: string, feeling: number) => {
   const newFace = faceMappings[feeling];
 
   return url.replace("_normal_face.png", newFace);
+};
+
+const getCommunityArchiveLink = (titleID: string, gameID: string) => {
+  if (!titleID || !gameID) {
+    return null;
+  }
+  return `https://web.archive.org/web/20171107211854/miiverse.nintendo.net/titles/${titleID}/${gameID}`;
+};
+
+const getPostArchiveLink = (postID: string) => {
+  if (!postID) {
+    return null;
+  }
+
+  return `https://web.archive.org/web/20171107211854/miiverse.nintendo.net/posts/${postID}`;
+};
+
+const getUserArchiveLink = (NNID: string) => {
+  if (!NNID) {
+    return null;
+  }
+
+  return `https://web.archive.org/web/20171107211854/miiverse.nintendo.net/users/${NNID}`;
+};
+
+const getWarcLocationLink = (id: string) => {
+  if (!id) {
+    return null;
+  }
+  return `https://archive.org/details/${id}`;
 };

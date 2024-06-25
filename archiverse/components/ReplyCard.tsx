@@ -137,11 +137,24 @@ const ReplyCard = ({ reply, className = "" }: ReplyCardProps) => {
             />
           </div>
         ))}
-      <div className="flex justify-end items-center text-[#969696] text-sm mt-3">
-        <GoPersonFill className="mr-1" />
-        {reply.NumYeahs}
+      <div className="flex justify-between items-center text-[#969696] text-sm mt-3">
+        <div>
+          {reply.WarcLocationUrl && (
+            <Link
+              href={reply.WarcLocationUrl}
+              className="hover:underline text-[10px]"
+            >
+              WARC
+            </Link>
+          )}
+        </div>
 
-        {reply.IsPlayed && <IoCheckbox className="ml-2 mb-[.5px]" />}
+        <div className="flex justify-center items-center">
+          <GoPersonFill className="mr-1" />
+          {reply.NumYeahs}
+
+          {reply.IsPlayed && <IoCheckbox className="ml-2 mb-[.5px]" />}
+        </div>
       </div>
     </div>
   );

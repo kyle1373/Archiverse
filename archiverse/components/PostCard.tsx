@@ -218,12 +218,32 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
             />
           </div>
         ))}
-      <div className="flex justify-end items-center text-[#969696] text-sm mt-3 mb-2">
-        <GoPersonFill className="mr-1" />
-        {post.NumYeahs}
-        <IoIosChatboxes className=" ml-2 mr-1" />
-        {post.NumReplies}
-        {post.IsPlayed && <IoCheckbox className="ml-2 mb-[.5px]" />}
+      <div className="flex justify-between items-center text-[#969696] text-sm mt-3 mb-2">
+        <div className="space-x-2 justify-center items-center">
+          {post.WebArchiveUrl && (
+            <Link
+              href={post.WebArchiveUrl}
+              className="hover:underline text-[10px]"
+            >
+              Web Archive
+            </Link>
+          )}
+          {post.WarcLocationUrl && (
+            <Link
+              href={post.WarcLocationUrl}
+              className="hover:underline text-[10px]"
+            >
+              WARC
+            </Link>
+          )}
+        </div>
+        <div className="flex items-center">
+          <GoPersonFill className="mr-1" />
+          {post.NumYeahs}
+          <IoIosChatboxes className=" ml-2 mr-1" />
+          {post.NumReplies}
+          {post.IsPlayed && <IoCheckbox className="ml-2 mb-[.5px]" />}
+        </div>
       </div>
     </div>
   );

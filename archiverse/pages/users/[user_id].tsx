@@ -165,12 +165,24 @@ export default function Home({
               </div>
             </div>
           )}
-          <div className="flex justify-end mt-4">
-            <button onClick={() => setShowMore((prevState) => !prevState)}>
-              <h1 className="text-green text-sm hover:underline">
-                {showMore ? "Show less" : "Show more"}
-              </h1>
-            </button>
+          <div className="flex justify-between mt-4">
+            <div className="space-x-2 justify-center items-center">
+              {user.WebArchiveUrl && (
+                <Link
+                  href={user.WebArchiveUrl}
+                  className="hover:underline text-[10px] text-[#969696] "
+                >
+                  Web Archive
+                </Link>
+              )}
+            </div>
+            <div className="flex items-center">
+              <button onClick={() => setShowMore((prevState) => !prevState)}>
+                <h1 className="text-green text-sm hover:underline">
+                  {showMore ? "Show less" : "Show more"}
+                </h1>
+              </button>
+            </div>
           </div>
         </div>
         <div className="mt-4 pt-3 pb-2 bg-[#f6f6f6] flex text-sm px-2 mx-[-16px]">
