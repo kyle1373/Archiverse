@@ -36,13 +36,19 @@ const HomepageDrawings = ({ posts }: HomepageDrawingsProps) => {
   return (
     <div className="relative w-full h-full">
       <div className="transition-height duration-1000 ease-in-out mt-3 mb-4 h-[218px]">
-        <TransitionGroup component={null}>
-          <CSSTransition key={currentPost.ID} timeout={1000} classNames="fade">
-            <Link href={`/posts/${currentPost?.ID}`}>
-              <PostCard post={currentPost} variant={"carossel"} />
-            </Link>
-          </CSSTransition>
-        </TransitionGroup>
+        {currentPost && (
+          <TransitionGroup component={null}>
+            <CSSTransition
+              key={currentPost.ID}
+              timeout={1000}
+              classNames="fade"
+            >
+              <Link href={`/posts/${currentPost?.ID}`}>
+                <PostCard post={currentPost} variant={"carossel"} />
+              </Link>
+            </CSSTransition>
+          </TransitionGroup>
+        )}
       </div>
     </div>
   );
