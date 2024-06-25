@@ -195,15 +195,15 @@ export default function Home({ title_id, game_id, community }) {
                 className="w-[54px] h-[54px] rounded-md border-gray border-[1px] mr-4"
               />
               <div>
-                <h2 className="font-bold sm:text-base text-sm mt-[-2px]">
+                <h2 className="font-bold sm:text-base text-sm mt-[0px]">
                   {community?.CommunityTitle}
                 </h2>
-                <div className="flex mt-[-1px]">
-                  <h3 className="flex items-center justify-center font-normal text-xs sm:text-sm text-neutral-500 mr-4">
+                <div className="flex mt-[-0px]">
+                  <h3 className="flex items-center justify-center font-normal text-xs text-neutral-500 mr-4">
                     <BsFillPeopleFill className="mr-1 mb-[.5px]" />
                     {numberWithCommas(community?.NumPosts)}
                   </h3>
-                  <h3 className="flex items-center justify-center font-normal text-xs sm:text-sm text-neutral-500">
+                  <h3 className="flex items-center justify-center font-normal text-xs text-neutral-500">
                     <BsGlobe className="mr-1" />
                     {community?.Region}
                   </h3>
