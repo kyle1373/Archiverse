@@ -29,15 +29,30 @@ export default function Home({ drawings }) {
     error: null,
   });
 
-  const [communityList, setCommunityList] = useState<Community[]>(null);
-  const [searchedCommunities, setSearchedCommunities] =
-    useState<Community[]>(null);
+  const [communityList, setCommunityList] = useState<{
+    data: Community[];
+    fetching: boolean;
+    error: string;
+    canPullMore: boolean;
+  }>({
+    data: [],
+    fetching: false,
+    error: null,
+    canPullMore: true,
+  });
+
+  const [searchedCommunities, setSearchedCommunities] = useState<{
+    data: Community[];
+    fetching: boolean;
+    error: string;
+  }>({
+    data: [],
+    fetching: false,
+    error: null,
+  });
+
   const [displaySearchResults, setDisplaySearchResults] =
     useState<boolean>(false);
-  const [canPullMore, setCanPullMore] = useState(true);
-  const [searchError, setSearchError] = useState<string>(null);
-  const [communitiesError, setCommunitiesError] = useState(null);
-  const [fetchingCommunities, setFetchingCommunities] = useState(false);
 
   const fetchRandomPosts = async () => {
     if (randomPosts.fetching) {
@@ -70,50 +85,65 @@ export default function Home({ drawings }) {
   };
 
   const fetchNewCommunities = async () => {
-    if (fetchingCommunities) {
+    if (communityList.fetching) {
       return;
     }
-    setFetchingCommunities(true);
-    setCommunitiesError(null);
+    setCommunityList((prevState) => ({
+      ...prevState,
+      fetching: true,
+    }));
     const { data, error } = await queryAPI<Community[]>(
       `communities?page=${currentPage.current}`
     );
-    setFetchingCommunities(false);
     if (error) {
       console.log(error);
-      setCommunitiesError(error);
+      setCommunityList((prevState) => ({
+        ...prevState,
+        fetching: false,
+        error: error,
+      }));
       return;
     }
     if (data?.length === 0) {
-      setCanPullMore(false);
-      return;
+      setCommunityList((prevState) => ({
+        ...prevState,
+        canPullMore: false,
+      }));
     }
-    if (!communityList) {
-      setCommunityList(data);
-    } else {
-      setCommunityList((value) => [...value, ...data]);
-    }
+    setCommunityList((prevState) => ({
+      ...prevState,
+      fetching: false,
+      data: [...prevState.data, ...data],
+    }));
     currentPage.current = currentPage.current + 1;
   };
 
   const fetchSearchCommunities = async () => {
-    if (fetchingCommunities) {
+    if (searchedCommunities.fetching) {
       return;
     }
-    setSearchedCommunities([]);
-    setFetchingCommunities(true);
-    setSearchError(null);
+    setSearchedCommunities((prevState) => ({
+      ...prevState,
+      fetching: true,
+    }));
     const encodedSearch = encodeURIComponent(searchQuery.current);
     const { data, error } = await queryAPI<Community[]>(
       `communities?search=${encodedSearch}`
     );
-    setFetchingCommunities(false);
     if (error) {
       console.log(error);
-      setSearchError(error);
+      setSearchedCommunities((prevState) => ({
+        ...prevState,
+        fetching: false,
+        error: error,
+      }));
       return;
     }
-    setSearchedCommunities(data);
+    setSearchedCommunities((prevState) => ({
+      ...prevState,
+      fetching: false,
+      data: data,
+    }));
   };
 
   useEffect(() => {
@@ -243,7 +273,9 @@ export default function Home({ drawings }) {
             </div>
           ) : (
             <div className="w-full">
-              <Link href={`/posts/${randomPosts.data[randomPosts.currentIndex].ID}`}>
+              <Link
+                href={`/posts/${randomPosts.data[randomPosts.currentIndex].ID}`}
+              >
                 <PostCard
                   key={randomPosts.data[randomPosts.currentIndex].ID}
                   post={randomPosts.data[randomPosts.currentIndex]}
@@ -283,62 +315,65 @@ export default function Home({ drawings }) {
           </form>
         </div>
 
-        {(displaySearchResults ? searchedCommunities : communityList)?.map(
-          (community, index) => {
-            return (
-              <Link
-                key={
-                  "community " +
-                  community.GameID +
-                  community.TitleID +
-                  "index " +
-                  index
-                }
-                className={`flex py-2 ${
-                  index ===
-                  (displaySearchResults ? searchedCommunities : communityList)
-                    .length -
-                    1
-                    ? "mb-2"
-                    : "border-b-[1px]"
-                } border-gray hover:brightness-95 bg-white cursor-pointer`}
-                href={"/titles/" + community.TitleID + "/" + community.GameID}
-              >
-                <img
-                  src={community.CommunityIconUrl ?? community.CommunityBanner}
-                  alt={community.GameTitle + " Icon"}
-                  className="w-[54px] h-[54px] rounded-md border-gray border-[1px] mr-4"
-                />
-                <div>
-                  <h2 className="font-bold sm:text-base text-sm mt-1">
-                    {community.CommunityTitle}
-                  </h2>
-                  <div className="flex mt-1">
-                    <h3 className="flex items-center justify-center font-normal text-xs sm:text-sm text-neutral-500 mr-4">
-                      <MiiverseSymbol
-                        className="mr-[6px] h-4 w-4 fill-neutral-500 "
-                        symbol={"silhouette_people"}
-                      />
-                      {numberWithCommas(community.NumPosts)}
-                    </h3>
-                    <h3 className="flex items-center justify-center font-normal text-xs sm:text-sm text-neutral-500">
-                      <MiiverseSymbol
-                        className="mr-[6px] h-4 w-4 fill-neutral-500 "
-                        symbol={"globe"}
-                      />
-                      {community.Region}
-                    </h3>
-                  </div>
+        {(displaySearchResults
+          ? searchedCommunities.data
+          : communityList.data
+        )?.map((community, index) => {
+          return (
+            <Link
+              key={
+                "community " +
+                community.GameID +
+                community.TitleID +
+                "index " +
+                index
+              }
+              className={`flex py-2 ${
+                index ===
+                (displaySearchResults
+                  ? searchedCommunities.data
+                  : communityList.data
+                ).length -
+                  1
+                  ? "mb-2"
+                  : "border-b-[1px]"
+              } border-gray hover:brightness-95 bg-white cursor-pointer`}
+              href={"/titles/" + community.TitleID + "/" + community.GameID}
+            >
+              <img
+                src={community.CommunityIconUrl ?? community.CommunityBanner}
+                alt={community.GameTitle + " Icon"}
+                className="w-[54px] h-[54px] rounded-md border-gray border-[1px] mr-4"
+              />
+              <div>
+                <h2 className="font-bold sm:text-base text-sm mt-1">
+                  {community.CommunityTitle}
+                </h2>
+                <div className="flex mt-1">
+                  <h3 className="flex items-center justify-center font-normal text-xs sm:text-sm text-neutral-500 mr-4">
+                    <MiiverseSymbol
+                      className="mr-[6px] h-4 w-4 fill-neutral-500 "
+                      symbol={"silhouette_people"}
+                    />
+                    {numberWithCommas(community.NumPosts)}
+                  </h3>
+                  <h3 className="flex items-center justify-center font-normal text-xs sm:text-sm text-neutral-500">
+                    <MiiverseSymbol
+                      className="mr-[6px] h-4 w-4 fill-neutral-500 "
+                      symbol={"globe"}
+                    />
+                    {community.Region}
+                  </h3>
                 </div>
-              </Link>
-            );
-          }
-        )}
+              </div>
+            </Link>
+          );
+        })}
 
-        {canPullMore &&
-          !fetchingCommunities &&
+        {communityList.canPullMore &&
+          !communityList.fetching &&
           !displaySearchResults &&
-          !communitiesError && (
+          !communityList.error && (
             <div className="flex justify-center items-center">
               <button
                 onClick={fetchNewCommunities}
@@ -350,20 +385,31 @@ export default function Home({ drawings }) {
           )}
         <div className="flex justify-center items-center">
           <LoadOrRetry
-            fetching={fetchingCommunities}
-            error={displaySearchResults ? searchError : communitiesError}
+            fetching={
+              displaySearchResults
+                ? searchedCommunities.fetching
+                : communityList.fetching
+            }
+            error={
+              displaySearchResults
+                ? searchedCommunities.error
+                : communityList.error
+            }
             refetch={fetchNewCommunities}
             className="mt-4"
           />
 
-          {!fetchingCommunities &&
-            (displaySearchResults
-              ? searchedCommunities?.length === 0 && !searchError
-              : communityList?.length === 0 && !communitiesError) && (
-              <h3 className="text-neutral-400 mt-[15px] mb-[6px] font-normal text-base">
-                No communities found.
-              </h3>
-            )}
+          {(displaySearchResults
+            ? searchedCommunities.data?.length === 0 &&
+              !searchedCommunities.error &&
+              !searchedCommunities.fetching
+            : communityList.data?.length === 0 &&
+              !communityList.error &&
+              !communityList.fetching) && (
+            <h3 className="text-neutral-400 mt-[15px] mb-[6px] font-normal text-base">
+              No communities found.
+            </h3>
+          )}
         </div>
       </Wrapper>
     </>
