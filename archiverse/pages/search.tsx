@@ -135,3 +135,13 @@ export default function Home() {
     </>
   );
 }
+
+export const getServerSideProps = async (context) => {
+  context.res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=20, stale-while-revalidate=59"
+  );
+  return {
+    props: {},
+  };
+};

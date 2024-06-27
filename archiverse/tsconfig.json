@@ -18,18 +18,27 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "paths": {
-      "@*": ["./*"],
+      "@*": [
+        "./*"
+      ]
     },
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": false,
     "target": "esnext",
-    "incremental": true
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": false
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

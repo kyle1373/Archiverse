@@ -417,11 +417,16 @@ export default function Home({ drawings }) {
 }
 
 export const getServerSideProps = async (context) => {
-  var drawings: Post[] = null;
+  var drawings = null;
 
   try {
     drawings = await getHomepageDrawings();
   } catch (e) {}
+
+  context.res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=20, stale-while-revalidate=59"
+  );
 
   return {
     props: {
