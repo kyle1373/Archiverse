@@ -5,16 +5,15 @@ const nextConfig = {
   experimental: {
     scrollRestoration: true,
     instrumentationHook: true,
-
   },
   async headers() {
     return [
       {
-        source: "/(.*)",
+        source: '/:path*',
         headers: [
           {
-            key: "X-Frame-Options",
-            value: "DENY",
+            key: 'Cache-Control',
+            value: 'public, max-age=0, s-maxage=60, stale-while-revalidate=300',
           },
         ],
       },

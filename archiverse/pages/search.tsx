@@ -141,6 +141,3 @@ export const getServerSideProps = async (context) => {
     props: {},
   };
 };
-
-
-export const dynamic = 'force-static';

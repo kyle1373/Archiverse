@@ -317,6 +317,3 @@ export const getServerSideProps = async (context) => {
     },
   };
 };
-
-
-export const dynamic = 'force-static';
