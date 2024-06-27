@@ -22,7 +22,8 @@
     "react-icons": "^5.2.1",
     "react-redux": "^9.1.2",
     "react-transition-group": "^4.4.5",
-    "supabase": "^1.176.10"
+    "supabase": "^1.176.10",
+    "swr": "^2.2.5"
   },
   "devDependencies": {
     "@types/node": "^20",

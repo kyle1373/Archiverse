@@ -1,17 +1,6 @@
 import Document, { Html, Head, Main, NextScript, DocumentContext } from "next/document";
 
 class MyDocument extends Document {
-  static async getInitialProps(ctx: DocumentContext) {
-    const initialProps = await Document.getInitialProps(ctx);
-
-    if (ctx.res) {
-      ctx.res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=60, stale-while-revalidate=300');
-    }
-
-    console.log("Doing getInitialProps for _document.tsx")
-
-    return { ...initialProps };
-  }
 
   render() {
     return (
