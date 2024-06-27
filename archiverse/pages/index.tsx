@@ -423,11 +423,6 @@ export const getServerSideProps = async (context) => {
     drawings = await getHomepageDrawings();
   } catch (e) {}
 
-  context.res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=20, stale-while-revalidate=59"
-  );
-
   return {
     props: {
       drawings,
