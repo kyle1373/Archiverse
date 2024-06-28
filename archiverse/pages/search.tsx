@@ -384,7 +384,7 @@ export default function Home() {
                   "index " +
                   index
                 }
-                className={`flex py-2 ${
+                className={`flex p-2 ${
                   index === communities.data.length - 1
                     ? "mb-2"
                     : "border-b-[1px]"
