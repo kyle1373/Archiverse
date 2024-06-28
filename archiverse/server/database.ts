@@ -12,6 +12,7 @@ export const getPost = async ({ postID }): Promise<Post> => {
     .maybeSingle();
 
   if (error) {
+    console.log(error.message);
     return {
       ID: postID,
       MiiName: "Error: " + error.code,
@@ -90,6 +91,7 @@ export const getPostReplies = async ({
     .order("PostedDate", { ascending: sortMode === "oldest" });
 
   if (error) {
+    console.log(error.message);
     throw new Error(error.message);
   }
 
@@ -106,6 +108,7 @@ export const searchPosts = async ({ query }: { query: string }) => {
   });
 
   if (error) {
+    console.log(error.message);
     throw new Error(error.message);
   }
 
@@ -245,6 +248,7 @@ export const getPosts = async ({
   const { data, error } = await query;
 
   if (error) {
+    console.log(error.message);
     throw new Error(error.message);
   }
 
@@ -265,6 +269,7 @@ export const searchUsers = async ({
   });
 
   if (error) {
+    console.log(error.message);
     throw new Error(error.message);
   }
 
@@ -285,6 +290,7 @@ export const searchCommunities = async ({
   });
 
   if (error) {
+    console.log(error.message);
     console.log(JSON.stringify(error));
     throw new Error(error.message);
   }
@@ -316,6 +322,7 @@ export const getCommunities = async ({
     .range(start, end);
 
   if (error) {
+    console.log(error.message);
     throw new Error(error.message);
   }
 
@@ -340,6 +347,7 @@ export const getRelatedCommunities = async ({
     .order("TotalPosts", { ascending: false });
 
   if (error) {
+    console.log(error.message);
     throw new Error(error.message);
   }
 
@@ -367,6 +375,7 @@ export const getCommunity = async ({
     .maybeSingle();
 
   if (error) {
+    console.log(error.message);
     return {
       GameID: gameID,
       TitleID: titleID,
@@ -412,6 +421,7 @@ export const getUserInfo = async ({ NNID }: { NNID: string }) => {
     .maybeSingle();
 
   if (error) {
+    console.log(error.message);
     return {
       NNID: NNID,
       MiiName: "Error: " + error.code,
@@ -496,6 +506,7 @@ export const getUserReplies = async ({
   const { data, error } = await query;
 
   if (error) {
+    console.log(error.message);
     throw new Error(error.message);
   }
 
