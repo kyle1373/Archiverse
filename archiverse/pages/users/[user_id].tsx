@@ -19,6 +19,10 @@ export default function Home({
   user: User;
   user_id: string;
 }) {
+  const [selected, setSelected] = useState<"recent" | "popular" | "oldest">(
+    "recent"
+  );
+
   const [showMore, setShowMore] = useState(false);
 
   const [posts, setPosts] = useState<{
@@ -57,7 +61,7 @@ export default function Home({
         error: null,
       }));
     }
-    var queryUrl = `posts?user_id=${user.NNID}&page=${page}&sort_mode=recent`;
+    var queryUrl = `posts?user_id=${user.NNID}&page=${page}&sort_mode=${selected}`;
 
     const { data, error } = await queryAPI<Post[]>(queryUrl);
 
@@ -92,6 +96,21 @@ export default function Home({
     }
   };
 
+  const getButtonStyles = (isSelected: boolean) => {
+    const commonStyles =
+      "w-1/2 text-left p-2 md:text-sm text-xs font-semibold border-gray hover:brightness-95";
+    if (isSelected) {
+      return (
+        commonStyles +
+        " bg-gradient-to-b from-[#81e52e] to-[#5ac800] text-white"
+      );
+    }
+    return (
+      commonStyles +
+      " bg-gradient-to-b from-white text-neutral-600 to-neutral-200"
+    );
+  };
+
   const displayDashIfZero = (number) => {
     if (!number) {
       return "-";
@@ -101,7 +120,7 @@ export default function Home({
 
   useEffect(() => {
     fetchPosts(true);
-  }, []);
+  }, [selected]);
 
   return (
     <>
@@ -182,7 +201,7 @@ export default function Home({
             </div>
           </div>
         </div>
-        <div className="mt-4 pt-3 pb-2 bg-[#f6f6f6] flex text-sm px-2 mx-[-16px]">
+        <div className="mt-4 pt-3 pb-2 bg-[#f6f6f6] flex text-sm px-2 mx-[-16px] border-gray border-y-[1px]">
           <div className="flex-1 flex justify-center border-r-[1px] border-gray">
             <div className="text-center">
               <h1 className="sm:text-[18px] text-[15px] font-normal text-neutral-800">
@@ -217,8 +236,31 @@ export default function Home({
           </div>
         </div>
 
-        <div className="bg-[#5ac800] border-y-[1px] border-t-[#4faf00] border-b-gray flex py-1 text-sm text-white px-2 mx-[-16px]">
-          Posts
+        <div className="flex mt-6 mb-4">
+          <button
+            className={`rounded-l-md border-[1px] border-r-[.5px] ${getButtonStyles(
+              selected === "recent"
+            )}`}
+            onClick={() => setSelected("recent")}
+          >
+            Recent
+          </button>
+          <button
+            className={`border-[1px] ${getButtonStyles(
+              selected === "oldest"
+            )}`}
+            onClick={() => setSelected("oldest")}
+          >
+            Oldest
+          </button>
+          <button
+            className={`rounded-r-md border-[1px] border-l-[.5px] ${getButtonStyles(
+              selected === "popular"
+            )}`}
+            onClick={() => setSelected("popular")}
+          >
+            Popular
+          </button>
         </div>
         {posts.data?.map((post, index) => {
           return (

@@ -13,9 +13,21 @@ import PostCard from "@components/PostCard";
 import { LINKS } from "@constants/constants";
 import MiiverseSymbol from "@components/MiiverseSymbol";
 
+import { useRouter } from "next/router";
+
 export default function Home({ drawings }) {
   const searchQuery = useRef("");
   const currentPage = useRef(1);
+
+  const [refresh, setRefresh] = useState(false);
+
+  useEffect(() => {
+    if (!refresh) {
+      setRefresh(true);
+      fetchNewCommunities();
+      fetchRandomPosts();
+    }
+  }, [refresh]);
 
   const [randomPosts, setRandomPosts] = useState<{
     data: Post[];
@@ -145,11 +157,6 @@ export default function Home({ drawings }) {
       data: data,
     }));
   };
-
-  useEffect(() => {
-    fetchNewCommunities();
-    fetchRandomPosts();
-  }, []);
 
   const handleSearchChangeText = (event) => {
     searchQuery.current = event.target.value?.trim().toLowerCase();
@@ -421,11 +428,20 @@ export const getServerSideProps = async (context) => {
 
   try {
     drawings = await getHomepageDrawings();
+
+    if (!drawings) {
+      return {
+        props: {},
+      };
+    }
+    return {
+      props: {
+        drawings,
+      },
+    };
   } catch (e) {}
 
   return {
-    props: {
-      drawings,
-    },
+    props: {},
   };
 };
