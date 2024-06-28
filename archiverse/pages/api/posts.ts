@@ -4,11 +4,13 @@ import {
   getHomepageDrawings,
   getPosts,
   searchCommunities,
+  searchPosts,
 } from "@server/database";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type QueryParams = {
   homepage?: boolean;
+  search?: string;
   user_id?: string;
   sort_mode: "recent" | "popular" | "oldest";
   before_datetime?: string;
@@ -19,15 +21,22 @@ type QueryParams = {
 };
 
 const validateQueryParams = (query: QueryParams): string[] => {
-  const { sort_mode, before_datetime, user_id, game_id, title_id, page } =
-    query;
+  const {
+    sort_mode,
+    before_datetime,
+    user_id,
+    game_id,
+    title_id,
+    page,
+    search,
+  } = query;
 
   const errors: string[] = [];
   const sortModes = ["recent", "popular"];
 
   const sortModesWithoutUserID = ["recent", "popular", "oldest"];
 
-  if (query.homepage) {
+  if (query.homepage || search) {
     return []; // just quit early. we don't care about other variables now
   }
 
@@ -76,6 +85,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const {
       title_id,
+      search,
       game_id,
       user_id,
       sort_mode,
@@ -94,6 +104,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       before_datetime: before_datetime as string,
       page: page as string | number,
       only_drawings: only_drawings === "true",
+      search: search as string,
     };
 
     const errors = validateQueryParams(queryParams);
@@ -104,6 +115,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (homepage === "true") {
       const posts = await getHomepageDrawings();
+      return res.status(200).json(posts);
+    }
+
+    if (search) {
+      const posts = await searchPosts({ query: search as string });
       return res.status(200).json(posts);
     }
 

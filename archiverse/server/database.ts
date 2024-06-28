@@ -100,6 +100,22 @@ export const getPostReplies = async ({
   return replies;
 };
 
+export const searchPosts = async ({ query }: { query: string }) => {
+  const { data, error } = await supabaseAdmin.rpc("search_posts", {
+    keyword: query,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const users: Post[] = [];
+
+  data?.map((value) => users.push(convertPost(value)));
+
+  return users;
+};
+
 export const getRandomPosts = async (): Promise<Post[]> => {
   const { data, error } = await supabaseAdmin.rpc("get_random_posts", {
     num_rows: 5, // This parameter is actually never used.
@@ -110,7 +126,7 @@ export const getRandomPosts = async (): Promise<Post[]> => {
     throw new Error(error.message);
   }
 
-  const posts: Post[] = data.map((post) => convertPost(post))
+  const posts: Post[] = data.map((post) => convertPost(post));
 
   return posts;
 };

@@ -38,7 +38,7 @@ const Wrapper = ({ children }) => {
                       symbol={"magnifying_glass"}
                     />
                     <h1 className="flex-grow text-center hidden md:block">
-                      Users
+                      Users & Posts
                     </h1>
                   </div>
                 </Link>
