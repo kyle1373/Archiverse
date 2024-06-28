@@ -27,7 +27,7 @@ const Wrapper = ({ children }) => {
                       symbol={"silhouette_people"}
                     />
                     <h1 className="flex-grow text-center hidden md:block">
-                      Communities
+                      Home
                     </h1>
                   </div>
                 </Link>
@@ -38,7 +38,7 @@ const Wrapper = ({ children }) => {
                       symbol={"magnifying_glass"}
                     />
                     <h1 className="flex-grow text-center hidden md:block">
-                      Users & Posts
+                      Search
                     </h1>
                   </div>
                 </Link>
