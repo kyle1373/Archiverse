@@ -3,6 +3,7 @@ import {
   getCommunities,
   getHomepageDrawings,
   getPosts,
+  getRandomPosts,
   searchCommunities,
   searchPosts,
 } from "@server/database";
@@ -10,6 +11,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 type QueryParams = {
   homepage?: boolean;
+  random?: boolean;
   search?: string;
   user_id?: string;
   sort_mode: "recent" | "popular" | "oldest";
@@ -36,7 +38,7 @@ const validateQueryParams = (query: QueryParams): string[] => {
 
   const sortModesWithoutUserID = ["recent", "popular", "oldest"];
 
-  if (query.homepage || search) {
+  if (query.homepage || search || query.random) {
     return []; // just quit early. we don't care about other variables now
   }
 
@@ -93,10 +95,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       page,
       only_drawings,
       homepage,
+      random,
     } = req.query;
 
     const queryParams: QueryParams = {
       homepage: homepage === "true",
+      random: random === "true",
       title_id: title_id as string,
       game_id: game_id as string,
       sort_mode: sort_mode as "recent" | "popular",
@@ -115,6 +119,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (homepage === "true") {
       const posts = await getHomepageDrawings();
+      return res.status(200).json(posts);
+    }
+
+    if (random === "true") {
+      const posts = await getRandomPosts();
       return res.status(200).json(posts);
     }
 

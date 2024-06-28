@@ -14,57 +14,96 @@ import { LINKS } from "@constants/constants";
 import MiiverseSymbol from "@components/MiiverseSymbol";
 
 import { useRouter } from "next/router";
+import { usePageCache } from "@hooks/usePageCache";
 
-export default function Home({ drawings }) {
+export default function Home() {
+  const { pageCache, cachePageData } = usePageCache();
+
   const searchQuery = useRef("");
-  const currentPage = useRef(1);
-
-  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
-    if (!refresh) {
-      setRefresh(true);
+    if (communityList.data.length === 0) {
       fetchNewCommunities();
+    }
+    if (popularDrawings.data.length === 0) {
+      fetchPopularDrawings();
+    }
+    if (randomPosts.data.length === 0) {
       fetchRandomPosts();
     }
-  }, [refresh]);
+  }, []);
+
+  const [popularDrawings, setPopularDrawings] = useState<{
+    data: Post[];
+    fetching: boolean;
+    error: string;
+  }>(
+    pageCache("/", "popularDrawings") ?? {
+      data: [],
+      fetching: false,
+      error: null,
+    }
+  );
 
   const [randomPosts, setRandomPosts] = useState<{
     data: Post[];
     currentIndex: number;
     fetching: boolean;
     error: string;
-  }>({
-    data: [],
-    currentIndex: 0,
-    fetching: false,
-    error: null,
-  });
+  }>(
+    pageCache("/", "randomPosts") ?? {
+      data: [],
+      currentIndex: 0,
+      fetching: false,
+      error: null,
+    }
+  );
 
   const [communityList, setCommunityList] = useState<{
     data: Community[];
     fetching: boolean;
     error: string;
     canPullMore: boolean;
-  }>({
-    data: [],
-    fetching: false,
-    error: null,
-    canPullMore: true,
-  });
+    currPage: number;
+  }>(
+    pageCache("/", "communityList") ?? {
+      data: [],
+      fetching: false,
+      error: null,
+      canPullMore: true,
+      currPage: 1,
+    }
+  );
 
   const [searchedCommunities, setSearchedCommunities] = useState<{
     data: Community[];
     fetching: boolean;
     error: string;
-  }>({
-    data: [],
-    fetching: false,
-    error: null,
-  });
+  }>(
+    pageCache("/", "searchedCommunities") ?? {
+      data: [],
+      fetching: false,
+      error: null,
+    }
+  );
 
-  const [displaySearchResults, setDisplaySearchResults] =
-    useState<boolean>(false);
+  const [displaySearchResults, setDisplaySearchResults] = useState<boolean>(
+    pageCache("/", "displaySearchResults") ?? false
+  );
+
+  useEffect(() => {
+    cachePageData("/", "popularDrawings", popularDrawings);
+    cachePageData("/", "randomPosts", randomPosts);
+    cachePageData("/", "communityList", communityList);
+    cachePageData("/", "searchedCommunities", searchedCommunities);
+    cachePageData("/", "displaySearchResults", displaySearchResults);
+  }, [
+    popularDrawings,
+    randomPosts,
+    communityList,
+    searchedCommunities,
+    displaySearchResults,
+  ]);
 
   const fetchRandomPosts = async () => {
     if (randomPosts.fetching) {
@@ -77,7 +116,7 @@ export default function Home({ drawings }) {
       currentIndex: 0,
     }));
 
-    const { data, error } = await queryAPI<Post[]>(`posts_random`, false);
+    const { data, error } = await queryAPI<Post[]>(`posts?random=true`, false);
 
     if (error) {
       setRandomPosts((prevState) => ({
@@ -96,6 +135,38 @@ export default function Home({ drawings }) {
     }));
   };
 
+  const fetchPopularDrawings = async () => {
+    if (randomPosts.fetching) {
+      return;
+    }
+    setPopularDrawings((prevState) => ({
+      ...prevState,
+      fetching: true,
+      data: [],
+      currentIndex: 0,
+    }));
+
+    const { data, error } = await queryAPI<Post[]>(
+      `posts?homepage=true`,
+      false
+    );
+
+    if (error) {
+      setPopularDrawings((prevState) => ({
+        ...prevState,
+        fetching: false,
+        error: error,
+      }));
+      return;
+    }
+    setPopularDrawings((prevState) => ({
+      ...prevState,
+      fetching: false,
+      error: null,
+      data: data,
+    }));
+  };
+
   const fetchNewCommunities = async () => {
     if (communityList.fetching) {
       return;
@@ -105,7 +176,7 @@ export default function Home({ drawings }) {
       fetching: true,
     }));
     const { data, error } = await queryAPI<Community[]>(
-      `communities?page=${currentPage.current}`
+      `communities?page=${communityList.currPage}`
     );
     if (error) {
       console.log(error);
@@ -126,8 +197,8 @@ export default function Home({ drawings }) {
       ...prevState,
       fetching: false,
       data: [...prevState.data, ...data],
+      currPage: prevState?.currPage + 1,
     }));
-    currentPage.current = currentPage.current + 1;
   };
 
   const fetchSearchCommunities = async () => {
@@ -234,23 +305,32 @@ export default function Home({ drawings }) {
           . Have fun!
         </p>
         <p className="text-sm mt-6 text-neutral-700">- Kyle (SuperFX)</p>
-        {drawings && (
-          <div>
-            <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green items-end">
-              <div className="flex items-end">
-                <MiiverseSymbol
-                  symbol={"pencil_draw"}
-                  className="fill-green sm:h-6 sm:w-6 h-5 w-5 mr-2 sm:mb-[4px] mb-[2px]"
-                />
-                <h1 className="text-green font-bold sm:text-lg text-sm">
-                  Popular Drawings
-                </h1>
-              </div>
-            </div>
+        <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green items-end">
+          <div className="flex items-end">
+            <MiiverseSymbol
+              symbol={"pencil_draw"}
+              className="fill-green sm:h-6 sm:w-6 h-5 w-5 mr-2 sm:mb-[4px] mb-[2px]"
+            />
+            <h1 className="text-green font-bold sm:text-lg text-sm">
+              Popular Drawings
+            </h1>
+          </div>
+        </div>
 
-            <HomepageDrawings posts={drawings} />
+        {!popularDrawings.data.length || popularDrawings.fetching ? (
+          <div className="flex justify-center items-center mt-3 mb-4 h-[218px]">
+            <LoadOrRetry
+              fetching={popularDrawings.fetching}
+              error={popularDrawings.error}
+              refetch={fetchPopularDrawings}
+            />
+          </div>
+        ) : (
+          <div className="w-full">
+            <HomepageDrawings posts={popularDrawings.data} />
           </div>
         )}
+
         <div>
           <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green mb-3 items-end">
             <div className="flex items-end">
@@ -445,3 +525,5 @@ export const getServerSideProps = async (context) => {
     props: {},
   };
 };
+
+export const dynamic = "force-dynamic";

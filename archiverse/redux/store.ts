@@ -15,7 +15,7 @@ const apiSlice = createSlice({
       } else if (key.startsWith("posts")) {
         mergePostData(state, data);
       } else if (key.startsWith("users")) {
-        mergeUserData(state, data)
+        mergeUserData(state, data);
       }
       state.data[key] = data;
       state.errors[key] = null;
@@ -29,9 +29,30 @@ const apiSlice = createSlice({
 
 export const { setData, setError } = apiSlice.actions;
 
+const cacheSlice = createSlice({
+  name: "cache",
+  initialState: {},
+  reducers: {
+    cachePage: (state, action) => {
+      const { path, key, data } = action.payload;
+      if (!state[path]) {
+        state[path] = {};
+      }
+      state[path][key] = data;
+    },
+    clearCache: (state, action) => {
+      const { path } = action.payload;
+      state[path] = {};
+    },
+  },
+});
+
+export const { cachePage, clearCache } = cacheSlice.actions;
+
 const store = configureStore({
   reducer: {
     api: apiSlice.reducer,
+    cache: cacheSlice.reducer,
   },
 });
 
