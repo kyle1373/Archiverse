@@ -1,19 +1,15 @@
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { cachePage, clearCache } from "../redux/store";
 import { useRouter } from "next/router";
 
-let isBackNavigation = false;
-
-if (typeof window !== "undefined") {
-  window.addEventListener("popstate", () => {
-    isBackNavigation = true;
-  });
-}
-
 export function usePageCache() {
+  const browser = useSelector((state) => (state as any).browser);
   const cache = useSelector((state) => (state as any).cache);
   const dispatch = useDispatch();
   const router = useRouter();
+
+  const usedButtons = browser.clickedButtons
 
   function pageCache(path: string, key: string) {
     if (typeof window === "undefined") {
@@ -25,15 +21,15 @@ export function usePageCache() {
       dispatch(clearCache({ path }));
     }
 
-    if (cache[path] && cache[path][key] !== undefined) {
+    // Check popState navigation
+    if (usedButtons && cache[path] && cache[path][key] !== undefined) {
+      // Reset popState navigation
       const data = cache[path][key];
-      isBackNavigation = false; // Reset the flag
-      console.log("returning data for " + path + key + " as \n\n\n" + JSON.stringify(data))
+      console.log("returning valid data for " + path + key);
 
       return data;
     }
-    console.log("returning null for pageCache for " + path + key)
-
+    console.log("returning null for pageCache for " + path + key);
 
     return null;
   }
@@ -43,7 +39,7 @@ export function usePageCache() {
       console.log("window is undefined. server side?");
       return; // Don't cache on server-side
     }
-    console.log("caching " + path + key + " as \n\n\n" + JSON.stringify(data))
+    console.log("caching " + path + key + " as real data");
     dispatch(cachePage({ path, key, data }));
   }
 

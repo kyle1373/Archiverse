@@ -12,8 +12,6 @@ import HomepageDrawings from "@components/HomepageDrawings";
 import PostCard from "@components/PostCard";
 import { LINKS } from "@constants/constants";
 import MiiverseSymbol from "@components/MiiverseSymbol";
-
-import { useRouter } from "next/router";
 import { usePageCache } from "@hooks/usePageCache";
 
 export default function Home() {
@@ -37,13 +35,11 @@ export default function Home() {
     data: Post[];
     fetching: boolean;
     error: string;
-  }>(
-    pageCache("/", "popularDrawings") ?? {
-      data: [],
-      fetching: false,
-      error: null,
-    }
-  );
+  }>({
+    data: [],
+    fetching: false,
+    error: null,
+  });
 
   const [randomPosts, setRandomPosts] = useState<{
     data: Post[];
@@ -92,13 +88,11 @@ export default function Home() {
   );
 
   useEffect(() => {
-    cachePageData("/", "popularDrawings", popularDrawings);
     cachePageData("/", "randomPosts", randomPosts);
     cachePageData("/", "communityList", communityList);
     cachePageData("/", "searchedCommunities", searchedCommunities);
     cachePageData("/", "displaySearchResults", displaySearchResults);
   }, [
-    popularDrawings,
     randomPosts,
     communityList,
     searchedCommunities,
@@ -525,5 +519,3 @@ export const getServerSideProps = async (context) => {
     props: {},
   };
 };
-
-export const dynamic = "force-dynamic";

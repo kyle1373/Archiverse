@@ -1,12 +1,12 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import { Provider } from "react-redux";
-import store from "../redux/store";
+import { Provider, useDispatch } from "react-redux";
+import store, { clickBrowserButtons, notClickBrowserButtons } from "../redux/store";
 import { GoogleAdSense } from "nextjs-google-adsense";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css"; // Import the nprogress CSS
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Script from "next/script";
 
 NProgress.configure({ showSpinner: false });
@@ -23,7 +23,11 @@ const handleRouteChangeError = () => {
   NProgress.done();
 };
 
-export default function App({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const isPopState = useRef(false);
+
   useEffect(() => {
     Router.events.on("routeChangeStart", handleRouteChangeStart);
     Router.events.on("routeChangeComplete", handleRouteChangeComplete);
@@ -35,12 +39,43 @@ export default function App({ Component, pageProps }: AppProps) {
       Router.events.off("routeChangeError", handleRouteChangeError);
     };
   }, []);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      console.log("Handling back button")
+
+      isPopState.current = true;
+      dispatch(clickBrowserButtons({}));
+    };
+
+    router.beforePopState(() => {
+      handlePopState();
+      return true;
+    });
+
+    router.events.on("routeChangeComplete", () => {
+
+      console.log("Handling complete route change")
+      if (!isPopState.current) {
+        dispatch(notClickBrowserButtons({}));
+      }
+      isPopState.current = false;
+    });
+
+    return () => {
+      router.events.off("routeChangeComplete", () => {
+        if (!isPopState.current) {
+          dispatch(notClickBrowserButtons({}));
+        }
+        isPopState.current = false;
+      });
+    };
+  }, [router]);
+
   return (
     <>
       <GoogleAdSense publisherId="pub-4203889559099732" />
-      <Provider store={store}>
-        <Component {...pageProps} />{" "}
-      </Provider>
+      <Component {...pageProps} />
       {process.env.NODE_ENV === "production" && (
         <Script
           async
@@ -49,5 +84,13 @@ export default function App({ Component, pageProps }: AppProps) {
         />
       )}
     </>
+  );
+}
+
+export default function App(props: AppProps) {
+  return (
+    <Provider store={store}>
+      <MyApp {...props} />
+    </Provider>
   );
 }

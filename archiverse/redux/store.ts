@@ -1,6 +1,24 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 import { mergeCommunityData, mergePostData, mergeUserData } from "./merge";
 
+const browserSlice = createSlice({
+  name: "browser",
+  initialState: {
+    clickedButtons: true,
+  },
+  reducers: {
+    clickBrowserButtons: (state, action) => {
+      state["clickedButtons"] = true;
+    },
+    notClickBrowserButtons: (state, action) => {
+      state["clickedButtons"] = false;
+    },
+  },
+});
+
+export const { clickBrowserButtons, notClickBrowserButtons } =
+  browserSlice.actions;
+
 const apiSlice = createSlice({
   name: "api",
   initialState: {
@@ -52,6 +70,7 @@ export const { cachePage, clearCache } = cacheSlice.actions;
 const store = configureStore({
   reducer: {
     api: apiSlice.reducer,
+    browser: browserSlice.reducer,
     cache: cacheSlice.reducer,
   },
 });
