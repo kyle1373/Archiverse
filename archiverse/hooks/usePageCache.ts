@@ -25,7 +25,7 @@ export function usePageCache() {
     if (usedButtons && cache[path] && cache[path][key] !== undefined) {
       // Reset popState navigation
       const data = cache[path][key];
-      console.log("returning valid data for " + path + key);
+      console.log("returning valid data for " + path + key + " as " + data);
 
       return data;
     }

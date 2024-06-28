@@ -17,17 +17,19 @@ import { usePageCache } from "@hooks/usePageCache";
 export default function Home() {
   const { pageCache, cachePageData } = usePageCache();
 
-  const searchQuery = useRef("");
-
+  const [searchQuery, setSearchQuery] = useState(
+    pageCache("/", "searchQuery") ?? ""
+  );
+  
   useEffect(() => {
     if (communityList.data.length === 0) {
-      fetchNewCommunities();
+      fetchNewCommunities(true);
     }
     if (popularDrawings.data.length === 0) {
-      fetchPopularDrawings();
+      fetchPopularDrawings(true);
     }
     if (randomPosts.data.length === 0) {
-      fetchRandomPosts();
+      fetchRandomPosts(true);
     }
   }, []);
 
@@ -37,7 +39,7 @@ export default function Home() {
     error: string;
   }>({
     data: [],
-    fetching: false,
+    fetching: true,
     error: null,
   });
 
@@ -50,7 +52,7 @@ export default function Home() {
     pageCache("/", "randomPosts") ?? {
       data: [],
       currentIndex: 0,
-      fetching: false,
+      fetching: true,
       error: null,
     }
   );
@@ -64,7 +66,7 @@ export default function Home() {
   }>(
     pageCache("/", "communityList") ?? {
       data: [],
-      fetching: false,
+      fetching: true,
       error: null,
       canPullMore: true,
       currPage: 1,
@@ -92,15 +94,17 @@ export default function Home() {
     cachePageData("/", "communityList", communityList);
     cachePageData("/", "searchedCommunities", searchedCommunities);
     cachePageData("/", "displaySearchResults", displaySearchResults);
+    cachePageData("/", "searchQuery", searchQuery);
   }, [
     randomPosts,
     communityList,
     searchedCommunities,
     displaySearchResults,
+    searchQuery,
   ]);
 
-  const fetchRandomPosts = async () => {
-    if (randomPosts.fetching) {
+  const fetchRandomPosts = async (ignoreFetching?: boolean) => {
+    if (randomPosts.fetching && !ignoreFetching) {
       return;
     }
     setRandomPosts((prevState) => ({
@@ -129,8 +133,8 @@ export default function Home() {
     }));
   };
 
-  const fetchPopularDrawings = async () => {
-    if (randomPosts.fetching) {
+  const fetchPopularDrawings = async (ignoreFetching?: boolean) => {
+    if (randomPosts.fetching && !ignoreFetching) {
       return;
     }
     setPopularDrawings((prevState) => ({
@@ -161,8 +165,8 @@ export default function Home() {
     }));
   };
 
-  const fetchNewCommunities = async () => {
-    if (communityList.fetching) {
+  const fetchNewCommunities = async (ignoreFetching?: boolean) => {
+    if (communityList.fetching && !ignoreFetching) {
       return;
     }
     setCommunityList((prevState) => ({
@@ -195,15 +199,15 @@ export default function Home() {
     }));
   };
 
-  const fetchSearchCommunities = async () => {
-    if (searchedCommunities.fetching) {
+  const fetchSearchCommunities = async (ignoreFetching?: boolean) => {
+    if (searchedCommunities.fetching && !ignoreFetching) {
       return;
     }
     setSearchedCommunities((prevState) => ({
       ...prevState,
       fetching: true,
     }));
-    const encodedSearch = encodeURIComponent(searchQuery.current);
+    const encodedSearch = encodeURIComponent(searchQuery);
     const { data, error } = await queryAPI<Community[]>(
       `communities?search=${encodedSearch}`
     );
@@ -224,15 +228,16 @@ export default function Home() {
   };
 
   const handleSearchChangeText = (event) => {
-    searchQuery.current = event.target.value?.trim().toLowerCase();
-    if (!searchQuery.current) {
+    const newSearchQuery = event.target.value?.trim().toLowerCase();
+    setSearchQuery(newSearchQuery);
+    if (!newSearchQuery) {
       setDisplaySearchResults(false);
     }
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.current.trim()) {
+    if (searchQuery.trim()) {
       setDisplaySearchResults(true);
       fetchSearchCommunities();
     } else {
@@ -380,6 +385,7 @@ export default function Home() {
           <form onSubmit={handleSearch} className="flex items-center relative">
             <input
               type="text"
+              value={searchQuery}
               onChange={handleSearchChangeText}
               placeholder="Search Communities"
               className="rounded-md pl-2 sm:pr-10 pr-4 bg-neutral-200 sm:text-sm py-1 placeholder-neutral-500 text-xs"
@@ -457,7 +463,7 @@ export default function Home() {
           !communityList.error && (
             <div className="flex justify-center items-center">
               <button
-                onClick={fetchNewCommunities}
+                onClick={() => fetchNewCommunities()}
                 className="md:ml-2 hover:brightness-95 inline-flex justify-center items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-medium py-2 px-8 mt-4 md:mt-0 md:text-base text-small"
               >
                 <h1 className="">Show More</h1>
