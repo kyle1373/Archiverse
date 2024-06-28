@@ -50,14 +50,14 @@ const Wrapper = ({ children }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <FaGithub className="w-6 h-6 text-[#696969]" />
+                  <FaGithub className="w-6 h-6 text-[#696969] hover:text-green" />
                 </Link>
                 <Link
                   href={LINKS.discord}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <FaDiscord className="w-6 h-6 text-[#696969]" />
+                  <FaDiscord className="w-6 h-6 text-[#696969] hover:text-green" />
                 </Link>
               </div>
             </div>
