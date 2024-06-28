@@ -15,6 +15,7 @@ import PostCard from "@components/PostCard";
 
 export default function Home() {
   const searchQuery = useRef("");
+  const [highlightedText, setHighlightedText] = useState(searchQuery.current);
 
   const [usersChecked, setUsersChecked] = useState(true);
   const [postsChecked, setPostsChecked] = useState(false);
@@ -146,6 +147,8 @@ export default function Home() {
         ...prevState,
         data: null,
       }));
+
+      setHighlightedText(searchQuery.current);
 
       if (usersChecked) {
         fetchUsers();
@@ -322,7 +325,11 @@ export default function Home() {
                 } border-gray hover:brightness-95 bg-white cursor-pointer`}
                 href={`/posts/${post.ID}`}
               >
-                <PostCard post={post} variant={"list"} />
+                <PostCard
+                  post={post}
+                  variant={"list"}
+                  highlightText={highlightedText}
+                />
               </Link>
             );
           })}

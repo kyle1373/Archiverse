@@ -5,14 +5,21 @@ import React, { useState, useEffect } from "react";
 import Loading from "@/components/Loading"; // Make sure to adjust the import path as needed
 import Link from "next/link";
 import MiiverseSymbol from "./MiiverseSymbol";
+import Highlighter from "react-highlight-words";
 
 interface PostCardProps {
   post: Post;
   className?: any;
   variant: "list" | "main" | "carossel";
+  highlightText?: string;
 }
 
-const PostCard = ({ post, className = "", variant }: PostCardProps) => {
+const PostCard = ({
+  post,
+  className = "",
+  variant,
+  highlightText,
+}: PostCardProps) => {
   const [isDrawingLoading, setIsDrawingLoading] = useState(true);
   const [isScreenshotLoading, setIsScreenshotLoading] = useState(true);
 
@@ -127,7 +134,14 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
           </div>
         </div>
         {realTitle && (
-          <h1 className="text-left font-bold text-lg">{realTitle}</h1>
+          <h1 className="text-left font-bold text-lg">
+            {" "}
+            <Highlighter
+              searchWords={[highlightText]}
+              autoEscape={true}
+              textToHighlight={realTitle}
+            />
+          </h1>
         )}
         {post.DrawingUrl ? (
           isDrawingLoading ? (
@@ -140,7 +154,13 @@ const PostCard = ({ post, className = "", variant }: PostCardProps) => {
             </div>
           )
         ) : (
-          <h1 className={`text-left whitespace-pre-line`}>{realDescription}</h1>
+          <h1 className={`text-left whitespace-pre-line`}>
+            <Highlighter
+              searchWords={[highlightText]}
+              autoEscape={true}
+              textToHighlight={realDescription}
+            />
+          </h1>
         )}
         {variant === "list" &&
           post.ScreenshotUrl &&
