@@ -64,7 +64,7 @@ export default function Home() {
     setUsers((prevState) => ({
       ...prevState,
       fetching: false,
-      data: data,
+      data: data ?? [],
       error: error,
     }));
   };
@@ -88,7 +88,7 @@ export default function Home() {
     setPosts((prevState) => ({
       ...prevState,
       fetching: false,
-      data: data,
+      data: data ?? [],
       error: error,
     }));
   };
