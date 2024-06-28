@@ -12,50 +12,81 @@ import { queryAPI } from "@utils/queryAPI";
 import { IMAGES } from "@constants/constants";
 import MiiverseSymbol from "@components/MiiverseSymbol";
 import PostCard from "@components/PostCard";
+import { usePageCache } from "@hooks/usePageCache";
 
 export default function Home() {
-  const searchQuery = useRef("");
-  const [highlightedText, setHighlightedText] = useState(searchQuery.current);
+  const { pageCache, cachePageData } = usePageCache();
 
-  const [usersChecked, setUsersChecked] = useState(true);
-  const [postsChecked, setPostsChecked] = useState(false);
-  const [communitiesChecked, setCommunitiesChecked] = useState(false);
+  const [currSearch, setCurrSearch] = useState<string>(
+    pageCache("/search", "searchedQuery") ?? ""
+  );
+
+  // We have currSearch and searchedQuery because we need to store currSearch to store progress. We then use searchedQuery to search in the other tabs when the user clicks on them
+
+  const [searchedQuery, setSearchedQuery] = useState<string>(currSearch);
+
+  const [highlightedText, setHighlightedText] = useState(searchedQuery);
+
+  const [selected, setSelected] = useState<"posts" | "users" | "communities">(
+    pageCache("/search", "selected") ?? "posts"
+  );
+
+  const getButtonStyles = (isSelected: boolean) => {
+    const commonStyles =
+      "w-1/2 text-left p-2 md:text-sm text-xs font-semibold border-gray hover:brightness-95";
+    if (isSelected) {
+      return (
+        commonStyles +
+        " bg-gradient-to-b from-[#81e52e] to-[#5ac800] text-white"
+      );
+    }
+    return (
+      commonStyles +
+      " bg-gradient-to-b from-white text-neutral-600 to-neutral-200"
+    );
+  };
 
   const [users, setUsers] = useState<{
     data: User[];
     fetching: boolean;
     error: string;
-  }>({
-    data: null,
-    fetching: false,
-    error: null,
-  });
+  }>(
+    pageCache("/search", "users") ?? {
+      data: null,
+      fetching: false,
+      error: null,
+    }
+  );
 
   const [posts, setPosts] = useState<{
     data: Post[];
     fetching: boolean;
     error: string;
-  }>({
-    data: null,
-    fetching: false,
-    error: null,
-  });
+  }>(
+    pageCache("/search", "posts") ?? {
+      data: null,
+      fetching: false,
+      error: null,
+    }
+  );
 
   const [communities, setCommunities] = useState<{
     data: Community[];
     fetching: boolean;
     error: string;
-  }>({
-    data: null,
-    fetching: false,
-    error: null,
-  });
+  }>(
+    pageCache("/search", "communities") ?? {
+      data: null,
+      fetching: false,
+      error: null,
+    }
+  );
 
   const handleSearchChangeText = (event) => {
-    searchQuery.current = event.target.value;
+    setCurrSearch(event.target.value);
   };
 
-  const fetchCommunities = async () => {
+  const fetchCommunities = async (query: string) => {
     if (communities.fetching) {
       return;
     }
@@ -64,9 +95,8 @@ export default function Home() {
       fetching: true,
     }));
 
-    const encodedSearch = encodeURIComponent(
-      searchQuery.current?.trim().toLowerCase()
-    );
+    const encodedSearch = encodeURIComponent(query?.trim().toLowerCase());
+
     const { data, error } = await queryAPI<Community[]>(
       `communities?search=${encodedSearch}`
     );
@@ -79,7 +109,7 @@ export default function Home() {
     }));
   };
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (query: string) => {
     if (users.fetching) {
       return;
     }
@@ -90,9 +120,9 @@ export default function Home() {
       fetching: true,
       error: null,
     }));
-    const encodedSearch = encodeURIComponent(
-      searchQuery.current?.trim().toLowerCase()
-    );
+
+    const encodedSearch = encodeURIComponent(query?.trim().toLowerCase());
+
     const { data, error } = await queryAPI<User[]>(
       `users?search=${encodedSearch}`
     );
@@ -105,7 +135,21 @@ export default function Home() {
     }));
   };
 
-  const fetchPosts = async () => {
+  useEffect(() => {
+    cachePageData("/search", "searchedQuery", searchedQuery);
+    cachePageData("/search", "selected", selected);
+    cachePageData("/search", "users", users);
+    cachePageData("/search", "posts", posts);
+    cachePageData("/search", "communities", communities);
+  }, [
+    searchedQuery,
+    selected,
+    users,
+    posts,
+    communities,
+  ]);
+
+  const fetchPosts = async (query: string) => {
     if (posts.fetching) {
       return;
     }
@@ -116,7 +160,7 @@ export default function Home() {
       fetching: true,
       error: null,
     }));
-    const encodedSearch = encodeURIComponent(searchQuery.current);
+    const encodedSearch = encodeURIComponent(query);
     const { data, error } = await queryAPI<Post[]>(
       `posts?search=${encodedSearch}`
     );
@@ -128,13 +172,11 @@ export default function Home() {
       error: error,
     }));
   };
-  useEffect(() => {
-    handleSearch(null);
-  }, [postsChecked, usersChecked, communitiesChecked]);
 
   const handleSearch = (e: React.FormEvent) => {
     e?.preventDefault();
-    if (searchQuery.current?.trim()) {
+    setSearchedQuery(currSearch);
+    if (currSearch?.trim()) {
       setPosts((prevState) => ({
         ...prevState,
         data: null,
@@ -148,16 +190,15 @@ export default function Home() {
         data: null,
       }));
 
-      setHighlightedText(searchQuery.current);
+      setHighlightedText(currSearch);
 
-      if (usersChecked) {
-        fetchUsers();
-      }
-      if (postsChecked) {
-        fetchPosts();
-      }
-      if (communitiesChecked) {
-        fetchCommunities();
+      switch (selected) {
+        case "users":
+          return fetchUsers(currSearch);
+        case "communities":
+          return fetchCommunities(currSearch);
+        case "posts":
+          return fetchPosts(currSearch);
       }
     }
   };
@@ -176,6 +217,7 @@ export default function Home() {
           >
             <input
               type="text"
+              value={currSearch}
               onChange={handleSearchChangeText}
               placeholder="Search Archiverse"
               className="rounded-md pl-2 sm:pr-10 pr-4 bg-neutral-200 md:text-sm py-1 placeholder-neutral-500 text-xs w-full"
@@ -190,62 +232,50 @@ export default function Home() {
               />
             </button>
           </form>
-          <div className="flex mt-2 justify-center items-center mb-4">
-            <label
-              className={`mr-6 text-xs ${
-                usersChecked ? "text-neutral-700" : "text-neutral-500"
-              } items-center justify-center flex`}
+          <div className="flex mt-6 mb-4">
+            <button
+              className={`rounded-l-md border-[1px] border-r-[.5px] ${getButtonStyles(
+                selected === "posts"
+              )}`}
+              onClick={() => {
+                setSelected("posts");
+                if (searchedQuery.trim()) {
+                  fetchPosts(searchedQuery);
+                }
+              }}
             >
-              <input
-                type="checkbox"
-                className="mr-2 h-3 w-3 accent-green"
-                checked={usersChecked}
-                onChange={(e) => setUsersChecked(e.target.checked)}
-              />
-              Users
-            </label>
-            <label
-              className={`mr-6 text-xs ${
-                postsChecked ? "text-neutral-700" : "text-neutral-500"
-              } items-center justify-center flex`}
-            >
-              <input
-                type="checkbox"
-                className="mr-2 h-3 w-3 accent-green"
-                checked={postsChecked}
-                onChange={(e) => setPostsChecked(e.target.checked)}
-              />
               Posts
-            </label>
-            <label
-              className={`mr-6 text-xs ${
-                communitiesChecked ? "text-neutral-700" : "text-neutral-500"
-              } items-center justify-center flex`}
+            </button>
+            <button
+              className={`border-[1px] ${getButtonStyles(
+                selected === "users"
+              )}`}
+              onClick={() => {
+                setSelected("users");
+                if (searchedQuery.trim()) {
+                  fetchUsers(searchedQuery);
+                }
+              }}
             >
-              <input
-                type="checkbox"
-                className="mr-2 h-3 w-3 accent-green"
-                checked={communitiesChecked}
-                onChange={(e) => setCommunitiesChecked(e.target.checked)}
-              />
+              Users
+            </button>
+            <button
+              className={`rounded-r-md border-[1px] border-l-[.5px] ${getButtonStyles(
+                selected === "communities"
+              )}`}
+              onClick={() => {
+                setSelected("communities");
+                if (searchedQuery.trim()) {
+                  fetchCommunities(searchedQuery);
+                }
+              }}
+            >
               Communities
-            </label>
+            </button>
           </div>
         </div>
 
-        {usersChecked && (users.data || users.fetching) && (
-          <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green mb-2 items-end">
-            <div className="flex items-end">
-              <MiiverseSymbol
-                symbol={"silhouette"}
-                className="fill-green sm:h-5 sm:w-5 h-4 w-4 mr-2 sm:mb-[5px] mb-[2px]"
-              />
-              <h1 className="text-green font-bold sm:text-lg text-sm">Users</h1>
-            </div>
-          </div>
-        )}
-
-        {usersChecked &&
+        {selected === "users" &&
           users.data?.map((user, index) => {
             return (
               <Link
@@ -283,7 +313,7 @@ export default function Home() {
             );
           })}
 
-        {usersChecked &&
+        {selected === "users" &&
           !users.fetching &&
           users.data?.length === 0 &&
           !users.error && (
@@ -292,30 +322,18 @@ export default function Home() {
             </h3>
           )}
 
-        {usersChecked && (
+        {selected === "users" && (
           <div className="flex justify-center items-center">
             <LoadOrRetry
               fetching={users.fetching}
               error={users.error}
-              refetch={() => fetchUsers()}
+              refetch={() => fetchUsers(searchedQuery)}
               className="mt-4"
             />
           </div>
         )}
 
-        {postsChecked && (posts.data || posts.fetching) && (
-          <div className="flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green mb-1 items-end">
-            <div className="flex items-end">
-              <MiiverseSymbol
-                symbol={"comment"}
-                className="fill-green sm:h-5 sm:w-5 h-4 w-4 mr-2 sm:mb-[4px] mb-[1px]"
-              />
-              <h1 className="text-green font-bold sm:text-lg text-sm">Posts</h1>
-            </div>
-          </div>
-        )}
-
-        {postsChecked &&
+        {selected === "posts" &&
           posts.data?.map((post, index) => {
             return (
               <Link
@@ -334,7 +352,7 @@ export default function Home() {
             );
           })}
 
-        {postsChecked &&
+        {selected === "posts" &&
           !posts.fetching &&
           posts.data?.length === 0 &&
           !posts.error && (
@@ -343,33 +361,19 @@ export default function Home() {
             </h3>
           )}
 
-        {postsChecked && (
+        {selected === "posts" && (
           <div className="flex justify-center items-center">
             <LoadOrRetry
               fetching={posts.fetching}
               error={posts.error}
-              refetch={() => fetchPosts()}
+              refetch={() => fetchPosts(searchedQuery)}
               className="mt-4"
             />
           </div>
         )}
         {/* Used for communities here */}
 
-        {communitiesChecked && (communities.data || communities.fetching) && (
-          <div className="flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green mb-1 items-end">
-            <div className="flex items-end">
-              <MiiverseSymbol
-                symbol={"silhouette_people"}
-                className="fill-green sm:h-5 sm:w-5 h-4 w-4 mr-2 sm:mb-[5px] mb-[2px]"
-              />
-              <h1 className="text-green font-bold sm:text-lg text-sm">
-                Communities
-              </h1>
-            </div>
-          </div>
-        )}
-
-        {communitiesChecked &&
+        {selected === "communities" &&
           communities.data?.map((community, index) => {
             return (
               <Link
@@ -417,7 +421,7 @@ export default function Home() {
             );
           })}
 
-        {communitiesChecked &&
+        {selected === "communities" &&
           !communities.fetching &&
           communities.data?.length === 0 &&
           !communities.error && (
@@ -426,12 +430,12 @@ export default function Home() {
             </h3>
           )}
 
-        {communitiesChecked && (
+        {selected === "communities" && (
           <div className="flex justify-center items-center">
             <LoadOrRetry
               fetching={communities.fetching}
               error={communities.error}
-              refetch={() => fetchCommunities()}
+              refetch={() => fetchCommunities(searchedQuery)}
               className="mt-4"
             />
           </div>

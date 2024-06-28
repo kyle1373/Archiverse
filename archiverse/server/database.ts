@@ -291,7 +291,6 @@ export const searchCommunities = async ({
 
   if (error) {
     console.log(error.message);
-    console.log(JSON.stringify(error));
     throw new Error(error.message);
   }
 

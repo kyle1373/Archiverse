@@ -1,7 +1,10 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Provider, useDispatch } from "react-redux";
-import store, { clickBrowserButtons, notClickBrowserButtons } from "../redux/store";
+import store, {
+  clickBrowserButtons,
+  notClickBrowserButtons,
+} from "../redux/store";
 import { GoogleAdSense } from "nextjs-google-adsense";
 import Router, { useRouter } from "next/router";
 import NProgress from "nprogress";
@@ -42,8 +45,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     const handlePopState = () => {
-      console.log("Handling back button")
-
+      // This handles the back and forward buttons
       isPopState.current = true;
       dispatch(clickBrowserButtons({}));
     };
@@ -54,8 +56,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     });
 
     router.events.on("routeChangeComplete", () => {
-
-      console.log("Handling complete route change")
+      // This handles all route changes
       if (!isPopState.current) {
         dispatch(notClickBrowserButtons({}));
       }
