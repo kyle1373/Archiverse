@@ -141,13 +141,7 @@ export default function Home() {
     cachePageData("/search", "users", users);
     cachePageData("/search", "posts", posts);
     cachePageData("/search", "communities", communities);
-  }, [
-    searchedQuery,
-    selected,
-    users,
-    posts,
-    communities,
-  ]);
+  }, [searchedQuery, selected, users, posts, communities]);
 
   const fetchPosts = async (query: string) => {
     if (posts.fetching) {
@@ -338,7 +332,7 @@ export default function Home() {
             return (
               <Link
                 key={"post " + post.NNID + " Index " + index}
-                className={`flex pb-2 ${
+                className={`flex pb-2 ${index === 0 ? "mt-[-4px]" : ""} ${
                   index === posts.data.length - 1 ? "mb-2" : "border-b-[1px]"
                 } border-gray hover:brightness-95 bg-white cursor-pointer`}
                 href={`/posts/${post.ID}`}
