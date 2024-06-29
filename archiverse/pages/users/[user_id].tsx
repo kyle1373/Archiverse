@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react";
 import { queryAPI } from "@utils/queryAPI";
 import { IMAGES, LIMIT } from "@constants/constants";
 import PostCard from "@components/PostCard";
+import { usePageCache } from "@hooks/usePageCache";
 
 export default function Home({
   user,
@@ -19,11 +20,17 @@ export default function Home({
   user: User;
   user_id: string;
 }) {
+  const { pageCache, cachePageData } = usePageCache();
+
+  const [mounted, setMounted] = useState(false);
+
   const [selected, setSelected] = useState<"recent" | "popular" | "oldest">(
-    "recent"
+    pageCache(`users/${user_id}`, "selected") ?? "recent"
   );
 
-  const [showMore, setShowMore] = useState(false);
+  const [showMore, setShowMore] = useState(
+    pageCache(`users/${user_id}`, "showMore") ?? false
+  );
 
   const [posts, setPosts] = useState<{
     data: Post[];
@@ -31,13 +38,15 @@ export default function Home({
     error: string;
     currPage: number;
     canLoadMore: boolean;
-  }>({
-    data: [],
-    fetching: false,
-    error: null,
-    currPage: 1,
-    canLoadMore: true,
-  });
+  }>(
+    pageCache(`users/${user_id}`, "posts") ?? {
+      data: [],
+      fetching: false,
+      error: null,
+      currPage: 1,
+      canLoadMore: true,
+    }
+  );
 
   const fetchPosts = async (restart?: boolean) => {
     if (posts.fetching) {
@@ -119,7 +128,22 @@ export default function Home({
   };
 
   useEffect(() => {
-    fetchPosts(true);
+    cachePageData(`users/${user_id}`, "selected", selected);
+    cachePageData(`users/${user_id}`, "showMore", showMore);
+    cachePageData(`users/${user_id}`, "posts", posts);
+  }, [posts, showMore, selected]);
+
+  useEffect(() => {
+    if (!posts.data.length) {
+      fetchPosts(true);
+    }
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      fetchPosts(true);
+    }
   }, [selected]);
 
   return (
@@ -246,9 +270,7 @@ export default function Home({
             Recent
           </button>
           <button
-            className={`border-[1px] ${getButtonStyles(
-              selected === "oldest"
-            )}`}
+            className={`border-[1px] ${getButtonStyles(selected === "oldest")}`}
             onClick={() => setSelected("oldest")}
           >
             Oldest
