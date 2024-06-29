@@ -82,9 +82,13 @@ export default function Home({ title_id, game_id, community }) {
     }
   );
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
-    fetchPosts(true);
-  }, [beforeDate.useDate]);
+    if (mounted) {
+      fetchPosts(true);
+    }
+  }, [beforeDate.useDate, popularSelected]);
 
   const [posts, setPosts] = popularSelected
     ? [popularPosts, setPopularPosts]
@@ -164,15 +168,12 @@ export default function Home({ title_id, game_id, community }) {
   };
 
   useEffect(() => {
-    getRelatedCommunities();
-    if (!posts.data || posts.data.length === 0) {
+    if (!recentPosts.data.length && !popularPosts.data.length) {
+      getRelatedCommunities();
       fetchPosts(true);
     }
+    setMounted(true);
   }, []);
-
-  useEffect(() => {
-    fetchPosts(true);
-  }, [popularSelected]);
 
   useEffect(() => {
     if (community?.CommunityBanner) {
