@@ -290,8 +290,11 @@ export default function Home() {
           <Link className="underline" href={"https://wiki.archiveteam.org/"}>
             Archive Team
           </Link>{" "}
-          for archiving Miiverse before its shutdown, and Luna for creating
-          polished icons shown throughout the website.
+          for archiving Miiverse before its shutdown, and{" "}
+          <Link className="underline" href={"https://x.com/puppychist"}>
+            Luna
+          </Link>{" "}
+          for creating polished icons shown throughout the website.
         </p>
         <p className="text-sm mt-6 text-neutral-700">
           If you enjoy Archiverse, consider{" "}
