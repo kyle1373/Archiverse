@@ -18,6 +18,7 @@ import {
   LuArrowUpToLine,
 } from "react-icons/lu";
 import MiiverseSymbol from "@components/MiiverseSymbol";
+import { usePageCache } from "@hooks/usePageCache";
 
 export default function Home({
   post_id,
@@ -26,6 +27,8 @@ export default function Home({
   post_id: string;
   post: Post;
 }) {
+  const { pageCache, cachePageData } = usePageCache();
+
   const [replies, setReplies] = useState<{
     data: Reply[];
     fetching: boolean;
@@ -33,14 +36,16 @@ export default function Home({
     currPage: number;
     showMoreCategory: "old" | "new";
     canPullMore: boolean;
-  }>({
-    data: null,
-    fetching: false,
-    error: null,
-    showMoreCategory: "old", // This is only used to show where to show the loading indicator. This value is not used elsewhere. old is top. new is bottom
-    currPage: 1,
-    canPullMore: false,
-  });
+  }>(
+    pageCache(`posts/${post_id}`, "replies") ?? {
+      data: null,
+      fetching: false,
+      error: null,
+      showMoreCategory: "old", // This is only used to show where to show the loading indicator. This value is not used elsewhere. old is top. new is bottom
+      currPage: 1,
+      canPullMore: false,
+    }
+  );
 
   const fetchReplies = async (
     reset: boolean,
@@ -99,8 +104,14 @@ export default function Home({
   };
 
   useEffect(() => {
-    fetchReplies(true, "newest", "old");
+    if (!replies.data) {
+      fetchReplies(true, "newest", "old");
+    }
   }, []);
+
+  useEffect(() => {
+    cachePageData(`posts/${post_id}`, "replies", replies);
+  }, [replies]);
 
   return (
     <>

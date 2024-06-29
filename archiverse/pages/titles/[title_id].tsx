@@ -7,17 +7,22 @@ import { queryAPI } from "@utils/queryAPI";
 import { numberWithCommas } from "@utils/utils";
 import Link from "next/link";
 import MiiverseSymbol from "@components/MiiverseSymbol";
+import { usePageCache } from "@hooks/usePageCache";
 
 export default function Home({ title_id }) {
+  const { pageCache, cachePageData } = usePageCache();
+
   const [communities, setCommunities] = useState<{
     data: Community[];
     fetching: boolean;
     error: string;
-  }>({
-    data: null,
-    fetching: false,
-    error: null,
-  });
+  }>(
+    pageCache(`titles/${title_id}`, "communities") ?? {
+      data: null,
+      fetching: false,
+      error: null,
+    }
+  );
 
   const fetchCommunities = async () => {
     if (communities.fetching) {
@@ -50,8 +55,14 @@ export default function Home({ title_id }) {
   };
 
   useEffect(() => {
-    fetchCommunities();
+    if (!communities.data) {
+      fetchCommunities();
+    }
   }, []);
+
+  useEffect(() => {
+    cachePageData(`titles/${title_id}`, "communities", communities);
+  }, [communities]);
 
   function getGameTitle() {
     // Check if the array exists and has at least one element
