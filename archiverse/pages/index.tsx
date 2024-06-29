@@ -20,7 +20,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState(
     pageCache("/", "searchQuery") ?? ""
   );
-  
+
   useEffect(() => {
     if (communityList.data.length === 0) {
       fetchNewCommunities(true);
@@ -114,7 +114,10 @@ export default function Home() {
       currentIndex: 0,
     }));
 
-    const { data, error } = await queryAPI<Post[]>(`posts?random=true`, false);
+    const { data, error } = await queryAPI<Post[]>(
+      `posts?random=true`,
+      false
+    );
 
     if (error) {
       setRandomPosts((prevState) => ({

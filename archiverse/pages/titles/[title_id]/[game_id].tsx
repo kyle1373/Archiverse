@@ -10,8 +10,10 @@ import { IoIosArrowForward } from "react-icons/io";
 import PostCard from "@components/PostCard";
 import Loading from "@components/Loading";
 import MiiverseSymbol from "@components/MiiverseSymbol";
+import DatePicker from 'react-date-picker';
 
 export default function Home({ title_id, game_id, community }) {
+  
   const [beforeDate, setBeforeDate] = useState<{
     date: Date;
     useDate: boolean;

@@ -121,7 +121,7 @@ export const searchPosts = async ({ query }: { query: string }) => {
 
 export const getRandomPosts = async (): Promise<Post[]> => {
   const { data, error } = await supabaseAdmin.rpc("get_random_posts", {
-    num_rows: Math.floor(Math.random() * 200000000) + 1, // This parameter is actually never used and only useful for anti-caching for supabase.
+    num_rows: 5, // This parameter is actually never used and only useful for anti-caching for supabase.
   });
 
   if (error) {
