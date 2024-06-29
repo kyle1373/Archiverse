@@ -1,6 +1,6 @@
 ![archiverse-logo](https://github.com/kyle1373/Archiverse/assets/59634395/269a0426-87c9-48b7-a15f-cf11b910ef83)
 
-### The Biggest Miiverse Archive on the Internet (17TB of art, screenshots, posts, and more)
+### The Biggest Miiverse Archive on the Internet
 
 View the website at [archiverse.app](https://archiverse.app)
 
