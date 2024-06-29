@@ -10,7 +10,7 @@ Archiverse is a comprehensive archive of [Miiverse](https://en.wikipedia.org/wik
 
 Archiverse's frontend is built using [React](https://react.dev/), [Next.js](https://nextjs.org/), [Redux](https://redux.js.org/), and [Docker](https://www.docker.com/), deployed through [Vercel](https://vercel.com/). It takes advantage of server-side rendering for optimized SEO (search engine optimization) in order for users to more easily Google keywords in Miiverse posts. The data behind archiverse is stored through [PostgreSQL](https://www.postgresql.org/) hosted with [Supabase](https://supabase.com/). In total, the data behind Archiverse consists of...
 
-5,141 Communities
+5,141 Communities  
 8,290,282 Users  
 133,078,026 Posts  
 216,972,349 Replies  
