@@ -2,7 +2,7 @@ import Image from "next/image";
 import SEO from "@/components/SEO";
 import styles from "./index.module.css";
 import Link from "next/link";
-import { Community, Post, User } from "@server/database";
+import { Community, Post, User, getCommunity, getRandomPosts, getUserInfo } from "@server/database";
 import { numberWithCommas } from "@utils/utils";
 import Loading from "@components/Loading";
 import LoadOrRetry from "@components/LoadOrRetry";
@@ -14,7 +14,7 @@ import MiiverseSymbol from "@components/MiiverseSymbol";
 import PostCard from "@components/PostCard";
 import { usePageCache } from "@hooks/usePageCache";
 
-export default function Home() {
+export default function Home({ something }) {
   const { pageCache, cachePageData } = usePageCache();
 
   const [currSearch, setCurrSearch] = useState<string>(
@@ -440,7 +440,8 @@ export default function Home() {
 }
 
 export const getServerSideProps = async (context) => {
+  const community = await getCommunity({gameID: "0", titleID: "0"})
   return {
-    props: {},
+    props: { something: community },
   };
 };

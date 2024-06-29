@@ -7,17 +7,12 @@ export function usePageCache() {
   const browser = useSelector((state) => (state as any).browser);
   const cache = useSelector((state) => (state as any).cache);
   const dispatch = useDispatch();
-  const router = useRouter();
 
   const usedButtons = browser.clickedButtons
 
   function pageCache(path: string, key: string) {
     if (typeof window === "undefined") {
       return null; // Always return null on server-side
-    }
-
-    if (router.asPath !== path) {
-      dispatch(clearCache({ path }));
     }
 
     // Check popState navigation

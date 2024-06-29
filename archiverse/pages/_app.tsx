@@ -43,6 +43,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     };
   }, []);
 
+  // It is NOT this
+
   useEffect(() => {
     const handlePopState = () => {
       // This handles the back and forward buttons

@@ -12,14 +12,24 @@ import Loading from "@components/Loading";
 import MiiverseSymbol from "@components/MiiverseSymbol";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { usePageCache } from "@hooks/usePageCache";
 
 export default function Home({ title_id, game_id, community }) {
+  const { pageCache, cachePageData } = usePageCache();
+
   const [beforeDate, setBeforeDate] = useState<{
     date: Date;
     useDate: boolean;
-  }>({ date: new Date(Date.UTC(2017, 10, 9)), useDate: false });
+  }>(
+    pageCache(`titles/${title_id}/${game_id}`, "beforeDate") ?? {
+      date: new Date(Date.UTC(2017, 10, 9)),
+      useDate: false,
+    }
+  );
 
-  const [popularSelected, setPopularSelected] = useState(true);
+  const [popularSelected, setPopularSelected] = useState(
+    pageCache(`titles/${title_id}/${game_id}`, "popularSelected") ?? true
+  );
 
   const [hasRelatedCommunities, setHasRelatedCommunities] = useState(false);
 
@@ -46,13 +56,15 @@ export default function Home({ title_id, game_id, community }) {
     error: string;
     currPage: number;
     canLoadMore: boolean;
-  }>({
-    data: [],
-    fetching: false,
-    error: null,
-    currPage: 1,
-    canLoadMore: true,
-  });
+  }>(
+    pageCache(`titles/${title_id}/${game_id}`, "recentPosts") ?? {
+      data: [],
+      fetching: false,
+      error: null,
+      currPage: 1,
+      canLoadMore: true,
+    }
+  );
 
   const [popularPosts, setPopularPosts] = useState<{
     data: Post[];
@@ -60,13 +72,15 @@ export default function Home({ title_id, game_id, community }) {
     error: string;
     currPage: number;
     canLoadMore: boolean;
-  }>({
-    data: [],
-    fetching: false,
-    error: null,
-    currPage: 1,
-    canLoadMore: true,
-  });
+  }>(
+    pageCache(`titles/${title_id}/${game_id}`, "popularPosts") ?? {
+      data: [],
+      fetching: false,
+      error: null,
+      currPage: 1,
+      canLoadMore: true,
+    }
+  );
 
   useEffect(() => {
     fetchPosts(true);
@@ -151,6 +165,9 @@ export default function Home({ title_id, game_id, community }) {
 
   useEffect(() => {
     getRelatedCommunities();
+    if (!posts.data || posts.data.length === 0) {
+      fetchPosts(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -170,13 +187,28 @@ export default function Home({ title_id, game_id, community }) {
     }
   }, [community]);
 
+  useEffect(() => {
+    cachePageData(`titles/${title_id}/${game_id}`, "beforeDate", beforeDate);
+    cachePageData(
+      `titles/${title_id}/${game_id}`,
+      "popularSelected",
+      popularSelected
+    );
+    cachePageData(`titles/${title_id}/${game_id}`, "recentPosts", recentPosts);
+    cachePageData(
+      `titles/${title_id}/${game_id}`,
+      "popularPosts",
+      popularPosts
+    );
+  }, [beforeDate, popularSelected, recentPosts, popularPosts]);
+
   return (
     <>
       <SEO
-        title={community.CommunityTitle}
-        description={`Check out the ${community.CommunityTitle} on Archiverse, the largest Miiverse archive on the internet.`}
-        imageUrl={community.CommunityBanner ?? community.CommunityIconUrl}
-        isImageBig={!!community.CommunityBanner}
+        title={community?.CommunityTitle}
+        description={`Check out the ${community?.CommunityTitle} on Archiverse, the largest Miiverse archive on the internet.`}
+        imageUrl={community?.CommunityBanner ?? community?.CommunityIconUrl}
+        isImageBig={!!community?.CommunityBanner}
       />
       <Wrapper>
         {community && (
@@ -271,9 +303,8 @@ export default function Home({ title_id, game_id, community }) {
             }`}
           >
             <DatePicker
-            maxDate={new Date(Date.UTC(2017, 10, 9))}
-            minDate={new Date(Date.UTC(2012, 10, 9))}
-
+              maxDate={new Date(Date.UTC(2017, 10, 9))}
+              minDate={new Date(Date.UTC(2012, 10, 9))}
               dateFormat="MM/dd/yyyy h:mm aa"
               timeFormat="HH:mm"
               showTimeInput
