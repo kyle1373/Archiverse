@@ -8,11 +8,12 @@ export const SEO_METADATA = {
 export const LINKS = {
   discord: "https://discord.gg/jUAWHNzMer",
   github: "https://github.com/kyle1373/archiverse",
+  kofi: "https://ko-fi.com/archiverse",
 };
 
 export const SETTINGS = {
-  Maintenance: false
-}
+  Maintenance: false,
+};
 
 export const IMAGES = {
   unknownMii: "/unknown_mii.png",

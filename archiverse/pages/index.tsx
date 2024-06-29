@@ -114,10 +114,7 @@ export default function Home() {
       currentIndex: 0,
     }));
 
-    const { data, error } = await queryAPI<Post[]>(
-      `posts?random=true`,
-      false
-    );
+    const { data, error } = await queryAPI<Post[]>(`posts?random=true`, false);
 
     if (error) {
       setRandomPosts((prevState) => ({
@@ -158,6 +155,7 @@ export default function Home() {
         fetching: false,
         error: error,
       }));
+      console.log("Error fetching popular drawings " + error);
       return;
     }
     setPopularDrawings((prevState) => ({
@@ -319,7 +317,9 @@ export default function Home() {
           </div>
         </div>
 
-        {!popularDrawings.data.length || popularDrawings.fetching ? (
+        {!popularDrawings.data.length ||
+        popularDrawings.fetching ||
+        popularDrawings.error ? (
           <div className="flex justify-center items-center mt-3 mb-4 h-[218px]">
             <LoadOrRetry
               fetching={popularDrawings.fetching}
