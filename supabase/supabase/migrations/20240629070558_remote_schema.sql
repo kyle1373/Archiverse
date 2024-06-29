@@ -32,6 +32,8 @@ CREATE EXTENSION IF NOT EXISTS "pgjwt" WITH SCHEMA "extensions";
 
 CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
 
+CREATE EXTENSION IF NOT EXISTS "tsm_system_rows" WITH SCHEMA "public";
+
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
 
 CREATE OR REPLACE FUNCTION "public"."game_posts_per_month"("gameid" "text") RETURNS "refcursor"
@@ -78,6 +80,75 @@ CREATE OR REPLACE FUNCTION "public"."game_posts_per_month"("gameid" "text", "ref
 
 ALTER FUNCTION "public"."game_posts_per_month"("gameid" "text", "ref" "refcursor") OWNER TO "postgres";
 
+SET default_tablespace = '';
+
+SET default_table_access_method = "heap";
+
+CREATE TABLE IF NOT EXISTS "public"."Posts" (
+    "Id" "text" NOT NULL,
+    "DiscussionType" "text",
+    "EmpathyCount" integer NOT NULL,
+    "Feeling" integer NOT NULL,
+    "GameCommunityIconUri" "text",
+    "GameCommunityTitle" "text",
+    "GameId" "text",
+    "IconUri" "text",
+    "ImageUri" "text",
+    "IsAcceptingResponse" boolean NOT NULL,
+    "IsPlayed" boolean NOT NULL,
+    "IsSpoiler" boolean NOT NULL,
+    "NNID" "text",
+    "PostedDate" bigint NOT NULL,
+    "ReplyCount" integer NOT NULL,
+    "ScreenName" "text",
+    "ScreenShotUri" "text",
+    "Text" "text",
+    "Title" "text",
+    "TitleId" "text",
+    "VideoUrl" "text",
+    "WarcLocation" "text",
+    "HideRequested" boolean DEFAULT false NOT NULL
+);
+
+ALTER TABLE "public"."Posts" OWNER TO "postgres";
+
+CREATE OR REPLACE FUNCTION "public"."get_random_posts"("num_rows" integer) RETURNS SETOF "public"."Posts"
+    LANGUAGE "plpgsql"
+    AS $$BEGIN
+    RETURN QUERY
+    (
+        SELECT *
+        FROM public."Posts"
+        TABLESAMPLE SYSTEM_ROWS(1)
+    )
+    UNION ALL
+    (
+        SELECT *
+        FROM public."Posts"
+        TABLESAMPLE SYSTEM_ROWS(1)
+    )
+    UNION ALL
+    (
+        SELECT *
+        FROM public."Posts"
+        TABLESAMPLE SYSTEM_ROWS(1)
+    )
+    UNION ALL
+    (
+        SELECT *
+        FROM public."Posts"
+        TABLESAMPLE SYSTEM_ROWS(1)
+    )    
+    UNION ALL
+    (
+        SELECT *
+        FROM public."Posts"
+        TABLESAMPLE SYSTEM_ROWS(1)
+    );
+END;$$;
+
+ALTER FUNCTION "public"."get_random_posts"("num_rows" integer) OWNER TO "postgres";
+
 CREATE OR REPLACE FUNCTION "public"."search_communities"("search_query" "text") RETURNS TABLE("GameId" "text", "TitleId" "text", "Title" "text", "CommunityBadge" "text", "CommunityListIcon" "text", "IconUri" "text", "Type" "text", "TotalPosts" integer, "ViewRegion" integer)
     LANGUAGE "plpgsql"
     AS $$BEGIN
@@ -102,22 +173,31 @@ END;$$;
 
 ALTER FUNCTION "public"."search_communities"("search_query" "text") OWNER TO "postgres";
 
-CREATE OR REPLACE FUNCTION "public"."search_users_by_nnid"("search_query" "text") RETURNS TABLE("NNID" "text", "Bio" "text", "Birthday" "text", "Country" "text", "FollowerCount" integer, "FollowingCount" integer, "FriendsCount" integer, "GameSkill" integer, "IconUri" "text", "IsBirthdayHidden" boolean, "IsError" boolean, "IsHidden" boolean, "ScreenName" "text", "SidebarCoverUrl" "text", "TotalPosts" integer, "HideRequested" boolean)
+CREATE OR REPLACE FUNCTION "public"."search_posts"("keyword" "text") RETURNS SETOF "public"."Posts"
     LANGUAGE "plpgsql"
     AS $$BEGIN
     RETURN QUERY
-    SELECT u."NNID", u."Bio", u."Birthday", u."Country", u."FollowerCount", u."FollowingCount", u."FriendsCount", u."GameSkill", u."IconUri", u."IsBirthdayHidden", u."IsError", u."IsHidden", u."ScreenName", u."SidebarCoverUrl", u."TotalPosts", u."HideRequested"
+    SELECT *
+    FROM "Posts"
+    WHERE "Title" ILIKE '%' || keyword || '%' 
+       OR "Text" ILIKE '%' || keyword || '%'
+       LIMIT 80;
+END;$$;
+
+ALTER FUNCTION "public"."search_posts"("keyword" "text") OWNER TO "postgres";
+
+CREATE OR REPLACE FUNCTION "public"."search_users_by_nnid"("search_query" "text") RETURNS TABLE("NNID" "text", "Bio" "text", "Birthday" "text", "Country" "text", "FollowerCount" integer, "FollowingCount" integer, "FriendsCount" integer, "GameSkill" integer, "IconUri" "text", "IsBirthdayHidden" boolean, "IsError" boolean, "IsHidden" boolean, "ScreenName" "text", "SidebarCoverUrl" "text", "TotalPosts" integer, "HideRequested" boolean, "WarcLocation" "text")
+    LANGUAGE "plpgsql"
+    AS $$BEGIN
+    RETURN QUERY
+    SELECT u."NNID", u."Bio", u."Birthday", u."Country", u."FollowerCount", u."FollowingCount", u."FriendsCount", u."GameSkill", u."IconUri", u."IsBirthdayHidden", u."IsError", u."IsHidden", u."ScreenName", u."SidebarCoverUrl", u."TotalPosts", u."HideRequested", u."WarcLocation"
     FROM "Users" u
-    WHERE u."NNID" ILIKE '%' || search_query || '%'
+    WHERE u."NNID" ILIKE search_query || '%'
     ORDER BY similarity(u."NNID", search_query) DESC
     LIMIT 10;
 END;$$;
 
 ALTER FUNCTION "public"."search_users_by_nnid"("search_query" "text") OWNER TO "postgres";
-
-SET default_tablespace = '';
-
-SET default_table_access_method = "heap";
 
 CREATE TABLE IF NOT EXISTS "public"."DeletedPosts" (
     "Id" "text" NOT NULL,
@@ -167,34 +247,6 @@ CREATE SEQUENCE IF NOT EXISTS "public"."Games_Id_seq"
 ALTER TABLE "public"."Games_Id_seq" OWNER TO "postgres";
 
 ALTER SEQUENCE "public"."Games_Id_seq" OWNED BY "public"."Games"."Id";
-
-CREATE TABLE IF NOT EXISTS "public"."Posts" (
-    "Id" "text" NOT NULL,
-    "DiscussionType" "text",
-    "EmpathyCount" integer NOT NULL,
-    "Feeling" integer NOT NULL,
-    "GameCommunityIconUri" "text",
-    "GameCommunityTitle" "text",
-    "GameId" "text",
-    "IconUri" "text",
-    "ImageUri" "text",
-    "IsAcceptingResponse" boolean NOT NULL,
-    "IsPlayed" boolean NOT NULL,
-    "IsSpoiler" boolean NOT NULL,
-    "NNID" "text",
-    "PostedDate" bigint NOT NULL,
-    "ReplyCount" integer NOT NULL,
-    "ScreenName" "text",
-    "ScreenShotUri" "text",
-    "Text" "text",
-    "Title" "text",
-    "TitleId" "text",
-    "VideoUrl" "text",
-    "WarcLocation" "text",
-    "HideRequested" boolean DEFAULT false NOT NULL
-);
-
-ALTER TABLE "public"."Posts" OWNER TO "postgres";
 
 CREATE TABLE IF NOT EXISTS "public"."Replies" (
     "Id" "text" NOT NULL,
@@ -327,6 +379,10 @@ CREATE INDEX "idx_posts_gameid_titleid_empathycount" ON "public"."Posts" USING "
 
 CREATE INDEX "nnid_users_idx" ON "public"."Users" USING "gin" ("NNID" "public"."gin_trgm_ops");
 
+CREATE INDEX "post_text_idx_search" ON "public"."Posts" USING "gin" ("Text" "public"."gin_trgm_ops");
+
+CREATE INDEX "post_title_idx_search" ON "public"."Posts" USING "gin" ("Title" "public"."gin_trgm_ops");
+
 CREATE INDEX "posts_common_idx" ON "public"."Posts" USING "btree" ("GameId", "TitleId", "PostedDate" DESC, "EmpathyCount" DESC);
 
 ALTER TABLE ONLY "public"."Replies"
@@ -365,6 +421,14 @@ GRANT ALL ON FUNCTION "public"."game_posts_per_month"("gameid" "text") TO "servi
 GRANT ALL ON FUNCTION "public"."game_posts_per_month"("gameid" "text", "ref" "refcursor") TO "anon";
 GRANT ALL ON FUNCTION "public"."game_posts_per_month"("gameid" "text", "ref" "refcursor") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."game_posts_per_month"("gameid" "text", "ref" "refcursor") TO "service_role";
+
+GRANT ALL ON TABLE "public"."Posts" TO "anon";
+GRANT ALL ON TABLE "public"."Posts" TO "authenticated";
+GRANT ALL ON TABLE "public"."Posts" TO "service_role";
+
+GRANT ALL ON FUNCTION "public"."get_random_posts"("num_rows" integer) TO "anon";
+GRANT ALL ON FUNCTION "public"."get_random_posts"("num_rows" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_random_posts"("num_rows" integer) TO "service_role";
 
 GRANT ALL ON FUNCTION "public"."gin_extract_query_trgm"("text", "internal", smallint, "internal", "internal", "internal", "internal") TO "postgres";
 GRANT ALL ON FUNCTION "public"."gin_extract_query_trgm"("text", "internal", smallint, "internal", "internal", "internal", "internal") TO "anon";
@@ -435,6 +499,10 @@ GRANT ALL ON FUNCTION "public"."search_communities"("search_query" "text") TO "a
 GRANT ALL ON FUNCTION "public"."search_communities"("search_query" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."search_communities"("search_query" "text") TO "service_role";
 
+GRANT ALL ON FUNCTION "public"."search_posts"("keyword" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."search_posts"("keyword" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."search_posts"("keyword" "text") TO "service_role";
+
 GRANT ALL ON FUNCTION "public"."search_users_by_nnid"("search_query" "text") TO "anon";
 GRANT ALL ON FUNCTION "public"."search_users_by_nnid"("search_query" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."search_users_by_nnid"("search_query" "text") TO "service_role";
@@ -494,6 +562,11 @@ GRANT ALL ON FUNCTION "public"."strict_word_similarity_op"("text", "text") TO "a
 GRANT ALL ON FUNCTION "public"."strict_word_similarity_op"("text", "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."strict_word_similarity_op"("text", "text") TO "service_role";
 
+GRANT ALL ON FUNCTION "public"."system_rows"("internal") TO "postgres";
+GRANT ALL ON FUNCTION "public"."system_rows"("internal") TO "anon";
+GRANT ALL ON FUNCTION "public"."system_rows"("internal") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."system_rows"("internal") TO "service_role";
+
 GRANT ALL ON FUNCTION "public"."word_similarity"("text", "text") TO "postgres";
 GRANT ALL ON FUNCTION "public"."word_similarity"("text", "text") TO "anon";
 GRANT ALL ON FUNCTION "public"."word_similarity"("text", "text") TO "authenticated";
@@ -530,10 +603,6 @@ GRANT ALL ON TABLE "public"."Games" TO "service_role";
 GRANT ALL ON SEQUENCE "public"."Games_Id_seq" TO "anon";
 GRANT ALL ON SEQUENCE "public"."Games_Id_seq" TO "authenticated";
 GRANT ALL ON SEQUENCE "public"."Games_Id_seq" TO "service_role";
-
-GRANT ALL ON TABLE "public"."Posts" TO "anon";
-GRANT ALL ON TABLE "public"."Posts" TO "authenticated";
-GRANT ALL ON TABLE "public"."Posts" TO "service_role";
 
 GRANT ALL ON TABLE "public"."Replies" TO "anon";
 GRANT ALL ON TABLE "public"."Replies" TO "authenticated";
