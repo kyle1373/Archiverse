@@ -10,10 +10,10 @@ import { IoIosArrowForward } from "react-icons/io";
 import PostCard from "@components/PostCard";
 import Loading from "@components/Loading";
 import MiiverseSymbol from "@components/MiiverseSymbol";
-import DatePicker from 'react-date-picker';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function Home({ title_id, game_id, community }) {
-  
   const [beforeDate, setBeforeDate] = useState<{
     date: Date;
     useDate: boolean;
@@ -67,6 +67,10 @@ export default function Home({ title_id, game_id, community }) {
     currPage: 1,
     canLoadMore: true,
   });
+
+  useEffect(() => {
+    fetchPosts(true);
+  }, [beforeDate.useDate]);
 
   const [posts, setPosts] = popularSelected
     ? [popularPosts, setPopularPosts]
@@ -174,7 +178,6 @@ export default function Home({ title_id, game_id, community }) {
         imageUrl={community.CommunityBanner ?? community.CommunityIconUrl}
         isImageBig={!!community.CommunityBanner}
       />
-
       <Wrapper>
         {community && (
           <div>
@@ -259,6 +262,63 @@ export default function Home({ title_id, game_id, community }) {
           >
             Popular Posts
           </button>
+        </div>
+
+        <div className={`flex justify-center items-center mt-4 flex-col`}>
+          <div
+            className={`flex ${
+              beforeDate.useDate ? "" : "cursor-not-allowed opacity-50"
+            }`}
+          >
+            <DatePicker
+            maxDate={new Date(Date.UTC(2017, 10, 9))}
+            minDate={new Date(Date.UTC(2012, 10, 9))}
+
+              dateFormat="MM/dd/yyyy h:mm aa"
+              timeFormat="HH:mm"
+              showTimeInput
+              selectsMultiple={false as true}
+              selected={beforeDate.date}
+              disabled={!beforeDate.useDate}
+              className={`border-gray font-normal bg-[#f6f6f6] border-[1px] text-center rounded-l-md text-neutral-700`}
+              onChange={(newDate) =>
+                setBeforeDate((prevState) => ({
+                  ...prevState,
+                  date: newDate as unknown as Date,
+                }))
+              }
+            />
+            <button
+              onClick={() => fetchPosts(true)}
+              className={`px-2 border-gray font-normal bg-[#f6f6f6] ${
+                beforeDate.useDate && "hover:bg-[#e2e2e2]"
+              } border-r-[1px] border-y-[1px] rounded-r-md`}
+              disabled={!beforeDate.useDate}
+            >
+              <MiiverseSymbol
+                className="fill-neutral-500 sm:h-4 sm:w-4 h-3 w-3"
+                symbol={"magnifying_glass"}
+              />
+            </button>
+          </div>
+          <label
+            className={`text-xs ${
+              beforeDate.useDate ? "text-neutral-700" : "text-neutral-500"
+            } items-center justify-center flex cursor-pointer mt-2 mb-2`}
+          >
+            <input
+              type="checkbox"
+              className="mr-1 h-3 w-3 accent-green cursor-pointer"
+              checked={beforeDate.useDate}
+              onChange={(e) => {
+                setBeforeDate((prevState) => ({
+                  ...prevState,
+                  useDate: e.target.checked,
+                }));
+              }}
+            />
+            Search by Date
+          </label>
         </div>
         {posts.data?.map((post, index) => {
           return (
