@@ -19,9 +19,4 @@ This data is quickly searchable on Archiverse thanks to optimized binary tree in
 
 ## Contributions
 
-All contributions are welcome! The easiest way to set up the repository is to look over `archiverse` to set up the frontend, then `supabase` to set up a local copy of the database. If you would like to reach out to me personally, [message me on Discord](https://discord.gg/jUAWHNzMer).
-
-## Special Thanks
-
-- [Drastic Actions](https://mastodon.social/@drasticactions@hachyderm.io) for creating the [original Archiverse website](https://github.com/drasticactions/Archiverse)  
-- [Archive Team](https://archiveteam.org) for archiving over 17TB of Miiverse data onto Internet Archive 
+All contributions are welcome! The easiest way to set up the repository is to look over `archiverse` to set up the frontend, then `supabase` to set up a local copy of the database. If you have a feature request, please create an issue in this repository. All pull requests are welcome.
