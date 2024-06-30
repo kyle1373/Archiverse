@@ -2,7 +2,14 @@ import Image from "next/image";
 import SEO from "@/components/SEO";
 import styles from "./index.module.css";
 import Link from "next/link";
-import { Community, Post, User, getCommunity, getRandomPosts, getUserInfo } from "@server/database";
+import {
+  Community,
+  Post,
+  User,
+  getCommunity,
+  getRandomPosts,
+  getUserInfo,
+} from "@server/database";
 import { numberWithCommas } from "@utils/utils";
 import Loading from "@components/Loading";
 import LoadOrRetry from "@components/LoadOrRetry";
@@ -28,7 +35,7 @@ export default function Home(s) {
   const [highlightedText, setHighlightedText] = useState(searchedQuery);
 
   const [selected, setSelected] = useState<"posts" | "users" | "communities">(
-    pageCache("/search", "selected") ?? "posts"
+    pageCache("/search", "selected") ?? "users"
   );
 
   const getButtonStyles = (isSelected: boolean) => {
@@ -229,19 +236,6 @@ export default function Home(s) {
           <div className="flex mt-6 mb-4">
             <button
               className={`rounded-l-md border-[1px] border-r-[.5px] ${getButtonStyles(
-                selected === "posts"
-              )}`}
-              onClick={() => {
-                setSelected("posts");
-                if (searchedQuery.trim()) {
-                  fetchPosts(searchedQuery);
-                }
-              }}
-            >
-              Posts
-            </button>
-            <button
-              className={`border-[1px] ${getButtonStyles(
                 selected === "users"
               )}`}
               onClick={() => {
@@ -254,7 +248,7 @@ export default function Home(s) {
               Users
             </button>
             <button
-              className={`rounded-r-md border-[1px] border-l-[.5px] ${getButtonStyles(
+              className={`border-[1px] ${getButtonStyles(
                 selected === "communities"
               )}`}
               onClick={() => {
@@ -265,6 +259,19 @@ export default function Home(s) {
               }}
             >
               Communities
+            </button>
+            <button
+              className={`rounded-r-md border-[1px] border-l-[.5px] ${getButtonStyles(
+                selected === "posts"
+              )}`}
+              onClick={() => {
+                setSelected("posts");
+                if (searchedQuery.trim()) {
+                  fetchPosts(searchedQuery);
+                }
+              }}
+            >
+              Posts
             </button>
           </div>
         </div>
