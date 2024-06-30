@@ -14,7 +14,7 @@ import MiiverseSymbol from "@components/MiiverseSymbol";
 import PostCard from "@components/PostCard";
 import { usePageCache } from "@hooks/usePageCache";
 
-export default function Home({ something }) {
+export default function Home(s) {
   const { pageCache, cachePageData } = usePageCache();
 
   const [currSearch, setCurrSearch] = useState<string>(
@@ -438,10 +438,3 @@ export default function Home({ something }) {
     </>
   );
 }
-
-export const getServerSideProps = async (context) => {
-  const community = await getCommunity({gameID: "0", titleID: "0"})
-  return {
-    props: { something: community },
-  };
-};

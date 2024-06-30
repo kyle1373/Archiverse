@@ -9,6 +9,10 @@ export const LINKS = {
   discord: "https://discord.gg/jUAWHNzMer",
   github: "https://github.com/kyle1373/archiverse",
   kofi: "https://ko-fi.com/archiverse",
+  drasticactions: "https://github.com/drasticactions",
+  archiveteam: "https://wiki.archiveteam.org/",
+  luna: "https://x.com/puppychist",
+  superfx: "https://github.com/kyle1373"
 };
 
 export const SETTINGS = {

@@ -278,20 +278,20 @@ export default function Home() {
           8, 2017. This archive stores millions of archived Miiverse users,
           posts, drawings, comments, and more, totaling over 17TB of data.
         </p>
-        <p className="text-sm mt-6 text-neutral-700">
+        {/* <p className="text-sm mt-6 text-neutral-700">
           Big thanks to{" "}
           <Link
             className="underline"
-            href={"https://github.com/drasticactions"}
+            href={LINKS.drasticactions}
           >
             Drastic Actions
           </Link>{" "}
           for running the original website from 2018 - 2024,{" "}
-          <Link className="underline" href={"https://wiki.archiveteam.org/"}>
+          <Link className="underline" href={LINKS.archiveteam}>
             Archive Team
           </Link>{" "}
           for archiving Miiverse before its shutdown, and{" "}
-          <Link className="underline" href={"https://x.com/puppychist"}>
+          <Link className="underline" href={LINKS.luna}>
             Luna
           </Link>{" "}
           for creating polished icons shown throughout the website.
@@ -306,8 +306,8 @@ export default function Home() {
             joining the Archiverse Discord
           </Link>
           . Have fun!
-        </p>
-        <p className="text-sm mt-6 text-neutral-700">- Kyle (SuperFX)</p>
+        </p> 
+        <p className="text-sm mt-6 text-neutral-700">- Kyle (SuperFX)</p> */}
         <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green items-end">
           <div className="flex items-end">
             <MiiverseSymbol

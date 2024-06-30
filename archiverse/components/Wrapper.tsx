@@ -2,7 +2,7 @@ import { LINKS, SEO_METADATA } from "@/constants/constants";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
-import { FaDiscord, FaGithub, FaHandHoldingUsd } from "react-icons/fa";
+import { FaDiscord, FaGithub, FaHandHoldingUsd, FaHeart } from "react-icons/fa";
 import MiiverseSymbol from "./MiiverseSymbol";
 
 const Wrapper = ({ children }) => {
@@ -74,10 +74,16 @@ const Wrapper = ({ children }) => {
                 <Link
                   href={LINKS.kofi}
                   target="_blank"
-                  className="mb-[2px]"
+                  className="mb-[2px] mr-5"
                   rel="noopener noreferrer"
                 >
                   <FaHandHoldingUsd className="w-6 h-6 text-[#696969] hover:text-green" />
+                </Link>
+                <Link
+                  href={"/thanks"}
+                  className=""
+                >
+                  <FaHeart className="w-6 h-6 text-[#696969] hover:text-green" />
                 </Link>
               </div>
             </div>
@@ -107,10 +113,16 @@ const Wrapper = ({ children }) => {
             <Link
               href={LINKS.kofi}
               target="_blank"
-              className="mb-[2px]"
+              className="mb-[2px] mr-5"
               rel="noopener noreferrer"
             >
               <FaHandHoldingUsd className="w-6 h-6 text-[#696969] hover:text-green" />
+            </Link>
+            <Link
+              href={"/thanks"}
+              className=""
+            >
+              <FaHeart className="w-6 h-6 text-[#696969] hover:text-green" />
             </Link>
           </div>
         </div>
