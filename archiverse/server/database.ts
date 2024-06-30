@@ -104,7 +104,7 @@ export const getPostReplies = async ({
 
 export const searchPosts = async ({ query }: { query: string }) => {
   const { data, error } = await supabaseAdmin.rpc("search_posts", {
-    keyword: query,
+    keyword: query?.toLowerCase(),
   });
 
   if (error) {
