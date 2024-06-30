@@ -343,6 +343,7 @@ export const getRelatedCommunities = async ({
       "GameId, TitleId, Title, CommunityBadge, CommunityListIcon, IconUri, Type, TotalPosts, ViewRegion"
     )
     .eq("TitleId", titleID)
+    .eq("Visible", true)
     .order("TotalPosts", { ascending: false });
 
   if (error) {
