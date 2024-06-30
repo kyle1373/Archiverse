@@ -2,7 +2,7 @@ import { LINKS, SEO_METADATA } from "@/constants/constants";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
-import { FaDiscord, FaGithub, FaMoneyBillWave, FaHeart } from "react-icons/fa";
+import { FaDiscord, FaGithub, FaMoneyBill, FaHeart } from "react-icons/fa";
 import MiiverseSymbol from "./MiiverseSymbol";
 
 const Wrapper = ({ children }) => {
@@ -77,7 +77,7 @@ const Wrapper = ({ children }) => {
                   className="mr-[21px]"
                   rel="noopener noreferrer"
                 >
-                  <FaMoneyBillWave className="w-5 h-5 text-[#696969] hover:text-green" />
+                  <FaMoneyBill className="w-5 h-5 text-[#696969] hover:text-green" />
                 </Link>
                 <Link
                   href={"/thanks"}
@@ -116,7 +116,7 @@ const Wrapper = ({ children }) => {
               className="mr-[21px]"
               rel="noopener noreferrer"
             >
-              <FaMoneyBillWave className="w-5 h-5 text-[#696969] hover:text-green" />
+              <FaMoneyBill className="w-5 h-5 text-[#696969] hover:text-green" />
             </Link>
             <Link
               href={"/thanks"}
