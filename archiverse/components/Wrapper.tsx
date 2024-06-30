@@ -2,7 +2,7 @@ import { LINKS, SEO_METADATA } from "@/constants/constants";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
-import { FaDiscord, FaGithub, FaHandHoldingUsd, FaHeart } from "react-icons/fa";
+import { FaDiscord, FaGithub, FaMoneyBillWave, FaHeart } from "react-icons/fa";
 import MiiverseSymbol from "./MiiverseSymbol";
 
 const Wrapper = ({ children }) => {
@@ -57,11 +57,11 @@ const Wrapper = ({ children }) => {
               <div className="md:flex hidden items-center justify-center mt-10">
                 <Link
                   href={LINKS.github}
-                  className="mr-5"
+                  className="mr-[18px]"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <FaGithub className="w-6 h-6 text-[#696969] hover:text-green" />
+                  <FaGithub className="w-[18px] h-[18px] text-[#696969] hover:text-green" />
                 </Link>
                 <Link
                   href={LINKS.discord}
@@ -69,21 +69,21 @@ const Wrapper = ({ children }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <FaDiscord className="w-6 h-6 text-[#696969] hover:text-green" />
+                  <FaDiscord className="w-5 h-5 text-[#696969] hover:text-green" />
                 </Link>
                 <Link
                   href={LINKS.kofi}
                   target="_blank"
-                  className="mb-[2px] mr-5"
+                  className="mr-[21px]"
                   rel="noopener noreferrer"
                 >
-                  <FaHandHoldingUsd className="w-6 h-6 text-[#696969] hover:text-green" />
+                  <FaMoneyBillWave className="w-5 h-5 text-[#696969] hover:text-green" />
                 </Link>
                 <Link
                   href={"/thanks"}
                   className=""
                 >
-                  <FaHeart className="w-6 h-6 text-[#696969] hover:text-green" />
+                  <FaHeart className="w-[17px] h-[17px] text-[#696969] hover:text-green" />
                 </Link>
               </div>
             </div>
@@ -96,11 +96,11 @@ const Wrapper = ({ children }) => {
           <div className="md:hidden flex justify-center items-center mt-6">
             <Link
               href={LINKS.github}
-              className="mr-5"
+              className="mr-[18px]"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <FaGithub className="w-6 h-6 text-[#696969] hover:text-green" />
+              <FaGithub className="w-[18px] h-[18px] text-[#696969] hover:text-green" />
             </Link>
             <Link
               href={LINKS.discord}
@@ -108,21 +108,21 @@ const Wrapper = ({ children }) => {
               className="mr-5"
               rel="noopener noreferrer"
             >
-              <FaDiscord className="w-6 h-6 text-[#696969] hover:text-green" />
+              <FaDiscord className="w-5 h-5 text-[#696969] hover:text-green" />
             </Link>
             <Link
               href={LINKS.kofi}
               target="_blank"
-              className="mb-[2px] mr-5"
+              className="mr-[21px]"
               rel="noopener noreferrer"
             >
-              <FaHandHoldingUsd className="w-6 h-6 text-[#696969] hover:text-green" />
+              <FaMoneyBillWave className="w-5 h-5 text-[#696969] hover:text-green" />
             </Link>
             <Link
               href={"/thanks"}
               className=""
             >
-              <FaHeart className="w-6 h-6 text-[#696969] hover:text-green" />
+              <FaHeart className="w-[17px] h-[17px] text-[#696969] hover:text-green" />
             </Link>
           </div>
         </div>
