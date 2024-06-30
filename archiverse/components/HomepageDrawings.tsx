@@ -3,19 +3,28 @@ import { TransitionGroup, CSSTransition } from "react-transition-group";
 import { Post } from "@server/database";
 import PostCard from "./PostCard";
 import Link from "next/link";
+import { usePageCache } from "@hooks/usePageCache";
 
 type HomepageDrawingsProps = {
   posts: Post[];
 };
 
 const HomepageDrawings = ({ posts }: HomepageDrawingsProps) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const { pageCache, cachePageData } = usePageCache();
+
+  const [currentIndex, setCurrentIndex] = useState(
+    pageCache("/", "currentIndex") ?? 0
+  );
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     // Only set the client-side rendering flag after the component has mounted
     setIsClient(true);
   }, []);
+
+  useEffect(() => {
+    cachePageData("/", "currentIndex", currentIndex);
+  }, [currentIndex]);
 
   useEffect(() => {
     if (isClient) {

@@ -37,7 +37,7 @@ export default function Home() {
     data: Post[];
     fetching: boolean;
     error: string;
-  }>({
+  }>(pageCache("/", "popularDrawings") ?? {
     data: [],
     fetching: true,
     error: null,
@@ -91,6 +91,7 @@ export default function Home() {
 
   useEffect(() => {
     cachePageData("/", "randomPosts", randomPosts);
+    cachePageData("/", "popularDrawings", popularDrawings);
     cachePageData("/", "communityList", communityList);
     cachePageData("/", "searchedCommunities", searchedCommunities);
     cachePageData("/", "displaySearchResults", displaySearchResults);
@@ -101,6 +102,7 @@ export default function Home() {
     searchedCommunities,
     displaySearchResults,
     searchQuery,
+    popularDrawings
   ]);
 
   const fetchRandomPosts = async (ignoreFetching?: boolean) => {
