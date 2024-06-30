@@ -508,26 +508,3 @@ export default function Home() {
     </>
   );
 }
-
-export const getServerSideProps = async (context) => {
-  var drawings = null;
-
-  try {
-    drawings = await getHomepageDrawings();
-
-    if (!drawings) {
-      return {
-        props: {},
-      };
-    }
-    return {
-      props: {
-        drawings,
-      },
-    };
-  } catch (e) {}
-
-  return {
-    props: {},
-  };
-};
