@@ -23,11 +23,13 @@ import { usePageCache } from "@hooks/usePageCache";
 
 export default function Home() {
   const Question = ({ children }) => (
-    <h1 className="text-neutral-800 font-semibold text-xl mt-6">{children}</h1>
+    <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green mb-3 items-end">
+      <h1 className="text-green font-bold sm:text-lg text-sm">{children}</h1>
+    </div>
   );
 
   const Answer = ({ children }) => (
-    <p className="text-neutral-950 font-medium text-sm mt-2">{children}</p>
+    <p className="text-neutral-700 font-medium text-sm mt-2">{children}</p>
   );
 
   return (
@@ -68,10 +70,10 @@ export default function Home() {
             href={LINKS.drasticactions}
           >
             Drastic Actions
-          </Link>{" "}
-          was no longer able to maintain it, and thus was shut down sometime in
-          2024. The previous owner has since allowed Kyle / SuperFX use of the
-          Archiverse name, as well as the archiverse.guide domain.
+          </Link>
+          , was no longer able to maintain it, and thus the site was shut down
+          sometime in 2024. The previous owner has since allowed Kyle / SuperFX
+          use of the Archiverse name, as well as the archiverse.guide domain.
         </Answer>
         <Question>Why run Archiverse?</Question>
         <Answer>
