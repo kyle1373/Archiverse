@@ -2,12 +2,10 @@ import { SETTINGS } from "@constants/constants";
 import { NextRequest, NextResponse } from "next/server";
 
 export const config = {
-  matcher: "/",
+  matcher: "/api/:path*",
 };
 
 export function middleware(request: NextRequest) {
-  const url = request.nextUrl;
-
   // Apply maintenance mode logic only for API routes
   if (SETTINGS.Maintenance) {
     return new Response(

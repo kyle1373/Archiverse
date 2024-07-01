@@ -11,6 +11,8 @@ import NProgress from "nprogress";
 import "nprogress/nprogress.css"; // Import the nprogress CSS
 import { useEffect, useRef } from "react";
 import Script from "next/script";
+import { SETTINGS } from "@constants/constants";
+import Maintenance from "./maintenance"
 
 NProgress.configure({ showSpinner: false });
 
@@ -78,7 +80,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <GoogleAdSense publisherId="pub-4203889559099732" />
-      <Component {...pageProps} />
+      {SETTINGS.Maintenance ? (
+        <Maintenance />
+      ) : (
+        <Component {...pageProps} />
+      )}
       {process.env.NODE_ENV === "production" && (
         <Script
           async
