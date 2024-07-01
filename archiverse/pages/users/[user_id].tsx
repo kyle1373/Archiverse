@@ -41,15 +41,21 @@ export default function Home({
   }>(
     pageCache(`users/${user_id}`, "posts") ?? {
       data: [],
-      fetching: false,
+      fetching: true,
       error: null,
       currPage: 1,
       canLoadMore: true,
     }
   );
 
-  const fetchPosts = async (restart?: boolean) => {
-    if (posts.fetching) {
+  const fetchPosts = async ({
+    restart,
+    ignoreLoading,
+  }: {
+    restart?: boolean;
+    ignoreLoading?: boolean;
+  }) => {
+    if (posts.fetching && !ignoreLoading) {
       return;
     }
     var page = posts.currPage + 1;
@@ -135,14 +141,14 @@ export default function Home({
 
   useEffect(() => {
     if (!posts.data.length) {
-      fetchPosts(true);
+      fetchPosts({ restart: true, ignoreLoading: true });
     }
     setMounted(true);
   }, []);
 
   useEffect(() => {
     if (mounted) {
-      fetchPosts(true);
+      fetchPosts({ restart: true });
     }
   }, [selected]);
 
@@ -168,6 +174,11 @@ export default function Home({
             <img
               src={user.MiiUrl}
               className="w-16 h-16 object-cover rounded-md"
+              alt={user.MiiName + " Icon"}
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null; // prevents looping
+                currentTarget.src = IMAGES.unknownMii;
+              }}
             />
           </div>
           <div className={` ${user.BannerUrl ? "mt-[16px]" : "mt-[4px]"} ml-4`}>
@@ -305,7 +316,7 @@ export default function Home({
         {posts.canLoadMore && !posts.fetching && !posts.error && (
           <div className="flex justify-center items-center">
             <button
-              onClick={() => fetchPosts()}
+              onClick={() => fetchPosts({})}
               className="md:ml-2 hover:brightness-95 inline-flex justify-center items-center bg-gradient-to-b from-white border-[1px] rounded-md border-gray text-neutral-600 to-neutral-200 font-medium py-2 px-8 mt-4 md:mt-0 md:text-base text-small"
             >
               <h1 className="">Show More</h1>
@@ -322,7 +333,7 @@ export default function Home({
           <LoadOrRetry
             fetching={posts.fetching}
             error={posts.error}
-            refetch={() => fetchPosts(posts.currPage === 1)}
+            refetch={() => fetchPosts({ restart: posts.currPage === 1 })}
           />
         </div>
       </Wrapper>
