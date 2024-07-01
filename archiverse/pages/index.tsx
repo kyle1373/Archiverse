@@ -210,7 +210,7 @@ export default function Home() {
       ...prevState,
       fetching: true,
     }));
-    const encodedSearch = encodeURIComponent(searchQuery);
+    const encodedSearch = encodeURIComponent(searchQuery?.trim().toLowerCase());
     const { data, error } = await queryAPI<Community[]>(
       `communities?search=${encodedSearch}`
     );
@@ -231,7 +231,7 @@ export default function Home() {
   };
 
   const handleSearchChangeText = (event) => {
-    const newSearchQuery = event.target.value?.trim().toLowerCase();
+    const newSearchQuery = event.target.value;
     setSearchQuery(newSearchQuery);
     if (!newSearchQuery) {
       setDisplaySearchResults(false);
