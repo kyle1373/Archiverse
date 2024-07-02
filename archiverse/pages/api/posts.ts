@@ -1,3 +1,4 @@
+import { SETTINGS } from "@constants/constants";
 import {
   Community,
   getCommunities,
@@ -84,6 +85,12 @@ const validateQueryParams = (query: QueryParams): string[] => {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (SETTINGS.Maintenance) {
+    return res.status(503).json({
+      error: "Archiverse is currently undergoing maintenance. Come back soon!",
+    });
+  }
+
   try {
     const {
       title_id,

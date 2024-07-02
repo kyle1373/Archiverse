@@ -1,4 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { SETTINGS } from "@constants/constants";
 import {
   Community,
   getCommunities,
@@ -9,6 +10,11 @@ import {
 import type { NextApiRequest, NextApiResponse } from "next";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (SETTINGS.Maintenance) {
+    return res.status(503).json({
+      error: "Archiverse is currently undergoing maintenance. Come back soon!",
+    });
+  }
   try {
     const { post_id } = req.query;
 

@@ -1,3 +1,4 @@
+import { LINKS, SETTINGS } from "@constants/constants";
 import {
   Community,
   getCommunities,
@@ -8,10 +9,19 @@ import {
 import type { NextApiRequest, NextApiResponse } from "next";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (SETTINGS.Maintenance) {
+    return res
+      .status(503)
+      .json({
+        error:
+          "Archiverse is currently undergoing maintenance. Come back soon!",
+      });
+  }
+  
   try {
     const { search } = req.query;
 
-    if (!search || (typeof search !== "string" || search.length < 3)) {
+    if (!search || typeof search !== "string" || search.length < 3) {
       return res.status(200).json([]);
     }
 

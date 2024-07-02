@@ -1,4 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { SETTINGS } from "@constants/constants";
 import {
   getCommunities,
   getCommunity,
@@ -17,6 +18,12 @@ export default async function handler(
 ) {
   if (process.env.NODE_ENV !== "development") {
     return res.status(403);
+  }
+
+  if (SETTINGS.Maintenance) {
+    return res.status(503).json({
+      error: "Archiverse is currently undergoing maintenance. Come back soon!",
+    });
   }
 
   // const data = await getPost({postID: "AYIHAAAEAAAOU4XCvEQWvA"})
