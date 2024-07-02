@@ -17,7 +17,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (process.env.NODE_ENV !== "development") {
-    return res.status(403);
+    return res.status(403).json({error: "Not authorized"});
   }
 
   if (SETTINGS.Maintenance) {
