@@ -20,6 +20,7 @@ import { IMAGES } from "@constants/constants";
 import MiiverseSymbol from "@components/MiiverseSymbol";
 import PostCard from "@components/PostCard";
 import { usePageCache } from "@hooks/usePageCache";
+import { IoIosWarning } from "react-icons/io";
 
 export default function Home(s) {
   const { pageCache, cachePageData } = usePageCache();
@@ -331,6 +332,14 @@ export default function Home(s) {
               refetch={() => fetchUsers(searchedQuery)}
               className="mt-4"
             />
+          </div>
+        )}
+
+        {selected === "posts" && (
+          <div className="flex justify-center text-center items-center mt-[-8px] mb-2">
+            <IoIosWarning className="text-orange-400 mb-[.5px] mr-1" /> <h1 className="text-neutral-500 text-xs">
+              Searching for posts may fail due to large data
+            </h1>
           </div>
         )}
 
