@@ -162,7 +162,7 @@ export default function Home(s) {
       fetching: true,
       error: null,
     }));
-    const encodedSearch = encodeURIComponent(query);
+    const encodedSearch = encodeURIComponent(query?.toLowerCase());
     const { data, error } = await queryAPI<Post[]>(
       `posts?search=${encodedSearch}`
     );
