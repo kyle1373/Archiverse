@@ -179,9 +179,8 @@ CREATE OR REPLACE FUNCTION "public"."search_posts"("keyword" "text") RETURNS SET
     RETURN QUERY
     SELECT *
     FROM "Posts"
-    WHERE "Title" ILIKE '%' || keyword || '%' 
-       OR "Text" ILIKE '%' || keyword || '%'
-       LIMIT 80;
+    WHERE ("Title" || ' ' || "Text") ILIKE '%' || keyword || '%'
+    LIMIT 80;
 END;$$;
 
 ALTER FUNCTION "public"."search_posts"("keyword" "text") OWNER TO "postgres";
@@ -339,21 +338,9 @@ CREATE INDEX "Games_TitleId_idx" ON "public"."Games" USING "btree" ("TitleId");
 
 CREATE INDEX "Games_TotalPosts_desc_idx" ON "public"."Games" USING "btree" ("TotalPosts" DESC);
 
-CREATE INDEX "Games_TotalPosts_idx" ON "public"."Games" USING "btree" ("TotalPosts");
-
 CREATE INDEX "Games_Visible_idx" ON "public"."Games" USING "btree" ("Visible");
 
-CREATE INDEX "Posts_EmpathyCount_idx_desc" ON "public"."Posts" USING "btree" ("EmpathyCount" DESC);
-
-CREATE INDEX "Posts_GameIdTitleId_idx" ON "public"."Posts" USING "btree" ("GameId", "TitleId");
-
 CREATE INDEX "Posts_NNID_idx" ON "public"."Posts" USING "btree" ("NNID");
-
-CREATE INDEX "Posts_PostedDate_EmpathyCount_idx" ON "public"."Posts" USING "btree" ("PostedDate" DESC, "EmpathyCount" DESC);
-
-CREATE INDEX "Posts_PostedDate_idx" ON "public"."Posts" USING "btree" ("PostedDate");
-
-CREATE INDEX "Posts_PostedDate_idx_desc" ON "public"."Posts" USING "btree" ("PostedDate" DESC);
 
 CREATE INDEX "Replies_InReplyToId_idx" ON "public"."Replies" USING "btree" ("InReplyToId");
 
@@ -361,27 +348,15 @@ CREATE INDEX "Replies_NNID_idx" ON "public"."Replies" USING "btree" ("NNID");
 
 CREATE INDEX "Replies_PostedDate_idx_asc" ON "public"."Replies" USING "btree" ("PostedDate");
 
-CREATE INDEX "Replies_PostedDate_idx_desc" ON "public"."Replies" USING "btree" ("PostedDate" DESC);
-
 CREATE INDEX "games_title_idx" ON "public"."Games" USING "gin" ("Title" "public"."gin_trgm_ops");
 
 CREATE INDEX "games_type_idx" ON "public"."Games" USING "gin" ("Type" "public"."gin_trgm_ops");
 
-CREATE INDEX "idx_posts_drawing_filter_sort" ON "public"."Posts" USING "btree" ("ImageUri", "EmpathyCount" DESC, "GameId", "TitleId");
-
-CREATE INDEX "idx_posts_drawing_filter_sort_datetime_desc" ON "public"."Posts" USING "btree" ("ImageUri", "EmpathyCount" DESC, "PostedDate" DESC, "GameId", "TitleId");
-
-CREATE INDEX "idx_posts_drawing_filter_sort_datetime_desc_without_community" ON "public"."Posts" USING "btree" ("ImageUri", "EmpathyCount" DESC, "PostedDate" DESC);
-
-CREATE INDEX "idx_posts_empathy_filter_sort_datetime_desc_any_post" ON "public"."Posts" USING "btree" ("PostedDate" DESC, "EmpathyCount" DESC);
-
-CREATE INDEX "idx_posts_gameid_titleid_empathycount" ON "public"."Posts" USING "btree" ("GameId", "TitleId", "EmpathyCount" DESC);
-
 CREATE INDEX "nnid_users_idx" ON "public"."Users" USING "gin" ("NNID" "public"."gin_trgm_ops");
 
-CREATE INDEX "post_text_idx_search" ON "public"."Posts" USING "gin" ("Text" "public"."gin_trgm_ops");
+CREATE INDEX "post_title_text_idx_search" ON "public"."Posts" USING "gin" (((("Title" || ' '::"text") || "Text")) "public"."gin_trgm_ops");
 
-CREATE INDEX "post_title_idx_search" ON "public"."Posts" USING "gin" ("Title" "public"."gin_trgm_ops");
+CREATE INDEX "posts_common_empathycount_posteddate_idx" ON "public"."Posts" USING "btree" ("GameId", "TitleId", "EmpathyCount" DESC, "PostedDate" DESC);
 
 CREATE INDEX "posts_common_idx" ON "public"."Posts" USING "btree" ("GameId", "TitleId", "PostedDate" DESC, "EmpathyCount" DESC);
 
