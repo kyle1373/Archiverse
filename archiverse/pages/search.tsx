@@ -249,7 +249,7 @@ export default function Home(s) {
               Users
             </button>
             <button
-              className={`border-[1px] ${getButtonStyles(
+              className={`border-[1px] rounded-r-md border-l-[.5px] ${getButtonStyles(
                 selected === "communities"
               )}`}
               onClick={() => {
@@ -261,7 +261,7 @@ export default function Home(s) {
             >
               Communities
             </button>
-            <button
+            {/* <button
               className={`rounded-r-md border-[1px] border-l-[.5px] ${getButtonStyles(
                 selected === "posts"
               )}`}
@@ -273,7 +273,7 @@ export default function Home(s) {
               }}
             >
               Posts
-            </button>
+            </button> */}
           </div>
         </div>
 
