@@ -238,7 +238,7 @@ export const getPosts = async ({
   } else if (sortMode === "oldest") {
     query
       .order("PostedDate", { ascending: true })
-      .order("EmpathyCount", { ascending: false });
+      .order("EmpathyCount", { ascending: true });
   } else {
     query
       .order("EmpathyCount", { ascending: false })

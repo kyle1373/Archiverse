@@ -35,20 +35,14 @@ const validateQueryParams = (query: QueryParams): string[] => {
   } = query;
 
   const errors: string[] = [];
-  const sortModes = ["recent", "popular"];
-
-  const sortModesWithoutUserID = ["recent", "popular", "oldest"];
+  const sortModes = ["recent", "popular", "oldest"];
 
   if (query.homepage || search || query.random) {
     return []; // just quit early. we don't care about other variables now
   }
 
-  if (user_id && !sortModesWithoutUserID.includes(sort_mode)) {
-    errors.push(
-      "Invalid sort_mode with user_id. Must be 'recent', 'popular', or 'oldest'."
-    );
-  } else if (!user_id && !sortModes.includes(sort_mode)) {
-    errors.push("Invalid sort_mode. Must be 'recent' or 'popular'.");
+  if (!sortModes.includes(sort_mode)) {
+    errors.push("Invalid sort_mode. Must be 'recent', 'popular', or 'oldest'.");
   }
 
   if (query.only_drawings && sort_mode !== "popular") {
@@ -135,7 +129,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     if (search) {
-      const posts = await searchPosts({ query: search as string });
+      const posts = [];
+      // const posts = await searchPosts({ query: search as string });
       return res.status(200).json(posts);
     }
 
