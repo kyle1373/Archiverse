@@ -135,7 +135,7 @@ export const getRandomPosts = async (): Promise<Post[]> => {
 };
 
 export const getHomepageDrawings = async (): Promise<Post[]> => {
-  const start = Math.floor(Math.random() * 1001);
+  const start = Math.floor(Math.random() * 3001);
   const end = start + 15;
 
   // Filter out all low-quality drawings / stamp posts.
@@ -147,7 +147,6 @@ export const getHomepageDrawings = async (): Promise<Post[]> => {
     .select("*")
     .neq("ImageUri", "")
     .lt("EmpathyCount", 17000)
-    .gt("EmpathyCount", 500)
     .not("NNID", "like", "Nintendo%")
     .neq("NNID", "JaKool6")
     .neq("NNID", "TimothyJS")
@@ -162,6 +161,7 @@ export const getHomepageDrawings = async (): Promise<Post[]> => {
     .neq("NNID", "Speed64Demon")
     .neq("NNID", "Agile.Espeon")
     .neq("NNID", "Cobanerman1456")
+    .order("EmpathyCount", { ascending: false })
     .range(start, end);
 
   if (error) {
