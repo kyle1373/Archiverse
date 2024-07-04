@@ -35,14 +35,19 @@ const validateQueryParams = (query: QueryParams): string[] => {
   } = query;
 
   const errors: string[] = [];
-  const sortModes = ["recent", "popular", "oldest"];
+  const sortModes = ["recent", "popular"];
+  const sortModesWithUserID = ["recent", "popular", "oldest"];
 
   if (query.homepage || search || query.random) {
     return []; // just quit early. we don't care about other variables now
   }
 
-  if (!sortModes.includes(sort_mode)) {
-    errors.push("Invalid sort_mode. Must be 'recent', 'popular', or 'oldest'.");
+  if (user_id && !sortModesWithUserID.includes(sort_mode)) {
+    errors.push(
+      "Invalid sort_mode with user_id. Must be 'recent', 'popular', or 'oldest'."
+    );
+  } else if (!user_id && !sortModes.includes(sort_mode)) {
+    errors.push("Invalid sort_mode. Must be 'recent' or 'popular'.");
   }
 
   if (query.only_drawings && sort_mode !== "popular") {
