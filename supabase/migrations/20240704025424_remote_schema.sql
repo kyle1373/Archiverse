@@ -180,7 +180,7 @@ CREATE OR REPLACE FUNCTION "public"."search_posts"("keyword" "text") RETURNS SET
     SELECT *
     FROM "Posts"
     WHERE ("Title" || ' ' || "Text") ILIKE '%' || keyword || '%'
-    LIMIT 80;
+    LIMIT 10;
 END;$$;
 
 ALTER FUNCTION "public"."search_posts"("keyword" "text") OWNER TO "postgres";
@@ -340,8 +340,6 @@ CREATE INDEX "Games_TotalPosts_desc_idx" ON "public"."Games" USING "btree" ("Tot
 
 CREATE INDEX "Games_Visible_idx" ON "public"."Games" USING "btree" ("Visible");
 
-CREATE INDEX "Posts_NNID_idx" ON "public"."Posts" USING "btree" ("NNID");
-
 CREATE INDEX "Replies_InReplyToId_idx" ON "public"."Replies" USING "btree" ("InReplyToId");
 
 CREATE INDEX "Replies_NNID_idx" ON "public"."Replies" USING "btree" ("NNID");
@@ -352,6 +350,8 @@ CREATE INDEX "games_title_idx" ON "public"."Games" USING "gin" ("Title" "public"
 
 CREATE INDEX "games_type_idx" ON "public"."Games" USING "gin" ("Type" "public"."gin_trgm_ops");
 
+CREATE INDEX "idx_posts_empathy_image_nnid" ON "public"."Posts" USING "btree" ("EmpathyCount", "ImageUri", "NNID");
+
 CREATE INDEX "nnid_users_idx" ON "public"."Users" USING "gin" ("NNID" "public"."gin_trgm_ops");
 
 CREATE INDEX "post_title_text_idx_search" ON "public"."Posts" USING "gin" (((("Title" || ' '::"text") || "Text")) "public"."gin_trgm_ops");
@@ -359,6 +359,10 @@ CREATE INDEX "post_title_text_idx_search" ON "public"."Posts" USING "gin" (((("T
 CREATE INDEX "posts_common_empathycount_posteddate_idx" ON "public"."Posts" USING "btree" ("GameId", "TitleId", "EmpathyCount" DESC, "PostedDate" DESC);
 
 CREATE INDEX "posts_common_idx" ON "public"."Posts" USING "btree" ("GameId", "TitleId", "PostedDate" DESC, "EmpathyCount" DESC);
+
+CREATE INDEX "posts_nnid_empathycount_posteddate_idx" ON "public"."Posts" USING "btree" ("NNID", "EmpathyCount" DESC, "PostedDate" DESC);
+
+CREATE INDEX "posts_nnid_posteddate_empathycount_idx" ON "public"."Posts" USING "btree" ("NNID", "PostedDate" DESC, "EmpathyCount" DESC);
 
 ALTER TABLE ONLY "public"."Replies"
     ADD CONSTRAINT "Replies_InReplyToId_fkey" FOREIGN KEY ("InReplyToId") REFERENCES "public"."Posts"("Id") ON UPDATE CASCADE ON DELETE CASCADE;
