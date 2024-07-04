@@ -24,7 +24,7 @@ export default function Home() {
           miiName={"luna"}
           subName={"Archiverse's Designer"}
           text={
-            "Created the Archiverse logo, Miiverse icons, and guided the UI design for Archiverse. Created the FAQ page content. Archiverse Discord moderator."
+            "Created the Archiverse logo, Miiverse icons, and guided the UI design for Archiverse. Created the FAQ page content. Moderates the Archiverse Discord server."
           }
           miiUrl={"luna.png"}
           socialLink={LINKS.luna}
