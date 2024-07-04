@@ -129,8 +129,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     if (search) {
-      const posts = [];
-      // const posts = await searchPosts({ query: search as string });
+      const posts = await searchPosts({ query: search as string });
       return res.status(200).json(posts);
     }
 
