@@ -6,20 +6,18 @@ import {
   searchCommunities,
   searchUsers,
 } from "@server/database";
+import { extractEnglishCharacters } from "@utils/utils";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (SETTINGS.Maintenance) {
-    return res
-      .status(503)
-      .json({
-        error:
-          "Archiverse is currently undergoing maintenance. Come back soon!",
-      });
+    return res.status(503).json({
+      error: "Archiverse is currently undergoing maintenance. Come back soon!",
+    });
   }
-  
+
   try {
-    const { search } = req.query;
+    const search = extractEnglishCharacters(req.query?.search as string);
 
     if (!search || typeof search !== "string" || search.length < 3) {
       return res.status(200).json([]);
