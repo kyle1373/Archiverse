@@ -22,7 +22,7 @@ import PostCard from "@components/PostCard";
 import { usePageCache } from "@hooks/usePageCache";
 import { IoIosWarning } from "react-icons/io";
 
-export default function Home(s) {
+export default function Home() {
   const { pageCache, cachePageData } = usePageCache();
 
   const [currSearch, setCurrSearch] = useState<string>(
@@ -205,6 +205,22 @@ export default function Home(s) {
     }
   };
 
+  const getSearchPlaceholder = () => {
+    switch (selected) {
+      case "users":
+        return "Search Users by NNID";
+
+      case "communities":
+        return "Search Communities";
+
+      case "posts":
+        return "Search Posts";
+
+      default:
+        return "Search Archiverse";
+    }
+  };
+
   return (
     <>
       <SEO title={"Search Users"} makeDescriptionBlank={true} />
@@ -221,7 +237,7 @@ export default function Home(s) {
               type="text"
               value={currSearch}
               onChange={handleSearchChangeText}
-              placeholder="Search Archiverse"
+              placeholder={getSearchPlaceholder()}
               className="rounded-md pl-2 sm:pr-10 pr-4 bg-neutral-200 md:text-sm py-1 placeholder-neutral-500 text-xs w-full"
             />
             <button
@@ -337,7 +353,8 @@ export default function Home(s) {
 
         {selected === "posts" && (
           <div className="flex justify-center text-center items-center mt-[-8px] mb-2">
-            <IoIosWarning className="text-orange-400 mb-[.5px] mr-1" /> <h1 className="text-neutral-500 text-xs">
+            <IoIosWarning className="text-orange-400 mb-[.5px] mr-1" />
+            <h1 className="text-neutral-500 text-xs">
               Searching posts may fail due to large data
             </h1>
           </div>
