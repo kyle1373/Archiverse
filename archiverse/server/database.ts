@@ -42,8 +42,8 @@ export const getPost = async ({ postID }): Promise<Post> => {
     return {
       ID: postID,
       MiiName: "Not Found",
-      NNID: "unknown",
-      MiiUrl: null,
+      NNID: null,
+      MiiUrl: IMAGES.unknownMii,
       NumYeahs: 0,
       NumReplies: 0,
       Title: null,
@@ -546,18 +546,18 @@ const convertPost = (data): Post => {
       ID: null,
       MiiName: "Hidden",
       NNID: null,
-      MiiUrl: null,
+      MiiUrl: IMAGES.unknownMii,
       NumYeahs: 0,
       NumReplies: 0,
       Title: null,
-      Text: "This user has requested their data to be deleted",
+      Text: "Post could not be found",
       DrawingUrl: null,
       ScreenshotUrl: null,
       VideoUrl: null,
-      CommunityTitle: null,
-      CommunityIconUrl: null,
-      GameID: null,
-      TitleID: null,
+      CommunityTitle: "Unknown",
+      CommunityIconUrl: IMAGES.unknownMii,
+      GameID: "0",
+      TitleID: "0",
       IsSpoiler: false,
       IsPlayed: false,
       Date: null,
@@ -616,40 +616,20 @@ export type User = {
 };
 
 const convertUser = (data): User => {
-  if (data.HideRequested) {
+  if (data.IsHidden || data.IsError || data.HideRequested) {
     return {
-      NNID: data.NNID,
-      MiiName: "Hidden",
-      MiiUrl: IMAGES.unknownMii,
-      Bio: "This user has requested their data to be deleted.",
-      Country: "Hidden",
-      NumFollowers: null,
-      NumFollowing: null,
-      NumFriends: null,
-      NumPosts: 0,
-      BannerUrl: null,
-      Birthday: "Hidden",
-      DoNotShow: true,
-      WebArchiveUrl: getUserArchiveLink(null),
-      WarcLocationUrl: getWarcLocationLink(null),
-    };
-  }
-  if (data.IsHidden || data.IsError) {
-    return {
-      NNID: data.NNID,
-      MiiName: data.NNID,
+      NNID: data.HideRequested ? null : data.NNID,
+      MiiName: data.HideRequested ? null : data.NNID,
       MiiUrl: IMAGES.unknownMii,
       Bio:
         "This user " +
-        (data.IsHidden
-          ? " was banned by Nintendo."
-          : " was deleted by Nintendo."),
+        (data.IsHidden ? " was banned by Nintendo." : " was deleted."),
       Country: "Unknown",
       NumFollowers: null,
       NumFollowing: null,
       NumFriends: null,
       BannerUrl: null,
-      NumPosts: data.NumPosts ?? null,
+      NumPosts: data.HideRequested ? null : data.NumPosts ?? null,
       Birthday: "Unknown",
       DoNotShow: true,
       WebArchiveUrl: getUserArchiveLink(data.NNID),
@@ -701,11 +681,11 @@ const convertReply = (data): Reply => {
   if (data.HideRequested) {
     return {
       ID: null,
-      MiiName: "Hidden",
+      MiiName: "Unknown",
       NNID: null,
-      MiiUrl: null,
+      MiiUrl: IMAGES.unknownMii,
       NumYeahs: 0,
-      Text: "This user has requested their data to be deleted",
+      Text: "Comment could not be found",
       DrawingUrl: null,
       ScreenshotUrl: null,
       ReplyingToID: null,
