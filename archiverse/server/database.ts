@@ -621,9 +621,10 @@ const convertUser = (data): User => {
       NNID: data.HideRequested ? null : data.NNID,
       MiiName: data.HideRequested ? null : data.NNID,
       MiiUrl: IMAGES.unknownMii,
-      Bio:
-        "This user " +
-        (data.IsHidden ? " was banned by Nintendo." : " was deleted."),
+      Bio: data.HideRequested
+        ? ""
+        : "This user " +
+          (data.IsHidden ? " was banned by Nintendo." : " was deleted."),
       Country: "Unknown",
       NumFollowers: null,
       NumFollowing: null,
