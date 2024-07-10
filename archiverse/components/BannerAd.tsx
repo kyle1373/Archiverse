@@ -17,14 +17,14 @@ export default function BannerAd({ type }: BannerAdProps) {
   }, []);
 
   return (
-    <div className="bg-gray py-2 text-center md:px-2 pt-1 flex items-center justify-center" style={{ minHeight: '100px' }}>
-      <div>
+    <div className="bg-gray py-2 text-center md:px-2 pt-1">
         <h1 className="text-neutral-500 text-xs mb-2">
             Advertisement
         </h1>
+      <>
         <ins
           className="adsbygoogle"
-          style={{ display: "block", margin: "0 auto" }}
+          style={{ display: "block" }}
           data-ad-client="ca-pub-4203889559099732"
           data-ad-format="horizontal"
           data-ad-slot="5648641130"
@@ -44,7 +44,7 @@ export default function BannerAd({ type }: BannerAdProps) {
             }
           }}
         />
-      </div>
+      </>
     </div>
   );
 }
