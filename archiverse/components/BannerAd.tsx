@@ -18,7 +18,7 @@ export default function BannerAd({ type }: BannerAdProps) {
 
   return (
     <div className="bg-gray py-2 text-center md:px-2 pt-1">
-        <h1 className="text-neutral-500 text-xs">
+        <h1 className="text-neutral-500 text-xs mb-2">
             Advertisement
         </h1>
       <>
