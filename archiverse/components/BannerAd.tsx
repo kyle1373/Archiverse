@@ -23,10 +23,7 @@ export default function BannerAd({ type }: BannerAdProps) {
         <ins
           className="adsbygoogle"
           style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
+            display: "block",
           }}
           data-ad-client="ca-pub-4203889559099732"
           data-ad-format="horizontal"
