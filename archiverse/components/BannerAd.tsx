@@ -8,6 +8,8 @@ type BannerAdProps = {
 export default function BannerAd({ type }: BannerAdProps) {
   useEffect(() => {
     if (window && (window as any).adsbygoogle) {
+      console.log("Loading ad " + type + " inside useEffect")
+
       try {
         (window as any).adsbygoogle.push({});
       } catch (e) {
@@ -34,11 +36,7 @@ export default function BannerAd({ type }: BannerAdProps) {
           crossOrigin="anonymous"
           onLoad={() => {
             if (window && (window as any).adsbygoogle) {
-              try {
-                (window as any).adsbygoogle.push({});
-              } catch (e) {
-                console.error("AdSense error", e);
-              }
+              console.log("Loading ad " + type + " inside script")
             }
           }}
         />
