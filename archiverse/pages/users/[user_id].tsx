@@ -12,6 +12,7 @@ import { queryAPI } from "@utils/queryAPI";
 import { IMAGES, LIMIT } from "@constants/constants";
 import PostCard from "@components/PostCard";
 import { usePageCache } from "@hooks/usePageCache";
+import BannerAd from "@components/BannerAd";
 
 export default function Home({
   user,
@@ -269,6 +270,10 @@ export default function Home({
               <h1 className="text-[10px] text-[#969696]">Followers</h1>
             </div>
           </div>
+        </div>
+
+        <div className="mx-[-16px]">
+          <BannerAd type={"user-page-ad"} />
         </div>
 
         <div className="flex mt-6 mb-4">

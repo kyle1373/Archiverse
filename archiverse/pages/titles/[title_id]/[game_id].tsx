@@ -13,6 +13,7 @@ import MiiverseSymbol from "@components/MiiverseSymbol";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { usePageCache } from "@hooks/usePageCache";
+import BannerAd from "@components/BannerAd";
 
 export default function Home({ title_id, game_id, community }) {
   const { pageCache, cachePageData } = usePageCache();
@@ -277,6 +278,10 @@ export default function Home({ title_id, game_id, community }) {
             <IoIosArrowForward className="h-6 w-6 text-neutral-400" />
           </Link>
         )}
+
+        <div className="mx-[-16px]">
+          <BannerAd type={"community-page-ad"} />
+        </div>
 
         <div className="flex mt-6">
           <button
