@@ -6,6 +6,15 @@ type BannerAdProps = {
 };
 
 export default function BannerAd({ type }: BannerAdProps) {
+  useEffect(() => {
+    if (window && (window as any).adsbygoogle) {
+      try {
+        (window as any).adsbygoogle.push({});
+      } catch (e) {
+        console.error("AdSense error", e);
+      }
+    }
+  }, []);
 
   return (
     <div className="bg-gray py-2 text-center md:px-2 pt-1">
