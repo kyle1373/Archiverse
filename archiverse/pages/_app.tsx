@@ -5,7 +5,6 @@ import store, {
   clickBrowserButtons,
   notClickBrowserButtons,
 } from "../redux/store";
-import { GoogleAdSense } from "nextjs-google-adsense";
 import Router, { useRouter } from "next/router";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css"; // Import the nprogress CSS
@@ -79,7 +78,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      <GoogleAdSense publisherId="pub-4203889559099732" />
       {SETTINGS.Maintenance ? (
         <Maintenance />
       ) : (
