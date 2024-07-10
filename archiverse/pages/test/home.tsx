@@ -284,11 +284,11 @@ export default function Home() {
           posts, drawings, comments, and more, totaling over 17TB of data.
         </p>
 
-        <div className=" h-28">
+        <div className="mx-[-16px] mt-3">
           <BannerAd type={"home-page-ad"} />
         </div>
 
-        <div className="mt-4 flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green items-end">
+        <div className="flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green items-end">
           <div className="flex items-end">
             <MiiverseSymbol
               symbol={"pencil_draw"}
