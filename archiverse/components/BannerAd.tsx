@@ -17,9 +17,9 @@ export default function BannerAd({ type }: BannerAdProps) {
   }, []);
 
   return (
-    <div className="bg-gray-100 px-2 text-center pb-2 pt-1">
+    <div className="bg-gray px-2 text-center pb-2 pt-1">
       <h1 className="text-neutral-500 text-xs">Advertisement</h1>
-      <div className="max-w-full mx-auto h-30 overflow-hidden">
+      <div className="max-w-full mx-auto h-[120px] overflow-hidden">
         <ins
           className="adsbygoogle w-full h-full"
           data-ad-client="ca-pub-4203889559099732"
