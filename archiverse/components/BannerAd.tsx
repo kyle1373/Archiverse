@@ -8,7 +8,7 @@ type BannerAdProps = {
 export default function BannerAd({ type }: BannerAdProps) {
   useEffect(() => {
     if (window && (window as any).adsbygoogle) {
-      console.log("Loading ad " + type + " inside useEffect")
+      console.log("Loading ad " + type + " inside useEffect");
 
       try {
         (window as any).adsbygoogle.push({});
@@ -24,7 +24,7 @@ export default function BannerAd({ type }: BannerAdProps) {
       <>
         <ins
           className="adsbygoogle"
-          style={{ display: "block" }}
+          style={{ display: "block", height: 90 }}
           data-ad-client="ca-pub-4203889559099732"
           data-ad-format="horizontal"
           data-ad-slot="5648641130"
@@ -36,7 +36,7 @@ export default function BannerAd({ type }: BannerAdProps) {
           crossOrigin="anonymous"
           onLoad={() => {
             if (window && (window as any).adsbygoogle) {
-              console.log("Loading ad " + type + " inside script")
+              console.log("Loading ad " + type + " inside script");
             }
           }}
         />
