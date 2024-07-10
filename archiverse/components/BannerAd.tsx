@@ -17,18 +17,15 @@ export default function BannerAd({ type }: BannerAdProps) {
   }, []);
 
   return (
-    <div className="bg-gray px-2 text-center pb-2 pt-1">
-        <h1 className="text-neutral-500 text-xs">
-            Advertisement
-        </h1>
+    <div className="flex flex-col items-center bg-gray px-2 text-center py-1">
+      <h1 className="text-neutral-500 text-xs mb-1">Advertisement</h1>
       <>
         <ins
           className="adsbygoogle"
-          style={{ display: "block" }}
+          style={{ display: "block", width: "100%", maxHeight: "130px" }}
           data-ad-client="ca-pub-4203889559099732"
           data-ad-format="horizontal"
           data-ad-slot="5648641130"
-          data-full-width-responsive="false"
         ></ins>
         <Script
           async
