@@ -28,7 +28,7 @@ export default function BannerAd({ type }: BannerAdProps) {
           data-ad-client="ca-pub-4203889559099732"
           data-ad-format="horizontal"
           data-ad-slot="5648641130"
-          data-full-width-responsive="true"
+          data-full-width-responsive="false"
         ></ins>
         <Script
           async
