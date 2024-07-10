@@ -6,6 +6,9 @@ type BannerAdProps = {
 };
 
 export default function BannerAd({ type }: BannerAdProps) {
+
+  return <></>
+  
   useEffect(() => {
     if (window && (window as any).adsbygoogle) {
       console.log("Loading ad " + type + " inside useEffect")
