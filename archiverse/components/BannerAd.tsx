@@ -24,10 +24,9 @@ export default function BannerAd({ type }: BannerAdProps) {
       <>
         <ins
           className="adsbygoogle"
-          style={{ display: "block", height: 120 }}
+          style={{ display: "block", height: 130 }}
           data-ad-client="ca-pub-4203889559099732"
           data-ad-slot="5648641130"
-          data-full-width-responsive="true"
         ></ins>
         <Script
           async
