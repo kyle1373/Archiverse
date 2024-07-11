@@ -13,14 +13,12 @@ const AdBanner = ({
   dataFullWidthResponsive,
 }: AdBannerTypes) => {
   useEffect(() => {
-    if (window && (window as any).adsbygoogle) {
-      console.log("Loading ad " + dataAdSlot + " inside useEffect");
-
-      try {
-        (window as any).adsbygoogle.push({});
-      } catch (e) {
-        console.error("AdSense error", e);
-      }
+    try {
+      ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push(
+        {}
+      );
+    } catch (error: any) {
+      console.log(error.message);
     }
   }, []);
 
