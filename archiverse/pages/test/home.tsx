@@ -288,7 +288,7 @@ export default function Home() {
         <div className="mx-[-16px] mt-3">
           <AdBanner
             dataAdSlot={"1525315872"}
-            dataAdFormat={"horizontal"}
+            dataAdFormat={"auto"}
             dataFullWidthResponsive={false}
           />
         </div>
