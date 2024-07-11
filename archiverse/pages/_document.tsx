@@ -1,23 +1,18 @@
-import AdSense from "@components/Adsense";
-import Document, {
-  Html,
-  Head,
-  Main,
-  NextScript,
-  DocumentContext,
-} from "next/document";
+import Document, { Html, Head, Main, NextScript, DocumentContext } from "next/document";
 
 class MyDocument extends Document {
+
   render() {
     return (
       <Html lang="en">
         <Head>
           <meta name="theme-color" content="#3caa00" />
-          <AdSense />
-          <meta
-            name="google-adsense-account"
-            content="ca-pub-4203889559099732"
-          />
+          <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4203889559099732"
+            crossOrigin="anonymous"
+          ></script>
+          <meta name="google-adsense-account" content="ca-pub-4203889559099732" />
         </Head>
         <body>
           <Main />
