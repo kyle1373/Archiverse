@@ -279,7 +279,7 @@ export default function Home({ title_id, game_id, community }) {
           </Link>
         )}
 
-        <div className="mx-[-16px]">
+        <div className="mx-[-16px] mt-2">
           <AdBanner/>
         </div>
 
