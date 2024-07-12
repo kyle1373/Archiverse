@@ -272,14 +272,14 @@ export default function Home({ title_id, game_id, community }) {
         ) : (
           <Link
             href={`/titles/${title_id}`}
-            className="border-gray border-y-[1px] mx-[-16px] px-[16px] bg-[#f6f6f6] flex justify-between py-2 font-medium items-center"
+            className="border-gray border-y-[1px] mx-[-16px] px-[16px] bg-[#f6f6f6] flex justify-between py-2 font-medium items-center mb-3"
           >
             <h1 className="text-neutral-600 text-sm">Related Communities</h1>
             <IoIosArrowForward className="h-6 w-6 text-neutral-400" />
           </Link>
         )}
 
-        <div className="mx-[-16px] mt-2">
+        <div className="mx-[-16px]">
           <AdBanner/>
         </div>
 
