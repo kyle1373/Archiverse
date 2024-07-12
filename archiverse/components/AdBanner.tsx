@@ -27,7 +27,7 @@ export default function BannerAd() {
           data-full-width-responsive="false"
         ></ins>
       </>
-      <h2 className="text-neutral-400 text-[10px] mb-2">Ads help maintain Archiverse</h2>
+      <h2 className="text-neutral-400 text-[10px]">Ads help maintain Archiverse</h2>
     </div>
   );
 }
