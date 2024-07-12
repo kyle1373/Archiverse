@@ -16,7 +16,7 @@ export default function BannerAd() {
 
   return (
     <div className="bg-gray py-2 text-center md:px-2 pt-1">
-      <h1 className="text-neutral-500 text-xs mb-2">Advertisement</h1>
+      {/* <h1 className="text-neutral-500 text-xs mb-2">Advertisement</h1> */}
       <>
         <ins
           className="adsbygoogle"
@@ -27,7 +27,7 @@ export default function BannerAd() {
           data-full-width-responsive="false"
         ></ins>
       </>
-      <h2 className="text-neutral-400 text-[10px]">Ads help maintain Archiverse</h2>
+      <h2 className="text-neutral-400 text-[10px]">Ads help maintain Archiverse's server costs</h2>
     </div>
   );
 }
