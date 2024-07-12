@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react';
 import { useAmp } from 'next/amp';
 import Script from 'next/script';
 
@@ -6,13 +5,6 @@ export const config = { amp: 'hybrid' }; // Enable hybrid AMP mode
 
 export default function AdBanner() {
   const isAmp = useAmp(); // Check if the page is being rendered as AMP
-  const ampAdRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (isAmp && ampAdRef.current) {
-      ampAdRef.current.setAttribute('overflow', '');
-    }
-  }, [isAmp]);
 
   return (
     <div className="bg-gray py-2 text-center md:px-2 pt-1">
@@ -28,7 +20,7 @@ export default function AdBanner() {
             data-auto-format="rspv"
             data-full-width=""
           >
-            <div ref={ampAdRef}></div>
+            <div overflow=""></div>
           </amp-ad>
           <Script
             async
