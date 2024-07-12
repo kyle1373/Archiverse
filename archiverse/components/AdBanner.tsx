@@ -16,18 +16,18 @@ export default function AdBanner() {
     }
   }, []);
 
-  if (!isOpen) return <></>;
+//   if (!isOpen) return <></>;
 
   return (
     <div className="bg-gray py-2 text-center md:px-2">
-      <div className="flex justify-between mb-2">
-        <div></div>
+      <div className="flex justify-center mb-2">
+        {/* <div></div> */}
         <h2 className="text-neutral-400 text-[10px]">
           Ads help maintain Archiverse's server costs
         </h2>
-        <button onClick={() => setIsOpen(false)}>
+        {/* <button className="mr-2" onClick={() => setIsOpen(false)}>
           <LiaWindowClose size={18} />
-        </button>
+        </button> */}
       </div>
       <>
         <ins
