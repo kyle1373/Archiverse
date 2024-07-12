@@ -3,7 +3,7 @@ import Script from "next/script";
 import { LiaWindowClose } from "react-icons/lia";
 
 export default function AdBanner() {
-  const [isOpen, setIsOpen] = useState(true);
+//   const [isOpen, setIsOpen] = useState(true);
   useEffect(() => {
     if (window && (window as any).adsbygoogle) {
       console.log("Loading ad inside useEffect");
