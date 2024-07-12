@@ -20,13 +20,14 @@ export default function BannerAd() {
       <>
         <ins
           className="adsbygoogle"
-          style={{ display: "block", height: 69 }}
+          style={{ display: "block", height: 69, backgroundColor: "#eeeeee" }}
           data-ad-client="ca-pub-4203889559099732"
           data-ad-format="horizontal"
           data-ad-slot="1525315872"
           data-full-width-responsive="false"
         ></ins>
       </>
+      <h2 className="text-neutral-400 text-[10px] mb-2">Ads help maintain Archiverse</h2>
     </div>
   );
 }
