@@ -20,7 +20,11 @@ export default function AdBanner() {
 
   return (
     <div className="bg-gray py-2 text-center md:px-2">
-      <div className="flex justify-end mb-2">
+      <div className="flex justify-between mb-2">
+        <div></div>
+        <h2 className="text-neutral-400 text-[10px]">
+          Ads help maintain Archiverse's server costs
+        </h2>
         <button onClick={() => setIsOpen(false)}>
           <LiaWindowClose size={18} />
         </button>
@@ -35,9 +39,6 @@ export default function AdBanner() {
           data-full-width-responsive="false"
         ></ins>
       </>
-      <h2 className="text-neutral-400 text-[10px]">
-        Ads help maintain Archiverse's server costs
-      </h2>
     </div>
   );
 }
