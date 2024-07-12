@@ -161,6 +161,7 @@ export const getHomepageDrawings = async (): Promise<Post[]> => {
     .neq("NNID", "Speed64Demon")
     .neq("NNID", "Agile.Espeon")
     .neq("NNID", "Cobanerman1456")
+    .neq("NNID", 'GKDomi')
     .order("EmpathyCount", { ascending: false })
     .range(start, end);
 
