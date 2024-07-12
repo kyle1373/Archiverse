@@ -19,7 +19,7 @@ import {
 } from "react-icons/lu";
 import MiiverseSymbol from "@components/MiiverseSymbol";
 import { usePageCache } from "@hooks/usePageCache";
-import BannerAd from "@components/BannerAd";
+import AdBanner from "@components/AdBanner";
 
 export default function Home({
   post_id,
@@ -141,7 +141,7 @@ export default function Home({
             <PostCard post={post} variant="main" />
           </div>
           <div className="mx-[-16px] mt-2">
-            <BannerAd type={"post-ad"} />
+            <AdBanner/>
           </div>
           {replies.data && replies.data.length !== 0 && (
             <div className="bg-[#5ac800] border-y-[1px] border-t-[#4faf00] border-b-gray flex py-1 text-sm text-white px-2 md:mx-0 mx-[-16px]">

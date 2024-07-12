@@ -13,7 +13,6 @@ import PostCard from "@components/PostCard";
 import { LINKS } from "@constants/constants";
 import MiiverseSymbol from "@components/MiiverseSymbol";
 import { usePageCache } from "@hooks/usePageCache";
-import BannerAd from "@components/BannerAd";
 import AdBanner from "@components/AdBanner";
 
 export default function Home() {

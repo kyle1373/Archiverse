@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Script from "next/script";
 
-export default function BannerAd() {
+export default function AdBanner() {
   useEffect(() => {
     if (window && (window as any).adsbygoogle) {
       console.log("Loading ad inside useEffect");
@@ -16,7 +16,6 @@ export default function BannerAd() {
 
   return (
     <div className="bg-gray py-2 text-center md:px-2">
-      {/* <h1 className="text-neutral-500 text-xs mb-2">Advertisement</h1> */}
       <>
         <ins
           className="adsbygoogle"

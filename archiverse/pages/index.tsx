@@ -13,7 +13,7 @@ import PostCard from "@components/PostCard";
 import { LINKS } from "@constants/constants";
 import MiiverseSymbol from "@components/MiiverseSymbol";
 import { usePageCache } from "@hooks/usePageCache";
-import BannerAd from "@components/BannerAd";
+import AdBanner from "@components/AdBanner";
 
 export default function Home() {
   const { pageCache, cachePageData } = usePageCache();
@@ -285,7 +285,7 @@ export default function Home() {
         </p>
 
         <div className="mx-[-16px] mt-3">
-          <BannerAd type={"home-page-ad"} />
+          <AdBanner/>
         </div>
 
         <div className="flex justify-between border-b-4 mx-[-16px] px-4 py-2 border-green items-end">

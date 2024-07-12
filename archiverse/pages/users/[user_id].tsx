@@ -12,7 +12,7 @@ import { queryAPI } from "@utils/queryAPI";
 import { IMAGES, LIMIT } from "@constants/constants";
 import PostCard from "@components/PostCard";
 import { usePageCache } from "@hooks/usePageCache";
-import BannerAd from "@components/BannerAd";
+import AdBanner from "@components/AdBanner";
 
 export default function Home({
   user,
@@ -273,7 +273,7 @@ export default function Home({
         </div>
 
         <div className="mx-[-16px]">
-          <BannerAd type={"user-page-ad"} />
+          <AdBanner/>
         </div>
 
         <div className="flex mt-6 mb-4">
