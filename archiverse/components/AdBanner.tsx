@@ -1,15 +1,10 @@
 import { useEffect } from "react";
 import Script from "next/script";
 
-type BannerAdProps = {
-  type: string;
-};
-
-export default function BannerAd({ type }: BannerAdProps) {
-  
+export default function BannerAd() {
   useEffect(() => {
     if (window && (window as any).adsbygoogle) {
-      console.log("Loading ad " + type + " inside useEffect")
+      console.log("Loading ad inside useEffect");
 
       try {
         (window as any).adsbygoogle.push({});
