@@ -19,14 +19,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const search = extractEnglishCharacters(req.query?.search as string);
 
-    if (!search || typeof search !== "string" || search.length < 3) {
+    if (!search || typeof search !== "string" || search.length < 3 || search.startsWith('_')) {
       return res.status(200).json([]);
     }
 
-    const searchWithEscaped = search
-
     const users = await searchUsers({
-      query: searchWithEscaped as string,
+      query: search as string,
     });
 
     return res.status(200).json(users);
