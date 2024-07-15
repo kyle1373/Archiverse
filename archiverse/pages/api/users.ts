@@ -23,7 +23,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(200).json([]);
     }
 
-    const searchWithEscaped = search.replace(/_/g, "\\_");
+    const searchWithEscaped = search
 
     const users = await searchUsers({
       query: searchWithEscaped as string,
