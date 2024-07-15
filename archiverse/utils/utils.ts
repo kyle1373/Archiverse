@@ -10,6 +10,6 @@ export function sleep(ms: number) {
 }
 
 export function extractEnglishCharacters(input: string): string {
-  // Use a regular expression to replace all characters that are not alphanumeric, spaces, underscores, or hyphens with an empty string
-  return input.replace(/[^a-zA-Z0-9 _-]/g, '');
+  // Use a regular expression to replace all characters that are not alphanumeric, spaces, underscores, hyphens, or periods with an empty string
+  return input.replace(/[^a-zA-Z0-9 _.-]/g, '');
 }
