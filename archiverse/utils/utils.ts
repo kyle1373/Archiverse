@@ -10,11 +10,6 @@ export function sleep(ms: number) {
 }
 
 export function extractEnglishCharacters(input: string): string {
-  // Use a regular expression to replace all non-alphanumeric characters with an empty string
-  return input.replace(/[^a-zA-Z0-9 ]/g, '');
-}
-
-export function removeSpecialCharacters(input: string): string {
-  // This regex keeps alphanumeric characters from various scripts and removes special characters
-  return input.replace(/[^\p{L}\p{N}\s\p{P}']/gu, '');
+  // Use a regular expression to replace all characters that are not alphanumeric, spaces, underscores, or hyphens with an empty string
+  return input.replace(/[^a-zA-Z0-9 _-]/g, '');
 }
