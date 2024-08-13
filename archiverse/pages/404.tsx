@@ -42,12 +42,3 @@ export default function Home() {
     </>
   );
 }
-
-// Next.js server-side props function
-export const getServerSideProps = async (context) => {
-  await logServerStats(context.req, context.res);
-
-  return {
-    props: {},
-  };
-};
