@@ -9,9 +9,9 @@ export default async function handler(
 ) {
   logServerStats(req, res);
 
-  // if (process.env.NODE_ENV !== "development") {
-  //   return res.status(403).json({ error: "Not authorized" });
-  // }
+  if (process.env.NODE_ENV !== "development") {
+    return res.status(403).json({ error: "Not authorized" });
+  }
 
   if (SETTINGS.Maintenance) {
     return res.status(503).json({
