@@ -1,19 +1,12 @@
 const express = require('express');
 const next = require('next');
+const createError = require('http-errors');
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
 const server = express();
-
-// Logging Middleware
-server.use((req, res, next) => {
-  const { method, url } = req;
-  const timestamp = new Date().toISOString();
-  console.log(`[${timestamp}] ${method} ${url}`);
-  next();
-});
 
 // Set a timeout for all requests
 server.use((req, res, next) => {
