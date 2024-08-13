@@ -80,18 +80,11 @@ function MyApp({ Component, pageProps }: AppProps) {
     <>
       {SETTINGS.Maintenance ? <Maintenance /> : <Component {...pageProps} />}
       {process.env.NODE_ENV === "production" && (
-        <>
-          <Script
-            async
-            src="https://umami.archiverse.app/script.js"
-            data-website-id="23d6f0a7-aa02-4372-a89e-02d7c50e070b"
-          />
-          <Script
-            async
-            src="https://stats.superfx.dev/script.js"
-            data-website-id="4b461fac-17ee-49ed-8c67-76a1d7e846e7"
-          />
-        </>
+        <Script
+          async
+          src="https://stats.superfx.dev/script.js"
+          data-website-id="4b461fac-17ee-49ed-8c67-76a1d7e846e7"
+        />
       )}
     </>
   );
