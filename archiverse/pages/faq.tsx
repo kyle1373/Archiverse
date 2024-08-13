@@ -20,6 +20,7 @@ import { IMAGES, LINKS } from "@constants/constants";
 import MiiverseSymbol from "@components/MiiverseSymbol";
 import PostCard from "@components/PostCard";
 import { usePageCache } from "@hooks/usePageCache";
+import { logServerStats } from "@server/logger";
 
 export default function Home() {
   const Question = ({ children }) => (
@@ -180,3 +181,12 @@ export default function Home() {
     </>
   );
 }
+
+// Next.js server-side props function
+export const getServerSideProps = async (context) => {
+  await logServerStats(context.req, context.res);
+
+  return {
+    props: {},
+  };
+};

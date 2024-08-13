@@ -2,6 +2,7 @@ import SEO from "@/components/SEO";
 import Wrapper from "@components/Wrapper";
 import { LINKS } from "@constants/constants";
 import AppreciationCard from "@components/AppreciationCard";
+import { logServerStats } from "@server/logger";
 
 export default function Home() {
   return (
@@ -53,3 +54,13 @@ export default function Home() {
     </>
   );
 }
+
+
+// Next.js server-side props function
+export const getServerSideProps = async (context) => {
+  await logServerStats(context.req, context.res);
+
+  return {
+    props: {},
+  };
+};

@@ -8,6 +8,7 @@ import { numberWithCommas } from "@utils/utils";
 import Link from "next/link";
 import MiiverseSymbol from "@components/MiiverseSymbol";
 import { usePageCache } from "@hooks/usePageCache";
+import { logServerStats } from "@server/logger";
 
 export default function Home({ title_id }) {
   const { pageCache, cachePageData } = usePageCache();
@@ -151,6 +152,9 @@ export default function Home({ title_id }) {
 }
 
 export const getServerSideProps = async (context) => {
+  await logServerStats(context.req, context.res)
+
+
   const { title_id } = context.query;
 
   return {

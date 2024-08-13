@@ -14,6 +14,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { usePageCache } from "@hooks/usePageCache";
 import AdBanner from "@components/AdBanner";
+import { logServerStats } from "@server/logger";
 
 export default function Home({ title_id, game_id, community }) {
   const { pageCache, cachePageData } = usePageCache();
@@ -401,6 +402,8 @@ export default function Home({ title_id, game_id, community }) {
 }
 
 export const getServerSideProps = async (context) => {
+  await logServerStats(context.req, context.res)
+
   const { title_id, game_id } = context.query;
 
   var community: Community = await getCommunity({

@@ -20,6 +20,8 @@ import {
 import MiiverseSymbol from "@components/MiiverseSymbol";
 import { usePageCache } from "@hooks/usePageCache";
 import AdBanner from "@components/AdBanner";
+import { logServerStats } from "@server/logger";
+import { GetServerSidePropsContext } from "next";
 
 export default function Home({
   post_id,
@@ -243,7 +245,9 @@ export default function Home({
   );
 }
 
-export const getServerSideProps = async (context) => {
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+  await logServerStats(context.req, context.res)
+
   const { post_id } = context.query;
 
   const post = await getPost({ postID: post_id });

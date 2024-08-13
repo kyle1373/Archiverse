@@ -8,6 +8,7 @@ import {
   searchCommunities,
   searchPosts,
 } from "@server/database";
+import { logServerStats } from "@server/logger";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type QueryParams = {
@@ -84,6 +85,8 @@ const validateQueryParams = (query: QueryParams): string[] => {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  await logServerStats(req, res)
+
   if (SETTINGS.Maintenance) {
     return res.status(503).json({
       error: "Archiverse is currently undergoing maintenance. Come back soon!",

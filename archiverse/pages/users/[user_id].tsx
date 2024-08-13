@@ -13,6 +13,7 @@ import { IMAGES, LIMIT } from "@constants/constants";
 import PostCard from "@components/PostCard";
 import { usePageCache } from "@hooks/usePageCache";
 import AdBanner from "@components/AdBanner";
+import { logServerStats } from "@server/logger";
 
 export default function Home({
   user,
@@ -348,6 +349,8 @@ export default function Home({
 
 // Next.js server-side props function
 export const getServerSideProps = async (context) => {
+  await logServerStats(context.req, context.res)
+
   const { user_id } = context.query;
 
   var user: User = null;

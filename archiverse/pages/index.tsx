@@ -14,6 +14,7 @@ import { LINKS } from "@constants/constants";
 import MiiverseSymbol from "@components/MiiverseSymbol";
 import { usePageCache } from "@hooks/usePageCache";
 import AdBanner from "@components/AdBanner";
+import { logServerStats } from "@server/logger";
 
 export default function Home() {
   const { pageCache, cachePageData } = usePageCache();
@@ -488,3 +489,12 @@ export default function Home() {
     </>
   );
 }
+
+// Next.js server-side props function
+export const getServerSideProps = async (context) => {
+  await logServerStats(context.req, context.res);
+
+  return {
+    props: {},
+  };
+};
