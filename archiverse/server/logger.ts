@@ -70,7 +70,7 @@ export async function logServerStats(
       level = "error";
     }
 
-    pushLogsToLoki(
+    await pushLogsToLoki(
       {
         service: "archiverse-web",
         job: "logger",
