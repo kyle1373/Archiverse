@@ -8,26 +8,29 @@ import { GetServerSidePropsContext } from "next";
 type LoggableRequest = NextApiRequest | GetServerSidePropsContext["req"];
 type LoggableResponse = NextApiResponse | ServerResponse;
 
-export async function logServerStats(req: LoggableRequest, res: LoggableResponse) {
+export async function logServerStats(
+  req: LoggableRequest,
+  res: LoggableResponse
+) {
   const start = Number(req.headers["x-request-start"]);
-  let responseBody: any;
+  // let responseBody: any;
 
   // Intercept res.json and res.send if available
-  if ('json' in res && typeof res.json === 'function') {
-    const originalJson = res.json;
-    res.json = function (body: any) {
-      responseBody = body;
-      return originalJson.call(this, body);
-    };
-  }
+  // if ('json' in res && typeof res.json === 'function') {
+  //   const originalJson = res.json;
+  //   res.json = function (body: any) {
+  //     responseBody = body;
+  //     return originalJson.call(this, body);
+  //   };
+  // }
 
-  if ('send' in res && typeof res.send === 'function') {
-    const originalSend = res.send;
-    res.send = function (body: any) {
-      responseBody = body;
-      return originalSend.call(this, body);
-    };
-  }
+  // if ('send' in res && typeof res.send === 'function') {
+  //   const originalSend = res.send;
+  //   res.send = function (body: any) {
+  //     responseBody = body;
+  //     return originalSend.call(this, body);
+  //   };
+  // }
 
   res.on("finish", async () => {
     const end = Date.now();
@@ -45,15 +48,15 @@ export async function logServerStats(req: LoggableRequest, res: LoggableResponse
       status: res.statusCode,
       durationMS: duration,
       searchParams: parsedUrl.query,
-      requestHeaders: req.headers,
-      responseHeaders: 'getHeaders' in res && typeof res.getHeaders === 'function' ? res.getHeaders() : {},
       userAgent: req.headers["user-agent"],
       referer: req.headers.referer || null,
       ip: req.headers["x-forwarded-for"] || req.socket.remoteAddress,
-      responseBody: responseBody,
     };
 
-    if ((req as any).body && ["POST", "PUT", "PATCH"].includes(req.method || "")) {
+    if (
+      (req as any).body &&
+      ["POST", "PUT", "PATCH"].includes(req.method || "")
+    ) {
       logData.requestBody = (req as any).body;
     }
 
@@ -67,7 +70,7 @@ export async function logServerStats(req: LoggableRequest, res: LoggableResponse
       level = "error";
     }
 
-    await pushLogsToLoki(
+    pushLogsToLoki(
       {
         service: "archiverse-web",
         job: "logger",
