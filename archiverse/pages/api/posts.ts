@@ -84,7 +84,7 @@ const validateQueryParams = (query: QueryParams): string[] => {
   if (sort_mode === "recent") {
     if (!(user_id != null || (game_id != null && title_id != null))) {
       errors.push(
-        "For sort_mode 'recent', there must be either both game_id and title_id (they can be 0), or a user_id."
+        "For sort_mode 'recent', there must be either both game_id and title_id or a user_id."
       );
     }
   }
