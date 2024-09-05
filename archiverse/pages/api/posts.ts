@@ -81,11 +81,19 @@ const validateQueryParams = (query: QueryParams): string[] => {
     errors.push("Invalid page. Must be a number.");
   }
 
+  if (sort_mode === "recent") {
+    if (!(user_id != null || (game_id != null && title_id != null))) {
+      errors.push(
+        "For sort_mode 'recent', there must be either both game_id and title_id (they can be 0), or a user_id."
+      );
+    }
+  }
+
   return errors;
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  await logServerStats(req, res)
+  await logServerStats(req, res);
 
   if (SETTINGS.Maintenance) {
     return res.status(503).json({
