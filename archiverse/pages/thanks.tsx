@@ -14,8 +14,8 @@ export default function Home() {
         </div>
         <AppreciationCard
           miiName={"Kyle / SuperFX"}
-          subName={"Developer of Archiverse"}
-          text="Created the current Archiverse website you see right now!"
+          subName={"Archiverse's Developer"}
+          text="Developed and currently maintains the website you see right now!"
           miiUrl={"superfx.png"}
           socialLink={LINKS.superfx}
         />
@@ -25,7 +25,7 @@ export default function Home() {
           miiName={"luna"}
           subName={"Archiverse's Designer"}
           text={
-            "Created the Archiverse logo, Miiverse icons, and guided the UI design for Archiverse. Created the FAQ page content. Moderates the Archiverse Discord server."
+            "Created the Archiverse logo, guided Archiverse's UI design, wrote the FAQ page content, and currently moderates the Archiverse Discord server."
           }
           miiUrl={"luna.png"}
           socialLink={LINKS.luna}
@@ -36,16 +36,16 @@ export default function Home() {
           text={
             "Created the original Archiverse website (archiverse.guide) and ran it from 2018 - 2024 until Kyle / SuperFX's takeover."
           }
-          subName={"Original Archiverse Creator (2018-2024)"}
+          subName={"Archiverse's Original Creator (2018-2024)"}
           miiUrl={"drasticactions.png"}
           socialLink={LINKS.drasticactions}
         />
         <div className="border-t-[1px] border-gray" />
         <AppreciationCard
           miiName={"Archive Team"}
-          subName={"Archived Miiverse"}
+          subName={"Archiverse's Data Supplier"}
           text={
-            "Archived 5 years of Miiverse data onto Internet Archive for anyone to see, which made this website possible."
+            "Archived 5 years of Miiverse data onto Internet Archive, making this website possible."
           }
           miiUrl={"archiveteam.png"}
           socialLink={LINKS.archiveteam}
@@ -54,7 +54,6 @@ export default function Home() {
     </>
   );
 }
-
 
 // Next.js server-side props function
 export const getServerSideProps = async (context) => {

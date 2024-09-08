@@ -12,7 +12,7 @@ export const LINKS = {
   drasticactions: "https://github.com/drasticactions",
   archiveteam: "https://wiki.archiveteam.org/",
   luna: "https://x.com/puppychist",
-  superfx: "https://github.com/kyle1373"
+  superfx: "https://kylewade.dev",
 };
 
 export const SETTINGS = {
