@@ -87,6 +87,10 @@ const PostCard = ({
     }
   }, [post.DrawingUrl, post.ScreenshotUrl]);
 
+  if (variant === "list" && post.DoNotShow) {
+    return <div />;
+  }
+
   if (variant === "list" || variant === "carossel") {
     return (
       <div
