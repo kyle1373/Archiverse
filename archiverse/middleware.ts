@@ -25,8 +25,7 @@ export async function middleware(req: NextRequest) {
 
   // Exclude the /maintenance path from the redirect
   if (pathname !== "/maintenance") {
-    const maintenanceMode = true; // Toggle this based on your condition.
-
+    const maintenanceMode = false;
     if (maintenanceMode) {
       // Redirect to /maintenance
       return NextResponse.redirect(new URL("/maintenance", req.nextUrl.origin));
