@@ -14,7 +14,7 @@ import { SETTINGS } from "@constants/constants";
 import Maintenance from "./maintenance";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
+import axios, { AxiosResponse, AxiosStatic } from "axios";
 
 NProgress.configure({ showSpinner: false });
 
@@ -37,17 +37,20 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     const checkWaybackMachineStatus = async () => {
+      const timeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Request timed out after 7 seconds")), 7000)
+      );
+  
       try {
-        // Query the Wayback Machine to check service availability
-        const response = await axios.get(
-          "https://archive.org/wayback/available?url=miiverse.nintendo.net"
-        );
-
-        // If response is not successful or the service is unavailable, throw an error
+        const response: AxiosResponse = await Promise.race([
+          axios.get("https://archive.org/wayback/available?url=miiverse.nintendo.net"),
+          timeout
+        ]) as AxiosResponse;
+  
         if (!response || response.status !== 200) {
           throw new Error("Wayback Machine is down");
         }
-
+  
         if (
           !response.data ||
           !response.data.archived_snapshots ||
@@ -72,19 +75,20 @@ function MyApp({ Component, pageProps }: AppProps) {
         );
       }
     };
-
+  
     checkWaybackMachineStatus();
-
+  
     Router.events.on("routeChangeStart", handleRouteChangeStart);
     Router.events.on("routeChangeComplete", handleRouteChangeComplete);
     Router.events.on("routeChangeError", handleRouteChangeError);
-
+  
     return () => {
       Router.events.off("routeChangeStart", handleRouteChangeStart);
       Router.events.off("routeChangeComplete", handleRouteChangeComplete);
       Router.events.off("routeChangeError", handleRouteChangeError);
     };
   }, []);
+  
 
   // It is NOT this
 

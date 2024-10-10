@@ -4,18 +4,19 @@ const LOKI_ENDPOINT = process.env.GRAFANA_PUSH_URL;
 const LOKI_USERNAME = process.env.GRAFANA_USERNAME;
 const LOKI_PASSWORD = process.env.GRAFANA_PASSWORD;
 
-if (!LOKI_ENDPOINT || !LOKI_USERNAME || !LOKI_PASSWORD) {
-    throw Error(
-      "LOKI_ENDPOINT, LOKI_USERNAME, or LOKI_PASSWORD are undefined! Please double check."
-    );
-  }
-  
+if (
+  process.env.NODE_ENV === "production" &&
+  (!LOKI_ENDPOINT || !LOKI_USERNAME || !LOKI_PASSWORD)
+) {
+  throw Error(
+    "LOKI_ENDPOINT, LOKI_USERNAME, or LOKI_PASSWORD are undefined! Please double check."
+  );
+}
 
 export const pushLogsToLoki = async (
   stream: { [key: string]: string },
   messages: string[]
 ) => {
-
   const values = messages.map((message) => [
     String(Date.now() * 1000000), // Timestamp in nanoseconds
     message,
@@ -32,6 +33,10 @@ export const pushLogsToLoki = async (
 
   try {
     console.log("LOG:", stream, "\n", messages);
+
+    if (process.env.NODE_ENV !== "production") {
+      return;
+    }
     const response = await axios.post(LOKI_ENDPOINT, logs, {
       auth: {
         username: LOKI_USERNAME,
