@@ -12,6 +12,9 @@ import { useEffect, useRef } from "react";
 import Script from "next/script";
 import { SETTINGS } from "@constants/constants";
 import Maintenance from "./maintenance";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 NProgress.configure({ showSpinner: false });
 
@@ -33,6 +36,37 @@ function MyApp({ Component, pageProps }: AppProps) {
   const isPopState = useRef(false);
 
   useEffect(() => {
+    const checkWaybackMachineStatus = async () => {
+      try {
+        // Query the Wayback Machine to check service availability. This is just a sample screenshot
+        const response = await axios.get(
+          "https://web.archive.org/web/20171014154111im_/https://d3esbfg30x759i.cloudfront.net/tip/AAUAABAXagAO7Mk0GS"
+        );
+
+        // If response is not successful or the service is unavailable, throw an error
+        if (!response || response.status !== 200) {
+          throw new Error("Wayback Machine is down");
+        }
+      } catch (error) {
+        console.log("Wayback machine error:", error?.message);
+        // Show toast notification if there's an issue
+        toast.error(
+          "Wayback Machine is down. Some images may not load correctly.",
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
+        );
+      }
+    };
+
+    checkWaybackMachineStatus();
+
     Router.events.on("routeChangeStart", handleRouteChangeStart);
     Router.events.on("routeChangeComplete", handleRouteChangeComplete);
     Router.events.on("routeChangeError", handleRouteChangeError);
@@ -86,6 +120,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           data-website-id="4b461fac-17ee-49ed-8c67-76a1d7e846e7"
         />
       )}
+      <ToastContainer />
     </>
   );
 }
