@@ -40,7 +40,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       try {
         // Query the Wayback Machine to check service availability
         const response = await axios.get(
-          "https://archive.org/wayback/available?url=example.com"
+          "https://archive.org/wayback/available?url=miiverse.nintendo.net"
         );
 
         // If response is not successful or the service is unavailable, throw an error
