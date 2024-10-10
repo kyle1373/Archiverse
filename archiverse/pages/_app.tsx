@@ -38,13 +38,21 @@ function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     const checkWaybackMachineStatus = async () => {
       try {
-        // Query the Wayback Machine to check service availability. This is just a sample screenshot
+        // Query the Wayback Machine to check service availability
         const response = await axios.get(
-          "https://web.archive.org/web/20171014154111im_/https://d3esbfg30x759i.cloudfront.net/tip/AAUAABAXagAO7Mk0GS"
+          "https://archive.org/wayback/available?url=example.com"
         );
 
         // If response is not successful or the service is unavailable, throw an error
         if (!response || response.status !== 200) {
+          throw new Error("Wayback Machine is down");
+        }
+
+        if (
+          !response.data ||
+          !response.data.archived_snapshots ||
+          Object.keys(response.data.archived_snapshots).length === 0
+        ) {
           throw new Error("Wayback Machine is down");
         }
       } catch (error) {
