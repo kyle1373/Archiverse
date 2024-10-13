@@ -277,7 +277,7 @@ export default function Home({
           <AdBanner/>
         </div>
 
-        <div className="flex mt-4 mb-4">
+        <div className="flex mt-6 mb-4">
           <button
             className={`rounded-l-md border-[1px] border-r-[.5px] ${getButtonStyles(
               selected === "recent"

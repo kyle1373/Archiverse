@@ -285,7 +285,7 @@ export default function Home() {
           posts, drawings, comments, and more, totaling over 17TB of data.
         </p>
 
-        <div className="mx-[-16px]">
+        <div className="mx-[-16px] mt-2">
           <AdBanner/>
         </div>
 
