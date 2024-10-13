@@ -238,7 +238,7 @@ export default function Home({
             </div>
           </div>
         </div>
-        <div className="mt-4 pt-3 pb-2 bg-[#f6f6f6] flex text-sm px-2 mx-[-16px] border-gray border-y-[1px]">
+        <div className="mt-2 pt-3 pb-2 bg-[#f6f6f6] flex text-sm px-2 mx-[-16px] border-gray border-y-[1px]">
           <div className="flex-1 flex justify-center border-r-[1px] border-gray">
             <div className="text-center">
               <h1 className="sm:text-[18px] text-[15px] font-normal text-neutral-800">
@@ -277,7 +277,7 @@ export default function Home({
           <AdBanner/>
         </div>
 
-        <div className="flex mt-6 mb-4">
+        <div className="flex mt-4 mb-4">
           <button
             className={`rounded-l-md border-[1px] border-r-[.5px] ${getButtonStyles(
               selected === "recent"

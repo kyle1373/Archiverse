@@ -284,7 +284,7 @@ export default function Home({ title_id, game_id, community }) {
           <AdBanner/>
         </div>
 
-        <div className="flex mt-6">
+        <div className="flex mt-4">
           <button
             className={`rounded-l-md border-[1px] border-r-[.5px] ${getButtonStyles(
               !popularSelected

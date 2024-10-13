@@ -142,7 +142,7 @@ export default function Home({
           <div className="md:mx-2">
             <PostCard post={post} variant="main" />
           </div>
-          <div className="md:mx-0 mx-[-16px] mt-2">
+          <div className="md:mx-0 mx-[-16px]">
             <AdBanner/>
           </div>
           {replies.data && replies.data.length !== 0 && (

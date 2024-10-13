@@ -3,6 +3,9 @@ import Script from "next/script";
 import { LiaWindowClose } from "react-icons/lia";
 
 export default function AdBanner() {
+
+  // Ads are disabled, but to enable them, just remove this line
+  return <></>
   const [isOpen, setIsOpen] = useState(true);
   const [showCloseButton, setShowCloseButton] = useState(false);
 
