@@ -20,7 +20,7 @@ export async function middleware(req: NextRequest) {
   response.headers.set("X-Request-Start", start.toString());
   response.headers.set("X-Logging", "true");
 
-  const maintenanceMode = true;
+  const maintenanceMode = false;
 
   // Maintenance mode logic
   if (maintenanceMode) {
