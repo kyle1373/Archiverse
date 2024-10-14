@@ -33,7 +33,9 @@ export default function Home({ title_id, game_id, community }) {
     pageCache(`titles/${title_id}/${game_id}`, "popularSelected") ?? true
   );
 
-  const [hasRelatedCommunities, setHasRelatedCommunities] = useState(false);
+  const [hasRelatedCommunities, setHasRelatedCommunities] = useState<boolean>(
+    pageCache(`titles/${title_id}/${game_id}`, "hasRelatedCommunities") ?? false
+  );
 
   const getButtonStyles = (isSelected: boolean) => {
     const commonStyles =
@@ -203,7 +205,18 @@ export default function Home({ title_id, game_id, community }) {
       "popularPosts",
       popularPosts
     );
-  }, [beforeDate, popularSelected, recentPosts, popularPosts]);
+    cachePageData(
+      `titles/${title_id}/${game_id}`,
+      "hasRelatedCommunities",
+      hasRelatedCommunities
+    );
+  }, [
+    beforeDate,
+    popularSelected,
+    recentPosts,
+    popularPosts,
+    hasRelatedCommunities,
+  ]);
 
   return (
     <>
@@ -281,7 +294,7 @@ export default function Home({ title_id, game_id, community }) {
         )}
 
         <div className="mx-[-16px]">
-          <AdBanner/>
+          <AdBanner />
         </div>
 
         <div className="flex mt-4">
@@ -402,7 +415,7 @@ export default function Home({ title_id, game_id, community }) {
 }
 
 export const getServerSideProps = async (context) => {
-  await logServerStats(context.req, context.res)
+  await logServerStats(context.req, context.res);
 
   const { title_id, game_id } = context.query;
 
