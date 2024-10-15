@@ -1,3 +1,4 @@
+import { SETTINGS } from "@constants/constants";
 import { NextResponse, NextRequest } from "next/server";
 
 export async function middleware(req: NextRequest) {
@@ -20,10 +21,9 @@ export async function middleware(req: NextRequest) {
   response.headers.set("X-Request-Start", start.toString());
   response.headers.set("X-Logging", "true");
 
-  const maintenanceMode = false;
 
   // Maintenance mode logic
-  if (maintenanceMode) {
+  if (SETTINGS.Maintenance) {
     if (pathname !== "/maintenance") {
       return NextResponse.redirect(new URL("/maintenance", req.nextUrl.origin));
     }
