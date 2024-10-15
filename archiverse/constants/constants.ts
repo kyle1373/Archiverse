@@ -16,7 +16,7 @@ export const LINKS = {
 };
 
 export const SETTINGS = {
-  Maintenance: true,
+  Maintenance: false,
 };
 
 export const IMAGES = {
