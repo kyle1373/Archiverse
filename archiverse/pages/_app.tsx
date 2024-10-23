@@ -76,7 +76,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       }
     };
   
-    checkWaybackMachineStatus();
+    // checkWaybackMachineStatus();
   
     Router.events.on("routeChangeStart", handleRouteChangeStart);
     Router.events.on("routeChangeComplete", handleRouteChangeComplete);
